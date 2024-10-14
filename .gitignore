@@ -321,3 +321,9 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
