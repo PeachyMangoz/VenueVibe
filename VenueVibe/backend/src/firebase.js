@@ -1,16 +1,16 @@
 // firebase.js
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBzp3OrAjzTsz4q00I3DDZ5q9xf5EkDBLk",
+  authDomain: "venuevibe-a1675.firebaseapp.com",
+  projectId: "venuevibe-a1675",
+  storageBucket: "venuevibe-a1675.appspot.com",
+  messagingSenderId: "605698985809",
+  appId: "1:605698985809:web:ca6e225a8202acf781cd70",
 };
 
 const app = initializeApp(firebaseConfig);
