@@ -1,6 +1,6 @@
 <template>
     <div class="business-profile">
-      <h1>{{ businessName }}</h1>
+      <h1>Business Profile</h1>
       <div class="profile-info">
         <input v-model="businessName" placeholder="Business Name">
         <textarea v-model="description" placeholder="Business Description"></textarea>
@@ -24,32 +24,14 @@
         </ul>
         <button @click="addProduct">Add Product</button>
       </div>
-  
       <button @click="saveBusinessProfile">Save Business Profile</button>
-  
-      <h2>Application Profiles</h2>
-      <div v-for="profile in applicationProfiles" :key="profile.id" class="application-profile">
-        <h3>{{ profile.name }}</h3>
-        <p>{{ profile.description }}</p>
-        <p>Focus: {{ profile.focus }}</p>
-      </div>
-  
-      <button @click="createNewApplicationProfile">Create New Application Profile</button>
-  
-      <div v-if="showNewProfileForm" class="new-profile-form">
-        <h3>Create New Application Profile</h3>
-        <input v-model="newProfile.name" placeholder="Profile Name">
-        <textarea v-model="newProfile.description" placeholder="Profile Description"></textarea>
-        <input v-model="newProfile.focus" placeholder="Profile Focus">
-        <button @click="saveNewProfile">Save Profile</button>
-      </div>
     </div>
   </template>
   
   <script>
-  import { ref, reactive, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { db, auth } from './firebase'
-  import { collection, addDoc, getDocs, doc, setDoc, getDoc } from 'firebase/firestore'
+  import { doc, setDoc, getDoc } from 'firebase/firestore'
   import { onAuthStateChanged } from 'firebase/auth'
   
   export default {
@@ -60,13 +42,6 @@
       const interests = ref([])
       const experience = ref('')
       const products = ref([])
-      const applicationProfiles = ref([])
-      const showNewProfileForm = ref(false)
-      const newProfile = reactive({
-        name: '',
-        description: '',
-        focus: '',
-      })
       const userId = ref(null)
   
       onMounted(() => {
@@ -74,7 +49,6 @@
           if (user) {
             userId.value = user.uid
             fetchBusinessProfile()
-            fetchApplicationProfiles()
           } else {
             console.log('No user logged in')
           }
@@ -92,29 +66,6 @@
           interests.value = data.interests
           experience.value = data.experience
           products.value = data.products
-        }
-      }
-  
-      const fetchApplicationProfiles = async () => {
-        const querySnapshot = await getDocs(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'))
-        applicationProfiles.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      }
-  
-      const createNewApplicationProfile = () => {
-        showNewProfileForm.value = true
-      }
-  
-      const saveNewProfile = async () => {
-        try {
-          const docRef = await addDoc(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'), newProfile)
-          applicationProfiles.value.push({
-            id: docRef.id,
-            ...newProfile
-          })
-          showNewProfileForm.value = false
-          Object.assign(newProfile, { name: '', description: '', focus: '' })
-        } catch (error) {
-          console.error("Error adding document: ", error)
         }
       }
   
@@ -155,11 +106,6 @@
         interests,
         experience,
         products,
-        applicationProfiles,
-        showNewProfileForm,
-        newProfile,
-        createNewApplicationProfile,
-        saveNewProfile,
         saveBusinessProfile,
         addInterest,
         removeInterest,
