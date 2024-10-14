@@ -1,0 +1,25 @@
+{
+  "name": "venuevibe",
+  "version": "1.0.0",
+  "description": "WAD2 Project",
+  "main": "index.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeachyMangoz/VenueVibe.git"
+  },
+  "author": "T07",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PeachyMangoz/VenueVibe/issues"
+  },
+  "homepage": "https://github.com/PeachyMangoz/VenueVibe#readme",
+  "dependencies": {
+    "venuevibe": "file:",
+    "vue": "^3.5.11"
+  }
+}
