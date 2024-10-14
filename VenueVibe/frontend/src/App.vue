@@ -9,11 +9,18 @@
           <li>Organizers</li>
           <li>Events</li>
           <li>Contact</li>
+          <li>Profile</li>
         </ul>
       </nav>
     </header>
 
     <SearchBar />
+
+    <main class="main-content">
+      <BusinessProfile />
+      <EventApplications />
+      <ApplicationProfiles />
+    </main>
 
     <section class="booth-listings">
       <BoothCard
@@ -38,13 +45,19 @@
 import BoothCard from './components/BoothCard.vue';
 import SearchBar from './components/SearchBar.vue';
 import EventDescription from './components/EventDescription.vue';
+import BusinessProfile from './components/BusinessProfile.vue';
+import EventApplications from './components/EventApplications.vue';
+import ApplicationProfiles from './components/ApplicationProfiles.vue';
 
 export default {
   name: 'App',
   components: {
     BoothCard,
     SearchBar,
-    EventDescription
+    EventDescription,
+    BusinessProfile,
+    EventApplications,
+    ApplicationProfiles
   },
   data() {
     return {
@@ -69,6 +82,15 @@ nav ul {
   display: flex;
   list-style-type: none;
   gap: 20px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .booth-listings {
