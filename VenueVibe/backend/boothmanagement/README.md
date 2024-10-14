@@ -2,15 +2,16 @@
 
 ## Database schema for booths
 
+- `booth_id: str`
+- `event_id: int`
+- `organizer_id: int`
 - `availability_status: str`
 - `booth_image: str`
 - `booth_title: str`
-- `created_at: timestamp`
 - `duration: int`
-- `event_id: int`
-- `organizer_id: int`
 - `price: float`
 - `size: int`
+- `created_at: timestamp`
 - `updated_at: timestamp`
 
 ## API:
