@@ -21,6 +21,7 @@
   "dependencies": {
     "@vue/cli-service": "^5.0.8",
     "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "venuevibe": "file:",
     "vue": "^3.5.11"
   }
