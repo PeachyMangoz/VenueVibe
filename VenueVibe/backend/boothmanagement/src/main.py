@@ -1,5 +1,6 @@
 # main.py
 from fastapi import FastAPI, HTTPException, status, Query
+from fastapi.middleware.cors import CORSMiddleware
 from config.firebase_db import FirestoreClient
 from services.booth_service import BoothService
 from models.booth import Booth, BoothCreate, BoothUpdate
@@ -7,6 +8,14 @@ from typing import List
 import uvicorn
 
 app = FastAPI(title="Booth Listing Microservice")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],  # Frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Initialize Firestore client and BoothService
 firestore_client = FirestoreClient()
@@ -78,4 +87,4 @@ def list_booths(limit: int = Query(100, ge=1, le=1000, description="Number of bo
     return booths
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8081)
