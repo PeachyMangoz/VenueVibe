@@ -1,18 +1,18 @@
 <template>
-  <div id="app">
-    <header class="header">
-      <nav>
-        <h1>Booth Listings</h1>
-        <ul>
-          <li>Home</li>
-          <li>Browse Booths</li>
-          <li>Organizers</li>
-          <li>Events</li>
-          <li>Contact</li>
-          <li>Profile</li>
-        </ul>
-      </nav>
-    </header>
+  <header></header>
+
+  <div>
+    <nav>
+      <h1>Booth Listings</h1>
+      <ul>
+        <li>Home</li>
+        <li>Browse Booths</li>
+        <li>Organizers</li>
+        <li>Events</li>
+        <li>Contact</li>
+        <li>Profile</li>
+      </ul>
+    </nav>
 
     <SearchBar />
 
@@ -23,50 +23,62 @@
     </main>
 
     <section class="booth-listings">
-      <BoothCard
-        v-for="booth in booths"
-        :key="booth.id"
-        :booth="booth"
-      />
+      <BoothCard v-for="booth in booths" :key="booth.id" :booth="booth" />
     </section>
 
     <EventDescription />
-
-    <footer class="footer">
-      <p>© 2024 Booth Listings</p>
-      <div class="social-media">
-        <!-- Social media icons -->
-      </div>
-    </footer>
   </div>
+
+  <footer class="footer">
+    <p>© 2024 Booth Listings</p>
+    <div class="social-media">
+      <!-- Social media icons -->
+    </div>
+  </footer>
 </template>
 
 <script>
 import BoothCard from './components/BoothCard.vue';
-import SearchBar from './components/SearchBar.vue';
-import EventDescription from './components/EventDescription.vue';
-import BusinessProfile from './components/BusinessProfile.vue';
-import EventApplications from './components/EventApplications.vue';
-import ApplicationProfiles from './components/ApplicationProfiles.vue';
+// import SearchBar from './components/SearchBar.vue';
+// import EventDescription from './components/EventDescription.vue';
+// import BusinessProfile from './components/BusinessProfile.vue';
+// import EventApplications from './components/EventApplications.vue';
+// import ApplicationProfiles from './components/ApplicationProfiles.vue';
+
+import { boothAPI } from './services/api';
 
 export default {
   name: 'App',
   components: {
     BoothCard,
-    SearchBar,
-    EventDescription,
-    BusinessProfile,
-    EventApplications,
-    ApplicationProfiles
+    // SearchBar,
+    // EventDescription,
+    // BusinessProfile,
+    // EventApplications,
+    // ApplicationProfiles,
   },
   data() {
     return {
-      booths: [
-        { id: 1, title: 'Booth A', price: '$300', duration: '2 hours', space: 'Large', organizer: 'John Doe', description: 'An exciting booth...' },
-        { id: 2, title: 'Booth B', price: '$200', duration: '1 hour', space: 'Medium', organizer: 'Jane Smith', description: 'A thrilling booth...' }
-      ]
+      booths: [],
+      loading: true,
+      error: null,
     };
-  }
+  },
+  mounted() {
+    this.fetchBooths();
+  },
+  methods: {
+    async fetchBooths() {
+      try {
+        const response = await boothAPI.get('/booths'); // Fetch booths from the backend
+        this.booths = response.data;
+      } catch (error) {
+        this.error = 'Error fetching booths';
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
 };
 </script>
 

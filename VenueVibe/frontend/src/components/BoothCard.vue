@@ -1,11 +1,11 @@
 <template>
   <div class="booth-card">
     <img :src="boothImage" alt="Booth Image" class="booth-image" />
-    <h3 class="booth-title">{{ booth.title }}</h3>
+    <h3 class="booth-title">{{ booth.booth_title }}</h3>
     <p class="booth-price">Price: {{ booth.price }}</p>
     <p class="booth-duration">Duration: {{ booth.duration }}</p>
-    <p class="booth-space">Space: {{ booth.space }}</p>
-    <p class="booth-organizer">Organizer: {{ booth.organizer }}</p>
+    <p class="booth-space">Space: {{ booth.size }}</p>
+    <p class="booth-organizer">Organizer: {{ booth.organizer_id }}</p>
     <p class="booth-description">{{ booth.description }}</p>
   </div>
 </template>
@@ -16,8 +16,30 @@ export default {
   props: ['booth'],
   data() {
     return {
-      boothImage: 'https://via.placeholder.com/250' // Replace with real booth images
+      boothImage: this.booth.booth_image
     };
+  },
+  mounted() {
+    this.fetchImage();
+  },
+  methods: {
+    async fetchImage() {
+      try {
+        const response = await fetch(this.booth.booth_image, {
+          mode: 'cors', // Ensure CORS is handled correctly
+        });
+
+        if (!response.ok) {
+          throw new Error('Image not found');
+        }
+
+        const imageBlob = await response.blob();
+        this.boothImage = URL.createObjectURL(imageBlob); // Create an object URL from the blob
+
+      } catch (error) {
+        console.error('Error fetching the image:', error);
+      }
+    }
   }
 };
 </script>
