@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import BoothCard from './components/BoothCard.vue';
+// import BoothCard from './components/BoothCard.vue';
 import NavBar from './components/NavBar.vue';
 // import SearchBar from './components/SearchBar.vue';
 // import EventDescription from './components/EventDescription.vue';
@@ -33,7 +33,7 @@ export default {
   name: 'App',
   components: {
     NavBar,
-    BoothCard,
+    // BoothCard,
     // SearchBar,
     // EventDescription,
     // BusinessProfile,

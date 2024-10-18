@@ -7,6 +7,10 @@
     <p class="booth-space">Space: {{ booth.size }}</p>
     <p class="booth-organizer">Organizer: {{ booth.organizer_id }}</p>
     <p class="booth-description">{{ booth.description }}</p>
+
+    <router-link :to="{ name: 'booth-details', params: { id: booth.booth_id } }">
+      <button class="view-details-button">View Details</button>
+    </router-link>
   </div>
 </template>
 
@@ -81,4 +85,27 @@ export default {
   color: #82c0cc;
   font-size: 0.9em;
 }
+
+.view-details-button {
+  background-color: #ffa62b; 
+  color: white; 
+  border: none;
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.view-details-button:hover {
+  background-color: #ff8c00;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.view-details-button:active {
+  background-color: #e67600;
+  transform: translateY(0);
+}
+
 </style>

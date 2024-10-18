@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Booth from './views/Booth.vue';
+import BoothDetails from './views/BoothDetails.vue';
 // import Organizers from './views/Organizers.vue';
 // import Events from './views/Events.vue';
 // import Contact from './views/Contact.vue';
 // import Profile from './views/Profile.vue';
 import NotFound from './views/NotFound.vue';
-
 const routes = [
   { path: '/', name: 'Home', component: NotFound },
+  { path: '/booths/:id', name: 'booth-details', component: BoothDetails, props: true},
   { path: '/booths', name: 'Booth', component: Booth },
   { path: '/organizers', name: 'Organizers', component: NotFound },
   { path: '/events', name: 'Events', component: NotFound },
