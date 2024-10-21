@@ -86,6 +86,7 @@ html {
 /* Splash Screen Style */
 #splash-screen {
     position: fixed;
+    margin-left: -30px;
     width: 100%;
     height: 100vh;
     background-color: #1a1a1a;
@@ -212,25 +213,6 @@ body {
 .event-card p {
     margin-top: 10px;
     text-align: center;
-    font-weight: bold;
-}
-
-.navbar {
-    padding: 20px;
-}
-
-.navbar-brand {
-    color: #36b598 !important;
-    font-weight: bold;
-}
-
-.nav-link {
-    color: #000 !important;
-    margin-left: 15px;
-}
-
-.nav-link:hover {
-    color: #36b598 !important;
     font-weight: bold;
 }
 

@@ -40,7 +40,7 @@ export default {
   flex-direction: column;
   gap: 20px;
   padding: 30px;
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0 auto;
   font-family: 'Roboto', sans-serif;
   padding-top: 80px; /* Adjust this based on your nav bar height */
