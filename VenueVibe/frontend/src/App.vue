@@ -29,30 +29,28 @@ export default {
 </script>
 
 <style scoped>
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+.header {
+  background-color: #16697a;
+  color: white;
+  padding: 15px 30px;
+  font-size: 18px;
 }
-
-header, .main-content, footer {
-  width: 100%;
-}
-
 .main-content {
-  flex-grow: 1; /* Ensures the main content takes up available space */
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Centers the content vertically */
+  gap: 20px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Roboto', sans-serif;
+  padding-top: 80px; /* Adjust this based on your nav bar height */
 }
-
 .footer {
   background-color: #16697a;
   color: white;
   text-align: center;
   padding: 30px;
+  margin-top: 30px;
 }
 
 .footer .social-media {
@@ -69,15 +67,5 @@ header, .main-content, footer {
 
 .footer .social-media i:hover {
   color: #ff7f50;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#app {
-  height: 100%;
 }
 </style>

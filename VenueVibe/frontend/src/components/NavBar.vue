@@ -36,7 +36,7 @@ export default {
         { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Forum', path: '/forum' },
         { name: 'Collaborate', path: '/collaborate' },
-        { name: 'login', path: '/login' },
+        { name: 'Login', path: '/login' },
       ],
     };
   },
