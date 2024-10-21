@@ -33,7 +33,7 @@ export default {
         { name: 'Home', path: '/' },
         { name: "Apply", path: '/apply' },
         { name: 'Booths', path: '/booths' },
-        { name: 'EventReviews', path: '/eventreviews' },
+        { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Forum', path: '/forum' },
         { name: 'Collaborate', path: '/collaborate' },
         { name: 'login', path: '/login' },
