@@ -44,12 +44,13 @@ export default {
 </script>
 
 <style scoped>
+
 .navbar {
   padding: 20px;
 }
 
 .navbar-brand {
-  color: #16697a !important;
+  color: rgb(54, 181, 152) !important;
   font-weight: bold;
 }
 
