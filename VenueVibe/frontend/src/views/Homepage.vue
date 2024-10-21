@@ -28,17 +28,35 @@
 
             <!-- Carousel Section -->
             <div id="eventCardsCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Add Vue logic to render carousel items dynamically -->
-                    <div class="carousel-item active">
-                        <div class="col-8 mx-auto">
-                            <div class="card event-card">
-                                <img src="../images/img4.png" alt="Event Image">
-                                <p>The Epitome Pushcarts By INVADE</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="carousel-inner">
+      <!-- First slide -->
+      <div class="carousel-item active">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img4.png" alt="Event Image">
+                  <p>The Epitome Pushcarts By INVADE</p>
+              </div>
+          </div>
+      </div>
+      <!-- Second slide -->
+      <div class="carousel-item">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img2.png" alt="Event Image">
+                  <p>Merry Makers Market @FoundryArtCentre</p>
+              </div>
+          </div>
+      </div>
+      <!-- Third slide -->
+      <div class="carousel-item">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img5.png" alt="Event Image">
+                  <p>Night At Orchard By INVADE</p>
+              </div>
+          </div>
+      </div>
+  </div>
                 <!-- Carousel Controls -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#eventCardsCarousel"
                     data-bs-slide="prev">
