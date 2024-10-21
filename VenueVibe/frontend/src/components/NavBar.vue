@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
     <div class="container-fluid">
-      <router-link class="navbar-brand" to="/">VenueVibe</router-link>
+      <router-link class="navbar-brand" to="/">Boothy</router-link>
       <button
         class="navbar-toggler"
         type="button"
