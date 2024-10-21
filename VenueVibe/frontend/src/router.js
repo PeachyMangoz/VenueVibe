@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from './views/Homepage.vue';
 import Booth from './views/Booth.vue';
 import BoothDetails from './views/BoothDetails.vue';
+import EventReview from './views/EventReview.vue';
 // import Organizers from './views/Organizers.vue';
 // import Events from './views/Events.vue';
 // import Contact from './views/Contact.vue';
@@ -12,7 +13,7 @@ const routes = [
   { path: '/apply', name: 'Apply', component: NotFound },
   { path: '/booths/:id', name: 'booth-details', component: BoothDetails, props: true},
   { path: '/booths', name: 'Booth', component: Booth },
-  { path: '/eventreviews', name: 'Events', component: NotFound },
+  { path: '/eventreviews', name: 'Events', component: EventReview },
   { path: '/forum', name: 'Forum', component: NotFound },
   { path: '/collaborate', name: 'Collaborate', component: NotFound },
   { path: '/login', name: 'Login', component: NotFound },
