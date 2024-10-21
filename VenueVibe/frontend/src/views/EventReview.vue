@@ -232,16 +232,27 @@ export default {
       }
     };
 
-    const updateCharts = () => {
+    const updateCharts = async () => {
+      await nextTick();
       updateRatingChart();
       updateDemographicsChart();
     };
 
-    const updateRatingChart = async () => {
-      await nextTick();
+    const updateRatingChart = () => {
       const ctx = document.getElementById("ratingChart");
-      if (ratingChart) ratingChart.destroy();
-      ratingChart = new Chart(ctx, {
+
+      if (!ctx) {
+        return;
+      }
+
+      const canvas_ctx = ctx.getContext('2d');
+      if (!canvas_ctx) {
+        return; // Exit if context cannot be acquired
+      }
+
+      if (ratingChart) ratingChart.destroy();  // Clean up previous chart
+
+      ratingChart = new Chart(ctx.getContext('2d'), {  // Ensure 2D context is acquired
         type: "bar",
         data: {
           labels: Object.values(ratingLabels),
@@ -267,6 +278,15 @@ export default {
 
     const updateDemographicsChart = () => {
       const ctx = document.getElementById("demographicsChart");
+      if (!ctx) {
+        return;
+      }
+
+      const canvas_ctx = ctx.getContext('2d');
+      if (!canvas_ctx) {
+        return; // Exit if context cannot be acquired
+      }
+
       if (demographicsChart) demographicsChart.destroy();
       demographicsChart = new Chart(ctx, {
         type: "pie",
