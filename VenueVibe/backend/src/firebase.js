@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBzp3OrAjzTsz4q00I3DDZ5q9xf5EkDBLk",
+  apiKey: import.meta.VITE_FIREBASE_API_KEY,
   authDomain: "venuevibe-a1675.firebaseapp.com",
   projectId: "venuevibe-a1675",
   storageBucket: "venuevibe-a1675.appspot.com",
