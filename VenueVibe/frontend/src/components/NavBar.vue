@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-transparent fixed-top">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Boothy</router-link>
       <button
