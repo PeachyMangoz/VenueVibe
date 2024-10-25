@@ -295,3 +295,17 @@ body {
     width: 100%;
 }
 </style>
+
+<style>
+.main-content[data-v-7ba5bd90] {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    padding-top: 80px;
+}
+
+</style>
