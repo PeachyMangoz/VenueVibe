@@ -77,16 +77,21 @@
 export default {
     name: 'HomePage',
     mounted() {
+        // Initially lock scrolling
+        document.body.style.overflow = 'hidden';
+
         // Splash screen hide logic
         setTimeout(() => {
             const splashScreen = document.getElementById('splash-screen');
             if (splashScreen) {
                 splashScreen.classList.add('splash-hidden');
+                // Unlock scrolling after splash screen is hidden
                 document.body.style.overflow = 'auto';
             }
-        }, 3000);
+        }, 3000);  // 3 seconds delay for the splash screen to disappear
     }
 };
+
 </script>
 
 <style scoped>
