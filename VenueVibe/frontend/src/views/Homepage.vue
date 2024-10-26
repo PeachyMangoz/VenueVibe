@@ -104,7 +104,6 @@ html {
 /* Splash Screen Style */
 #splash-screen {
     position: fixed;
-    margin-left: -30px;
     width: 100%;
     height: 100vh;
     background-color: #1a1a1a;
