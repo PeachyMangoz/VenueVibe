@@ -138,7 +138,7 @@ export default {
 <style scoped>
 
 .container {
-    margin: auto
+    margin: auto;
 }
 
 * {
@@ -277,7 +277,7 @@ width: 100%;
 }
 
 .container {
-  position: relative;
+  
   width: 100%;
   background-color: #fff;
   min-height: 100vh;
@@ -434,7 +434,7 @@ form.sign-in-form {
   top: -10%;
   right: 48%;
   transform: translateY(-50%);
-  background-image: linear-gradient(-45deg, #36b598 0%, #08f4bd 100%);
+  background-image: linear-gradient(-45deg, #d4d7d1 0%, #08f4bd 100%);
   transition: 1.8s ease-in-out;
   border-radius: 50%;
   z-index: 6;
@@ -490,6 +490,11 @@ form.sign-in-form {
   height: 41px;
   font-weight: 600;
   font-size: 0.8rem;
+}
+
+.btn.transparent:hover {
+    background-color: white;
+    color: black;
 }
 
 .right-panel .image,
