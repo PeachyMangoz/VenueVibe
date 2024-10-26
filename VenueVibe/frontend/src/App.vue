@@ -39,7 +39,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 30px;
+  padding: 0px;
   max-width: 100%;
   margin: 0 auto;
   font-family: 'Roboto', sans-serif;
