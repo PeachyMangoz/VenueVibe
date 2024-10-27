@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="mb-4">Event Review System</h1>
+    <h3 class="mb-4">Event Review System</h3>
     <div class="row mb-4">
       <div class="col-md-6">
         <div class="card">
