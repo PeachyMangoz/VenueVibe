@@ -28,17 +28,35 @@
 
             <!-- Carousel Section -->
             <div id="eventCardsCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Add Vue logic to render carousel items dynamically -->
-                    <div class="carousel-item active">
-                        <div class="col-8 mx-auto">
-                            <div class="card event-card">
-                                <img src="../images/img4.png" alt="Event Image">
-                                <p>The Epitome Pushcarts By INVADE</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="carousel-inner">
+      <!-- First slide -->
+      <div class="carousel-item active">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img4.png" alt="Event Image">
+                  <p>The Epitome Pushcarts By INVADE</p>
+              </div>
+          </div>
+      </div>
+      <!-- Second slide -->
+      <div class="carousel-item">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img2.png" alt="Event Image">
+                  <p>Merry Makers Market @FoundryArtCentre</p>
+              </div>
+          </div>
+      </div>
+      <!-- Third slide -->
+      <div class="carousel-item">
+          <div class="col-8 mx-auto">
+              <div class="card event-card">
+                  <img src="../images/img5.png" alt="Event Image">
+                  <p>Night At Orchard By INVADE</p>
+              </div>
+          </div>
+      </div>
+  </div>
                 <!-- Carousel Controls -->
                 <button class="carousel-control-prev" type="button" data-bs-target="#eventCardsCarousel"
                     data-bs-slide="prev">
@@ -59,16 +77,21 @@
 export default {
     name: 'HomePage',
     mounted() {
+        // Initially lock scrolling
+        document.body.style.overflow = 'hidden';
+
         // Splash screen hide logic
         setTimeout(() => {
             const splashScreen = document.getElementById('splash-screen');
             if (splashScreen) {
                 splashScreen.classList.add('splash-hidden');
+                // Unlock scrolling after splash screen is hidden
                 document.body.style.overflow = 'auto';
             }
-        }, 3000);
+        }, 3000);  // 3 seconds delay for the splash screen to disappear
     }
 };
+
 </script>
 
 <style scoped>
@@ -86,7 +109,6 @@ html {
 /* Splash Screen Style */
 #splash-screen {
     position: fixed;
-    margin-left: -30px;
     width: 100%;
     height: 100vh;
     background-color: #1a1a1a;
@@ -276,4 +298,18 @@ body {
     text-align: center;
     width: 100%;
 }
+</style>
+
+<style>
+.main-content[data-v-7ba5bd90] {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    padding-top: 80px;
+}
+
 </style>

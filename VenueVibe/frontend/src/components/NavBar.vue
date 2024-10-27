@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-transparent fixed-top">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Boothy</router-link>
       <button
@@ -44,12 +44,13 @@ export default {
 </script>
 
 <style scoped>
+
 .navbar {
   padding: 20px;
 }
 
 .navbar-brand {
-  color: #16697a !important;
+  color: rgb(54, 181, 152) !important;
   font-weight: bold;
 }
 

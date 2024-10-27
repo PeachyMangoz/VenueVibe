@@ -1,0 +1,688 @@
+<template>
+    <div :class="['container', { 'sign-up-mode': isSignUpMode }]">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <!-- Sign-In Form -->
+          <form @submit.prevent="handleSignIn" class="sign-in-form">
+            <h2 class="title">Sign in</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" v-model="signInData.username" placeholder="Username" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" v-model="signInData.password" placeholder="Password" />
+            </div>
+            <input type="submit" value="Login" class="btn solid" />
+            <p class="social-text">Or Sign in with social platforms</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+  
+          <!-- Sign-Up Form -->
+          <form @submit.prevent="handleSignUp" class="sign-up-form">
+            <h2 class="title">Sign up</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" v-model="signUpData.username" placeholder="Username" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              <input type="email" v-model="signUpData.email" placeholder="Email" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" v-model="signUpData.password" placeholder="Password" />
+            </div>
+            <input type="submit" class="btn" value="Sign up" />
+            <p class="social-text">Or Sign up with social platforms</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+  
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>New here?</h3>
+            <p>
+              Join us as a Boother or an Organiser <br>
+              Start your Journey Here!
+            </p>
+            <button class="btn transparent" @click="toggleMode">Sign up</button>
+          </div>
+          <img src="../images/booth.png" class="image" alt="Log image" />
+        </div>
+        <div class="panel right-panel">
+          <div class="content">
+            <h3>Have an Account?</h3>
+            <p></p>
+            <button class="btn transparent" @click="toggleMode">Sign in</button>
+          </div>
+          <img src="../images/booth2.png" class="image" alt="Register image" />
+        </div>
+      </div>
+    </div>
+
+</template>
+
+<script>
+
+export default {
+    data() {
+      return {
+        isSignUpMode: false,
+        signInData: {
+          username: '',
+          password: ''
+        },
+        signUpData: {
+          username: '',
+          email: '',
+          password: ''
+        }
+      };
+    },
+    methods: {
+      toggleMode() {
+        this.isSignUpMode = !this.isSignUpMode;
+      },
+      handleSignIn() {
+        // Placeholder for sign-in logic
+        const { username, password } = this.signInData;
+        console.log("Sign in with", username, password);
+        // Example: Call an API for login
+        // this.$http.post('/api/login', { username, password })
+        //   .then(response => {
+        //     // Handle successful login
+        //   }).catch(error => {
+        //     // Handle login error
+        //   });
+      },
+      handleSignUp() {
+        // Placeholder for sign-up logic
+        const { username, email, password } = this.signUpData;
+        console.log("Sign up with", username, email, password);
+        // Example: Call an API for registration
+        // this.$http.post('/api/register', { username, email, password })
+        //   .then(response => {
+        //     // Handle successful registration
+        //   }).catch(error => {
+        //     // Handle registration error
+        //   });
+      }
+    }
+  };
+
+</script>
+
+<style scoped>
+
+.container {
+    margin: auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f0f4f8;
+  position: relative;
+}
+.header {
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+}
+.header h1 {
+  color: #36b598;
+}
+.main-banner {
+  background-color: #382a3e;
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+}
+.main-banner h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.main-banner p {
+  margin-top: 15px;
+  font-size: 1.1rem;
+}
+.main-banner::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2), rgba(255,255,255,0));
+  border-radius: 50%;
+  z-index: 1;
+}
+.main-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -150px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15), rgba(255,255,255,0));
+  border-radius: 50%;
+  z-index: 1;
+}
+.event-card {
+  border-radius: 15px;
+  align-items: center;
+  overflow: hidden;
+}
+.event-card img {
+  width: 800px; 
+  height: 400px; 
+  object-fit: cover;
+}
+.event-card p {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.navbar {
+  padding: 20px;
+}
+
+.navbar-brand {
+  color: #36b598 !important;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: #000 !important;
+  margin-left: 15px;
+}
+
+.nav-link:hover {
+  color: #36b598 !important;
+  font-weight: bold;
+}
+
+@keyframes fade-in {
+  to { scale: 1; opacity: 1;}
+}
+
+@keyframes fade-out {
+  25% {opacity: 1}
+  50% {filter: blur(1px)}
+  75%, 100% { opacity: 0; scale: 1; filter: blur(1px)}
+}
+#eventCardsCarousel {
+scale: .8; opacity:0;
+animation: fade-in linear forwards;
+animation-timeline: view();
+animation-range: entry 200px;
+}
+
+#imgBanner {
+animation: fade-out linear;
+animation-timeline: view();
+animation-range: exit;
+}
+
+#imgBanner img {
+filter: grayscale(100%);
+
+}
+
+.position-relative {
+position: relative;
+}
+
+.centered-text {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+color: #36b598;; /* Adjust color for contrast */
+font-size: 5rem;
+font-weight: bold;
+text-align: center;
+width: 100%;
+}
+
+.container {
+  
+  width: 100%;
+  background-color: #fff;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.forms-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+
+.signin-signup {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 75%;
+  width: 50%;
+  transition: 1s 0.7s ease-in-out;
+  display: grid;
+  grid-template-columns: 1fr;
+  z-index: 5;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0rem 5rem;
+  transition: all 0.2s 0.7s;
+  overflow: hidden;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+form.sign-up-form {
+  opacity: 0;
+  z-index: 1;
+}
+
+form.sign-in-form {
+  z-index: 2;
+}
+
+.title {
+  font-size: 2.2rem;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.input-field {
+  max-width: 380px;
+  width: 100%;
+  background-color: #f0f0f0;
+  margin: 10px 0;
+  height: 55px;
+  border-radius: 55px;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  padding: 0 0.4rem;
+  position: relative;
+}
+
+.input-field i {
+  text-align: center;
+  line-height: 55px;
+  color: #acacac;
+  transition: 0.5s;
+  font-size: 1.1rem;
+}
+
+.input-field input {
+  background: none;
+  outline: none;
+  border: none;
+  line-height: 1;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.input-field input::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+.social-text {
+  padding: 0.7rem 0;
+  font-size: 1rem;
+}
+
+.social-media {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icon {
+  height: 46px;
+  width: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0.45rem;
+  color: #333;
+  border-radius: 50%;
+  border: 1px solid #333;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: 0.3s;
+}
+
+.social-icon:hover {
+  color: #4481eb;
+  border-color: #4481eb;
+}
+
+.btn {
+  width: 150px;
+  background-color: #5995fd;
+  border: none;
+  outline: none;
+  height: 49px;
+  border-radius: 49px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.btn:hover {
+  background-color: #4d84e2;
+}
+.panels-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.container:before {
+  content: "";
+  position: absolute;
+  height: 2000px;
+  width: 2000px;
+  top: -10%;
+  right: 48%;
+  transform: translateY(-50%);
+  background-image: linear-gradient(-45deg, #d4d7d1 0%, #08f4bd 100%);
+  transition: 1.8s ease-in-out;
+  border-radius: 50%;
+  z-index: 6;
+}
+
+.image {
+  width: 100%;
+  transition: transform 1.1s ease-in-out;
+  transition-delay: 0.4s;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-around;
+  text-align: center;
+  z-index: 6;
+}
+
+.left-panel {
+  pointer-events: all;
+  padding: 3rem 17% 2rem 12%;
+}
+
+.right-panel {
+  pointer-events: none;
+  padding: 3rem 12% 2rem 17%;
+}
+
+.panel .content {
+  color: #fff;
+  transition: transform 0.9s ease-in-out;
+  transition-delay: 0.6s;
+}
+
+.panel h3 {
+  font-weight: 600;
+  line-height: 1;
+  font-size: 1.5rem;
+}
+
+.panel p {
+  font-size: 0.95rem;
+  padding: 0.7rem 0;
+}
+
+.btn.transparent {
+  margin: 0;
+  background: none;
+  border: 2px solid #fff;
+  width: 130px;
+  height: 41px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.btn.transparent:hover {
+    background-color: white;
+    color: black;
+}
+
+.right-panel .image,
+.right-panel .content {
+  transform: translateX(800px);
+}
+
+/* ANIMATION */
+
+.container.sign-up-mode:before {
+  transform: translate(100%, -50%);
+  right: 52%;
+}
+
+.container.sign-up-mode .left-panel .image,
+.container.sign-up-mode .left-panel .content {
+  transform: translateX(-800px);
+}
+
+.container.sign-up-mode .signin-signup {
+  left: 25%;
+}
+
+.container.sign-up-mode form.sign-up-form {
+  opacity: 1;
+  z-index: 2;
+}
+
+.container.sign-up-mode form.sign-in-form {
+  opacity: 0;
+  z-index: 1;
+}
+
+.container.sign-up-mode .right-panel .image,
+.container.sign-up-mode .right-panel .content {
+  transform: translateX(0%);
+}
+
+.container.sign-up-mode .left-panel {
+  pointer-events: none;
+}
+
+.container.sign-up-mode .right-panel {
+  pointer-events: all;
+}
+
+@media (max-width: 870px) {
+  .container {
+    min-height: 800px;
+    height: 100vh;
+  }
+  .signin-signup {
+    width: 100%;
+    top: 95%;
+    transform: translate(-50%, -100%);
+    transition: 1s 0.8s ease-in-out;
+  }
+
+  .signin-signup,
+  .container.sign-up-mode .signin-signup {
+    left: 50%;
+  }
+
+  .panels-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+  }
+
+  .panel {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2.5rem 8%;
+    grid-column: 1 / 2;
+  }
+
+  .right-panel {
+    grid-row: 3 / 4;
+  }
+
+  .left-panel {
+    grid-row: 1 / 2;
+  }
+
+  .image {
+    width: 200px;
+    transition: transform 0.9s ease-in-out;
+    transition-delay: 0.6s;
+  }
+
+  .panel .content {
+    padding-right: 15%;
+    transition: transform 0.9s ease-in-out;
+    transition-delay: 0.8s;
+  }
+
+  .panel h3 {
+    font-size: 1.2rem;
+  }
+
+  .panel p {
+    font-size: 0.7rem;
+    padding: 0.5rem 0;
+  }
+
+  .btn.transparent {
+    width: 110px;
+    height: 35px;
+    font-size: 0.7rem;
+  }
+
+  .container:before {
+    width: 1500px;
+    height: 1500px;
+    transform: translateX(-50%);
+    left: 30%;
+    bottom: 68%;
+    right: initial;
+    top: initial;
+    transition: 2s ease-in-out;
+  }
+
+  .container.sign-up-mode:before {
+    transform: translate(-50%, 100%);
+    bottom: 32%;
+    right: initial;
+  }
+
+  .container.sign-up-mode .left-panel .image,
+  .container.sign-up-mode .left-panel .content {
+    transform: translateY(-300px);
+  }
+
+  .container.sign-up-mode .right-panel .image,
+  .container.sign-up-mode .right-panel .content {
+    transform: translateY(0px);
+  }
+
+  .right-panel .image,
+  .right-panel .content {
+    transform: translateY(300px);
+  }
+
+  .container.sign-up-mode .signin-signup {
+    top: 5%;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 570px) {
+  form {
+    padding: 0 1.5rem;
+  }
+
+  .image {
+    display: none;
+  }
+  .panel .content {
+    padding: 0.5rem 1rem;
+  }
+  .container {
+    padding: 1.5rem;
+  }
+
+  .container:before {
+    bottom: 72%;
+    left: 50%;
+  }
+
+  .container.sign-up-mode:before {
+    bottom: 28%;
+    left: 50%;
+  }
+}
+
+
+</style>
+
+<style>
+.main-content[data-v-7ba5bd90] {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0px;
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    padding-top: 80px;
+}
+
+</style>
