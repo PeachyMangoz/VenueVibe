@@ -1,3 +1,21 @@
+
+
+<style scoped>
+
+
+/* Rest of your styles */
+.card {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+</style>
+
+
 <style scoped>
 .reviews-section {
   padding: 60px 0;
@@ -7,25 +25,27 @@
 .section-title {
   text-align: center;
   margin-bottom: 50px;
+  padding: 30px 0;
 }
 
 .section-title h2 {
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 20px;
-  padding-bottom: 20px;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  color: #333;
 }
 
+.section-title h2::before,
 .section-title h2::after {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 50px;
+  content: '';
+  flex: 0 0 70px; /* Fixed width for lines */
   height: 3px;
   background: #36b598;
-  bottom: 0;
-  left: calc(50% - 25px);
+  display: inline-block;
 }
 
 .post-category {
@@ -68,16 +88,20 @@
 .card:hover {
   transform: translateY(-5px);
 }
+
+
 </style>
 
 
 <template>
   <div>
-    <h3 class="mb-4 text-center display-5" style="font-weight: bold">Event Reviews</h3>
+           <!-- Section Title -->
+           <div class="container section-title" data-aos="fade-up">
+            <h2>Event Reviews</h2></div>
     <div class="row mb-4">
       <div class="col-md-1"></div>
       <div class="col-md-5">
-        <div class="card">
+        <div class="card h-100">
           <div class="card-body">
             <h2 class="card-title">Search Reviews</h2>
             <form @submit.prevent="searchReviews">
@@ -93,7 +117,7 @@
         </div>
       </div>
       <div class="col-md-5">
-        <div class="card">
+        <div class="card h-100">
           <div class="card-body">
             <h2 class="card-title">Submit Your Review</h2>
             <button class="btn green-btn" @click="openReviewModal">
@@ -165,9 +189,7 @@
     </div> -->
 
     <section id="reviews" class="reviews-section section">
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Event Reviews</h2>
+      <div>
         <p v-if="filteredReviews.length === 0" class="text-muted">
           No reviews found for this event.
         </p>
@@ -488,11 +510,11 @@ export default {
       await nextTick();
       // Add some sample reviews for testing
       reviews.value = [
-        { eventId: "001", username: "User1", rating: 4, description: "Great event!", category: "Food & Beverages" },
-        { eventId: "002", username: "User2", rating: 5, description: "Awesome experience!", category: "Artist, Creator, Crafts" },
-        { eventId: "001", username: "User3", rating: 3, description: "Good, but could be better.", category: "Jewellery & Accessories" },
-        { eventId: "001", username: "User4", rating: 5, description: "Loved it!", category: "Fashion, Apparel & Clothing" },
-        { eventId: "002", username: "User5", rating: 4, description: "Very enjoyable.", category: "Food & Beverages" },
+        { eventId: "001", username: "User1", rating: 4, description: "Great event!", category: "Food & Beverages", imageFile: "https://picsum.photos/600/400?random=1"},
+        { eventId: "002", username: "User2", rating: 5, description: "Awesome experience!", category: "Artist, Creator, Crafts", imageFile: "https://picsum.photos/600/400?random=2" },
+        { eventId: "001", username: "User3", rating: 3, description: "Good, but could be better.", category: "Jewellery & Accessories", imageFile: "https://picsum.photos/600/400?random=3" },
+        { eventId: "001", username: "User4", rating: 5, description: "Loved it!", category: "Fashion, Apparel & Clothing",imageFile: "https://picsum.photos/600/400?random=4" },
+        { eventId: "002", username: "User5", rating: 4, description: "Very enjoyable.", category: "Food & Beverages", imageFile: "https://picsum.photos/600/400?random=5" },
       ];
 
       const modalElement = document.getElementById('reviewModal');
