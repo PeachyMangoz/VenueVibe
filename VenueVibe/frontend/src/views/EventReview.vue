@@ -128,7 +128,8 @@
       </div>
     </div>
 
-    <div v-if="searchEventId && filteredReviews.length > 0" class="row mb-4">
+    <div v-if="searchEventId && filteredReviews.length > 0" class="row mb-4 m-3">
+
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
@@ -230,7 +231,7 @@
                 <h2 class="title">
                   <a href="#" class="text-decoration-none">Event {{ review.eventId }}</a>
                 </h2>
-                <p class="card-text mb-4">{{ review.description }}</p>
+                <p class="card-text mb-4 text-center">" {{ review.description }} "</p>
 
                 <!-- Author Info -->
                 <div class="d-flex align-items-center">
