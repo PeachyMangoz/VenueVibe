@@ -13,7 +13,13 @@
             <div class="position-relative">
                 <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
                 <div class="centered-text">
-                    Boothy
+                    <!-- Split "Boothy" into individual spans for animation -->
+                    <span class="letter">B</span>
+                    <span class="letter">o</span>
+                    <span class="letter">o</span>
+                    <span class="letter">t</span>
+                    <span class="letter">h</span>
+                    <span class="letter">y</span>
                 </div>
             </div>
         </div>
@@ -74,6 +80,8 @@
 </template>
 
 <script>
+import { gsap } from "gsap";
+
 export default {
     name: 'HomePage',
     mounted() {
@@ -87,11 +95,23 @@ export default {
                 splashScreen.classList.add('splash-hidden');
                 // Unlock scrolling after splash screen is hidden
                 document.body.style.overflow = 'auto';
+
+                // Now trigger GSAP animation after splash screen is hidden
+                gsap.fromTo(
+                  ".letter",                  // Select all elements with class "letter"
+                  { opacity: 0, y: 50 },      // Initial state: invisible and below the position
+                  {
+                    opacity: 1,               // Final state: fully visible
+                    y: 0,                     // Move to the original position
+                    duration: 1,              // Duration of 1 second per letter
+                    stagger: 0.1,             // Stagger effect: delay each letter by 0.1 second
+                    ease: "power2.out"        // Easing effect for smooth animation
+                  }
+                );
             }
         }, 3000);  // 3 seconds delay for the splash screen to disappear
     }
 };
-
 </script>
 
 <style scoped>
@@ -291,12 +311,15 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #36b598;
-    ;
-    /* Adjust color for contrast */
     font-size: 5rem;
     font-weight: bold;
     text-align: center;
     width: 100%;
+}
+
+.letter {
+    display: inline-block;
+    opacity: 0; /* Set initial opacity to 0 for GSAP animation */
 }
 </style>
 
