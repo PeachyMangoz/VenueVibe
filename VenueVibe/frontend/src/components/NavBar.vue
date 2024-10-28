@@ -34,7 +34,6 @@ export default {
         { name: "Apply", path: '/apply' },
         { name: 'Booths', path: '/booths' },
         { name: 'Event Reviews', path: '/eventreviews' },
-        { name: 'Forum', path: '/forum' },
         { name: 'Collaborate', path: '/collaborate' },
         { name: 'Login', path: '/login' },
       ],
