@@ -7,6 +7,7 @@
     <main class="main-content">
       <router-view />
     </main>
+    <!-- SORRY I HAVENT ADD ALL THE LINKS -->
     <footer id="footer" class="footer">
 
 <div class="container footer-top">
