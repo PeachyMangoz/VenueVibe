@@ -8,7 +8,7 @@
       <div class="col-md-5">
         <div class="card h-100">
           <div class="card-body">
-            <h2 class="card-title">Search Reviews</h2>
+            <h2>Search Reviews</h2>
             <form @submit.prevent="searchReviews">
               <div class="input-group mb-3">
                 <input type="text" v-model="searchEventId" class="form-control" placeholder="Enter Event ID" required />
@@ -454,13 +454,6 @@ export default {
   }
 }
 
-
-</style>
-
-<style scoped>
-
-
-/* Rest of your styles */
 .card {
   border: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -470,19 +463,13 @@ export default {
 .card:hover {
   transform: translateY(-5px);
 }
-</style>
 
-
-<style scoped>
-.h2{
-  font-size: 32px;
+h2{
+  font-size: 28px;
   font-weight: 700;
   margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 20px;
-  color: #333;
+  color: #545252;
 }
 
 .reviews-section {

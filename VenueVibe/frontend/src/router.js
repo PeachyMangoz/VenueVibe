@@ -18,6 +18,7 @@ const routes = [
   { path: '/eventreviews', name: 'Events', component: EventReview },
   { path: '/forum', name: 'Forum', component: NotFound },
   { path: '/collaborate', name: 'Collaborate', component: Collaboration},
+  { path: '/aboutus', name:'About Us', component: AboutUs },
   { path: '/login', name: 'Login', component: Login },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ];
