@@ -7,3 +7,10 @@ import 'bootstrap';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 createApp(App).use(router).mount('#app');
+
+//for Animation 
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
+// Initialize AOS
+AOS.init()
