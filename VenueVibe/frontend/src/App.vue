@@ -13,7 +13,7 @@
 <div class="container footer-top">
   <div class="row gy-4">
     <div class="col-lg-4 col-md-6 footer-about">
-      <h5 class=" display-6" style="font-weight: 600; color: #36b598">Boothy</h5>
+      <h5 class=" display-6 fw-bold" style="font-weight: 600">Boothy</h5>
       <div class="footer-contact pt-3">
         <p> 81 Victoria St</p>
         <p> Singapore, S188065</p>

@@ -2,7 +2,7 @@
     <div>
         <!-- Splash Screen -->
         <div id="splash-screen">
-            <div class="animated-text">Welcome to <span style="color:#36b598;">Boothy</span></div>
+            <div class="animated-text fw-bold">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
         </div>
 
         <!-- Navbar -->
