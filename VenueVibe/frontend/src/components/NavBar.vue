@@ -35,7 +35,7 @@ export default {
         { name: 'Booths', path: '/booths' },
         { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Collaborate', path: '/collaborate' },
-        { name: 'About Us', path: '/aboutus' },
+        { name: 'About', path: '/about' },
         { name: 'Login', path: '/login' },
       ],
     };

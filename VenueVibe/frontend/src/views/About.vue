@@ -1,4 +1,4 @@
-<!-- src/views/AboutUs.vue -->
+<!-- have yet to to edit the content --> 
 <template>
     <div class="about-page">
       <!-- Hero Section -->
@@ -10,7 +10,6 @@
               <p class="lead">Bridging the gap between event organizers and small businesses</p>
             </div>
             <div class="col-md-6" data-aos="fade-left">
-              <img src="@/assets/about-hero.jpg" alt="Event Connection" class="img-fluid rounded">
             </div>
           </div>
         </div>
@@ -96,7 +95,6 @@
             </ul>
           </div>
           <div class="col-md-6" data-aos="fade-left">
-            <img src="@/assets/why-choose-us.jpg" alt="Platform Features" class="img-fluid rounded">
           </div>
         </div>
       </div>
@@ -122,30 +120,34 @@
   
   <script>
   export default {
-    name: 'AboutUs',
+    name: 'About',
   }
   </script>
   
   <style scoped>
-  .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-                url('@/assets/hero-background.jpg') center/cover;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
+  .about-page {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
-  
-  .card {
+
+  /* .about-page {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;  
+    position: relative;
+  }  
+   */
+  /* .card {
     transition: transform 0.3s ease;
-  }
+  } */
   
   .card:hover {
     transform: translateY(-5px);
   }
   
   /* Add responsive image placeholders if you don't have images yet */
-  img {
+  /* img {
     max-height: 400px;
     object-fit: cover;
-  }
+  } */
   </style>
