@@ -218,73 +218,6 @@
       </div>
     </div>
   </div>
-
-  <!-- footer section  -->
-  <footer id="footer" class="footer">
-
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-4 col-md-6 footer-about">
-          <h4 class=" display-4">Boothy</h4>
-          <div class="footer-contact pt-3">
-            <p> 81 Victoria St</p>
-            <p> Singapore, S188065</p>
-            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-            <p><strong>Email:</strong> <span>ritz.chong.2022@scis.smu.edu.sg</span></p>
-          </div>
-          <div class="social-links d-flex mt-4">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#" class="text-decoration-none text-white">Home</a></li>
-            <li><a href="#" class="text-decoration-none text-white">About us</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Services</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Terms of service</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Privacy policy</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#" class="text-decoration-none text-white">Web Design</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Web Development</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Product Management</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Marketing</a></li>
-            <li><a href="#" class="text-decoration-none text-white">Graphic Design</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-4 col-md-12 footer-newsletter">
-          <h4>Our Newsletter</h4>
-          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
-          <form action="forms/newsletter.php" method="post" class="php-email-form">
-            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
-            <!-- <div class="loading">Loading</div>
-            <div class="error-message"></div>
-            <div class="sent-message">Your subscription request has been sent. Thank you!</div> -->
-          </form>
-        </div>
-
-      </div>
-    </div>
-
-  </footer>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-
 </template>
 
 <script>
@@ -542,20 +475,6 @@ export default {
   animation: fadeIn 1.5s;
 }
 
-.footer{
-  color: white;
-  background-color: black;
-  padding: 50px 0; /* Changed to vertical padding only */
-  width: 100%;
-  height: auto; /* Let content determine height */
-  min-height: 200px;
-}
-
-.footer h4{
-  color: #36b598;
-    /* margin-bottom: 10px; */
-  font-weight: 700;
-}
 @keyframes fadeIn {
   0% {
     opacity: 0;
