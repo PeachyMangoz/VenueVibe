@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="col-lg-2 col-md-3 footer-links">
+    <div class="col-lg-4 col-md-6 footer-links">
       <h5>Useful Links</h5>
       <ul>
         <li><a href="#" class="text-decoration-none text-white">Home</a></li>
@@ -35,17 +35,6 @@
         <li><a href="#" class="text-decoration-none text-white">Services</a></li>
         <li><a href="#" class="text-decoration-none text-white">Terms of service</a></li>
         <li><a href="#" class="text-decoration-none text-white">Privacy policy</a></li>
-      </ul>
-    </div>
-
-    <div class="col-lg-2 col-md-3 footer-links">
-      <h5>Our Services</h5>
-      <ul>
-        <li><a href="#" class="text-decoration-none text-white">Web Design</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Web Development</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Product Management</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Marketing</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Graphic Design</a></li>
       </ul>
     </div>
 

@@ -28,8 +28,8 @@
         <div class="container mt-5 main-content">
             <div class="main-banner">
                 <h2>WHERE TO BOOTH FOR CREATORS?</h2>
-                <p>From bustling street markets to upscale fairs, artists can find a variety of spaces...</p>
-                <a href="#" class="btn btn-light mt-3">READ MORE</a>
+                <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
+                <router-link to="/login" class="btn btn-light mt-3">Log in</router-link>
             </div>
 
             <!-- Carousel Section -->
@@ -333,6 +333,7 @@ body {
     margin: 0 auto;
     font-family: 'Roboto', sans-serif;
     padding-top: 80px;
+    padding-bottom: 80px;
 }
 
 </style>
