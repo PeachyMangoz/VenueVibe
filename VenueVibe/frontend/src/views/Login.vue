@@ -139,6 +139,7 @@ export default {
 
 .container {
     margin: auto;
+    padding-top: 80px;
 }
 
 * {
@@ -288,6 +289,7 @@ width: 100%;
   position: absolute;
   width: 100%;
   height: 100%;
+  padding-top: 80px;
   top: 0;
   left: 0;
 }
@@ -320,10 +322,12 @@ form {
 form.sign-up-form {
   opacity: 0;
   z-index: 1;
+  padding-top: 80px;
 }
 
 form.sign-in-form {
   z-index: 2;
+  padding-top: 80px;
 }
 
 .title {
@@ -441,7 +445,7 @@ form.sign-in-form {
 }
 
 .image {
-  width: 100%;
+  width: 80%;
   transition: transform 1.1s ease-in-out;
   transition-delay: 0.4s;
 }
@@ -469,6 +473,7 @@ form.sign-in-form {
   color: #fff;
   transition: transform 0.9s ease-in-out;
   transition-delay: 0.6s;
+  padding-top: 80px;
 }
 
 .panel h3 {
@@ -669,7 +674,6 @@ form.sign-in-form {
     left: 50%;
   }
 }
-
 
 </style>
 
