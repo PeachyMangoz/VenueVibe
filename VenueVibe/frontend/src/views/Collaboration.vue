@@ -15,12 +15,12 @@ defineElement(lottie.loadAnimation);
       <p>Loading users...</p>
     </div>
     <!-- <div v-for="user in users"> -->
-    <div v-else-if="users">
+    <div class="container-fluid px-0 mx-0" v-else-if="users">
       <div
-        class="banner"
+        class="row d-md-flex banner mx-0"
         :style="{ background: `url(${currentSlide.profile_highlight})` }"
       >
-        <div class="content active">
+        <div class="content active col-lg-6 col-md-12">
           <ul id="links">
             <li>
               <a target="_blank" :href="`${currentSlide.instagram_link}`"
@@ -74,7 +74,7 @@ defineElement(lottie.loadAnimation);
           <button @click="nextUser" class="carousel-control next">></button>
         </div>
         <!-- Thumbnails -->
-        <div class="carousel-box">
+        <div class="carousel-box col-lg-6">
           <div
             v-for="(user, index) in rotatedUsers"
             :key="user.id"
@@ -229,12 +229,18 @@ export default {
     },
     goToSlide(index) {
       if (index !== this.currentIndex) {
-        this.slideDirection = index > this.currentIndex ? 'left' : 'right';
+        this.slideDirection = index > this.currentIndex ? "left" : "right";
         this.triggerSlideAnimation();
         setTimeout(() => {
           // Reorder the array so the clicked user is at the front
-          const selectedUser = this.users.splice(index, 1)[0];
-          this.users.unshift(selectedUser);
+          
+          const usersAfterClicked = this.users.slice(index);
+          // Extract the part of the array from the beginning to the clicked user
+          const usersBeforeClicked = this.users.slice(0, index);
+          // Reorder the array: clicked user and following users, then previous users
+          this.users = [...usersAfterClicked, ...usersBeforeClicked];
+          // Set `currentIndex` to 0 as the clicked user is now at the front
+          this.currentIndex = 0;
           this.resetSlideAnimation();
         }, 300); // Delay to allow animation before changing the index
       }
@@ -244,7 +250,7 @@ export default {
     },
     resetSlideAnimation() {
       this.isSliding = false;
-      this.slideDirection = '';
+      this.slideDirection = "";
     },
   },
 
@@ -266,13 +272,12 @@ export default {
 
 .banner {
   position: relative;
-  width: 100%;
+  width: 100vw;
   min-height: 95vh;
   padding: 0 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background: url(https://arissar.com/img/floating-by.7fd41bcb.jpg) no-repeat; */
   background-repeat: no-repeat !important;
   background-size: cover !important;
   background-position: center !important;
@@ -295,6 +300,7 @@ export default {
 .content {
   position: relative;
   max-width: 550px;
+  min-width: 500px;
   display: none;
   visibility: hidden;
   transform: scale(0);
@@ -409,13 +415,13 @@ export default {
 
 .banner .carousel-box {
   position: relative;
-  min-width: 950px;
+  min-width: 70vh;
   display: flex;
   justify-content: center;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(20px);
   border-radius: 10px;
-  max-width: 90vw; /* Limit the maximum width of the carousel box */
+  max-width: 80vw; /* Limit the maximum width of the carousel box */
   overflow-x: auto; /* Enable horizontal scrolling if there are too many thumbnails */
 }
 
@@ -426,11 +432,13 @@ export default {
   text-align: center;
 }
 .carousel-box .carousel-item img {
-  max-width: 235px;
+  max-height: 25vh;
   width: 100%;
+  height: auto;
   border-radius: 10px;
   object-fit: cover;
   object-position: center;
+  padding: 5px;
 }
 /* Sliding effect to the left */
 .slide-left {
