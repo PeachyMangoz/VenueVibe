@@ -35,6 +35,7 @@ export default {
         { name: 'Booths', path: '/booths' },
         { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Collaborate', path: '/collaborate' },
+        { name: 'About', path: '/about' },
         { name: 'Login', path: '/login' },
       ],
     };
@@ -46,6 +47,7 @@ export default {
 
 .navbar {
   padding: 20px;
+  background-color: white;
 }
 
 .navbar-brand {

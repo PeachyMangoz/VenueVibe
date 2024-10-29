@@ -7,12 +7,13 @@
     <main class="main-content">
       <router-view />
     </main>
+    <!-- SORRY I HAVENT ADD ALL THE LINKS -->
     <footer id="footer" class="footer">
 
 <div class="container footer-top">
   <div class="row gy-4">
     <div class="col-lg-4 col-md-6 footer-about">
-      <h5 class=" display-6" style="font-weight: 600; color: #36b598">Boothy</h5>
+      <h5 class=" display-6 fw-bold" style="font-weight: 600">Boothy</h5>
       <div class="footer-contact pt-3">
         <p> 81 Victoria St</p>
         <p> Singapore, S188065</p>
@@ -20,21 +21,32 @@
         <p><strong>Email:</strong> <span>ritz.chong.2022@scis.smu.edu.sg</span></p>
       </div>
       <div class="social-links d-flex mt-4">
-        <a href=""><i class="bi bi-twitter-x"></i></a>
-        <a href=""><i class="bi bi-facebook"></i></a>
-        <a href=""><i class="bi bi-instagram"></i></a>
-        <a href=""><i class="bi bi-linkedin"></i></a>
+        <a href="https://twitter.com/sgSMU"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://www.facebook.com/timothy.swee?mibextid=LQQJ4d"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/thisisisisshop/"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.linkedin.com/in/tasminfoo/"><i class="bi bi-linkedin"></i></a>
       </div>
     </div>
 
     <div class="col-lg-4 col-md-6 footer-links">
       <h5>Useful Links</h5>
       <ul>
-        <li><a href="#" class="text-decoration-none text-white">Home</a></li>
-        <li><a href="#" class="text-decoration-none text-white">About us</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Services</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Terms of service</a></li>
-        <li><a href="#" class="text-decoration-none text-white">Privacy policy</a></li>
+        <li><router-link to="/" class="text-decoration-none text-white">Home</router-link></li>
+        <!-- IDK WHAT TO PUT HERE HONESTLY -->
+        <li><router-link to="/booths" class="text-decoration-none text-white">Booth Listings</router-link></li>
+        <li><router-link to="/eventreviews" class="text-decoration-none text-white">Event Reviews</router-link></li>
+        <li><router-link to="/collaborate" class="text-decoration-none text-white">Collaborate</router-link></li>
+      </ul>
+    </div>
+
+    <div class="col-lg-2 col-md-3 footer-links">
+      <h5>Our Services</h5>
+      <ul>
+        <li><a href="#" class="text-decoration-none text-white">Web Design</a></li>
+        <li><a href="#" class="text-decoration-none text-white">Web Development</a></li>
+        <li><a href="#" class="text-decoration-none text-white">Product Management</a></li>
+        <li><a href="#" class="text-decoration-none text-white">Marketing</a></li>
+        <li><a href="#" class="text-decoration-none text-white">Graphic Design</a></li>
       </ul>
     </div>
 
