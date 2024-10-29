@@ -548,7 +548,7 @@ form.sign-in-form {
 
 @media (max-width: 870px) {
   .container {
-    min-height: 800px;
+    min-height: 600px;
     height: 100vh;
   }
   .signin-signup {
@@ -649,7 +649,7 @@ form.sign-in-form {
   }
 }
 
-@media (max-width: 570px) {
+@media (max-width: 870px) {
   form {
     padding: 0 1.5rem;
   }
@@ -657,20 +657,32 @@ form.sign-in-form {
   .image {
     display: none;
   }
-  .panel .content {
-    padding: 0.5rem 1rem;
+  .left-panel .content {
+    padding: 4rem 1rem;
+  }
+
+  .right-panel .content {
+    padding: 4rem 1rem;
+    padding-top: 21rem;
   }
   .container {
     padding: 1.5rem;
   }
+  .content p{
+    display: none;
+  }
 
+  .content h3{
+   padding-bottom: 1rem;
+  }
   .container:before {
-    bottom: 72%;
+    bottom: 70%;
     left: 50%;
+    z-index: 1;
   }
 
   .container.sign-up-mode:before {
-    bottom: 28%;
+    bottom: 20%;
     left: 50%;
   }
 }

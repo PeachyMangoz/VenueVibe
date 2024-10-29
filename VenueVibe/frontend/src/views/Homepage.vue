@@ -110,32 +110,32 @@ export default {
 
         // Animate the left and right divs
         timeline.to('.left', {
-          duration: 2, // Duration of 2 seconds
+          duration: 1, // Duration of 2 seconds
           width: '50%', // Animate to 50% width
           ease: "power2.inOut", // Smooth easing
-        }, 0.8); // Start after 0.8 seconds
+        }, 0.5); // Start after 0.8 seconds
 
         timeline.to('.right', {
-          duration: 2, // Duration of 2 seconds
+          duration: 1, // Duration of 2 seconds
           width: '50%', // Animate to 50% width
           ease: "power3.inOut", // Smooth easing
-        }, 0.6); // Start after 0.6 seconds
+        }, 0.4); // Start after 0.6 seconds
 
         // Animate the banner image sliding in from the left
         timeline.fromTo('#imgBanner img', {
           x: '-100%', // Initial state: off-screen on the left
         }, {
           x: '0%', // Final state: in its original position
-          duration: 2, // Duration of 2 seconds
+          duration: 1.5, // Duration of 2 seconds
           ease: "power2.inOut", // Smooth easing
         });
 
                 // Animate the main-banner sliding in from the left
                 timeline.fromTo('.main-banner', {
-          x: '-120%', // Initial state: off-screen on the left
+          x: '120%', // Initial state: off-screen on the left
         }, {
           x: '0%', // Final state: in its original position
-          duration: 2, // Duration of 1 second
+          duration: 1.5, // Duration of 1 second
           ease: "power2.inOut", // Smooth easing
         }, "<"); // Start this animation simultaneously with the end of the imgBanner animation
         
@@ -147,7 +147,7 @@ export default {
           {
             opacity: 1, // Final state: fully visible
             y: 0, // Move to the original position
-            duration: 1, // Duration of 1 second per letter
+            duration: 0.5, // Duration of 1 second per letter
             stagger: 0.1, // Stagger effect: delay each letter by 0.1 second
             ease: "power2.out", // Easing effect for smooth animation
           }
