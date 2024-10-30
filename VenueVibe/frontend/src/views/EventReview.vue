@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
            <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
     <h2>Event Reviews</h2></div>
