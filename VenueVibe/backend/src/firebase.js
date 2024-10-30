@@ -17,3 +17,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 export { db, auth };
+
+//for images and video uploads?
+import { getStorage } from "firebase/storage";
+const storage = getStorage(app);
+export { db, auth, storage };

@@ -172,7 +172,21 @@
               </div>
               <div class="mb-3">
                 <label for="imageFile" class="form-label">Upload Image (optional):</label>
-                <input type="file" id="imageFile" @change="handleImageUpload" class="form-control" accept="image/*" />
+                <input 
+                  type="file" 
+                  id="imageFile" 
+                  @change="handleImageUpload" 
+                  class="form-control" 
+                  accept="image/*"
+                />
+                <!-- Image preview -->
+                <div v-if="newReview.imageFile" class="mt-2">
+                  <img 
+                    :src="newReview.imageFile" 
+                    class="review-preview-image" 
+                    alt="Preview"
+                  />
+                </div>
               </div>
               <div class="mb-3">
                 <label for="videoFile" class="form-label">Upload Video (optional):</label>
@@ -187,19 +201,51 @@
       </div>
     </div>
   </div>
+  <div v-if="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div v-if="error" class="alert alert-danger">
+    {{ error }}
+  </div>
 </template>
 
 <script>
+// // EventReview.vue script section
 import { ref, computed, onMounted } from 'vue';
 import { nextTick } from 'vue';
 import { Modal } from 'bootstrap';
-
 import Chart from 'chart.js/auto';
-
+import { db, storage } from '../firebase';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where,
+  onSnapshot,
+  serverTimestamp 
+} from 'firebase/firestore';
+import { 
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL
+} from 'firebase/storage';
 
 export default {
   name: "EventReview",
   setup() {
+    // State Management
+    const loading = ref(false);
+    const error = ref(null);
+    const reviews = ref([]);
+    const searchEventId = ref("");
+    let ratingChart = null;
+    let demographicsChart = null;
+    let reviewModal = null;
+
     const newReview = ref({
       eventId: "",
       username: "",
@@ -207,11 +253,11 @@ export default {
       rating: "",
       description: "",
       imageFile: null,
+      imageFileObject: null,
       videoFile: null,
+      videoFileObject: null
     });
 
-    const reviews = ref([]);
-    const searchEventId = ref("");
     const ratingLabels = {
       1: "Poor",
       2: "Fair",
@@ -219,79 +265,218 @@ export default {
       4: "Very Good",
       5: "Excellent",
     };
-    let ratingChart = null;
-    let demographicsChart = null;
-    let reviewModal = null;
 
+    // Computed Properties
     const filteredReviews = computed(() => {
       return searchEventId.value
-        ? reviews.value.filter(
-          (review) => review.eventId === searchEventId.value
-        )
+        ? reviews.value.filter(review => review.eventId === searchEventId.value)
         : reviews.value;
     });
 
     const eventRatings = computed(() => {
-      return [1, 2, 3, 4, 5].map(
-        (rating) =>
-          filteredReviews.value.filter((review) => review.rating === rating)
-            .length
+      return [1, 2, 3, 4, 5].map(rating =>
+        filteredReviews.value.filter(review => review.rating === rating).length
       );
     });
 
     const eventDemographics = computed(() => {
-    const categories = {
+      const categories = {
         "Food & Beverages": 0,
         "Artist, Creator, Crafts": 0,
         "Jewellery & Accessories": 0,
         "Fashion, Apparel & Clothing": 0,
-        "Family & Pets":0,
+        "Family & Pets": 0,
         "Others": 0
-    };
+      };
 
-    filteredReviews.value.forEach((review) => {
-        const category = review.category; // Now using the category directly instead of parsing as int
-        
-        // Using direct string comparison since we're working with string values from dropdown
-        if (categories.hasOwnProperty(category)) {
-            categories[category]++;
+      filteredReviews.value.forEach(review => {
+        if (categories.hasOwnProperty(review.category)) {
+          categories[review.category]++;
         } else {
-            categories["Others"]++;
+          categories["Others"]++;
         }
+      });
+
+      return categories;
     });
 
-    return categories;
-});
+    // Firebase Operations
+    const reviewsCollection = collection(db, 'reviewData');
 
-    const openReviewModal = () => {
-      reviewModal.show();
-    };
-
-    const submitReview = () => {
-      reviews.value.push({ ...newReview.value });
-      resetNewReview();
-      updateCharts();
-      reviewModal.hide();
-    };
-
-    const searchReviews = () => {
-      updateCharts();
-    };
-
-    const handleImageUpload = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        newReview.value.imageFile = URL.createObjectURL(file);
+    const fetchReviews = async () => {
+      loading.value = true;
+      error.value = null;
+      try {
+        const querySnapshot = await getDocs(reviewsCollection);
+        reviews.value = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          rating: parseInt(doc.data().rating)
+        }));
+        updateCharts();
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+        error.value = 'Failed to load reviews';
+      } finally {
+        loading.value = false;
       }
     };
 
-    const handleVideoUpload = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        newReview.value.videoFile = URL.createObjectURL(file);
+    const searchReviews = async () => {
+      loading.value = true;
+      error.value = null;
+      try {
+        if (!searchEventId.value) {
+          await fetchReviews();
+          return;
+        }
+
+        const q = query(
+          reviewsCollection, 
+          where("eventId", "==", searchEventId.value)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        reviews.value = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          rating: parseInt(doc.data().rating)
+        }));
+        
+        updateCharts();
+      } catch (err) {
+        console.error('Error searching reviews:', err);
+        error.value = 'Failed to search reviews';
+      } finally {
+        loading.value = false;
       }
     };
 
+    // File Handling
+    const uploadImage = async (file) => {
+      if (!file) return null;
+      
+      try {
+        const fileName = `reviewImages/${Date.now()}-${file.name}`;
+        const imageRef = storageRef(storage, fileName);
+        
+        console.log('Uploading to:', fileName);
+        const snapshot = await uploadBytes(imageRef, file);
+        console.log('Upload successful:', snapshot);
+        
+        const downloadURL = await getDownloadURL(imageRef);
+        console.log('Download URL:', downloadURL);
+        
+        return downloadURL;
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+      }
+    };
+
+    const handleImageUpload = async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          if (!file.type.startsWith('image/')) {
+            error.value = 'Please upload an image file';
+            return;
+          }
+          
+          if (file.size > 5 * 1024 * 1024) {
+            error.value = 'Image size should be less than 5MB';
+            return;
+          }
+
+          newReview.value.imageFileObject = file;
+          newReview.value.imageFile = URL.createObjectURL(file);
+        } catch (err) {
+          console.error('Error handling image:', err);
+          error.value = 'Failed to process image';
+        }
+      }
+    };
+
+    const handleVideoUpload = async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          if (!file.type.startsWith('video/')) {
+            error.value = 'Please upload a video file';
+            return;
+          }
+          
+          if (file.size > 50 * 1024 * 1024) {
+            error.value = 'Video size should be less than 50MB';
+            return;
+          }
+
+          newReview.value.videoFileObject = file;
+          newReview.value.videoFile = URL.createObjectURL(file);
+        } catch (err) {
+          console.error('Error handling video:', err);
+          error.value = 'Failed to process video';
+        }
+      }
+    };
+
+    // Form Handling
+    const submitReview = async () => {
+      loading.value = true;
+      error.value = null;
+      
+      try {
+        let imageUrl = null;
+        
+        if (newReview.value.imageFileObject) {
+          imageUrl = await uploadImage(newReview.value.imageFileObject);
+        }
+
+        const reviewData = {
+          eventId: newReview.value.eventId,
+          username: newReview.value.username,
+          category: newReview.value.category,
+          rating: newReview.value.rating.toString(),
+          description: newReview.value.description,
+          imageFile: imageUrl || "",
+          createdAt: serverTimestamp()
+        };
+
+        await addDoc(reviewsCollection, reviewData);
+        resetNewReview();
+        reviewModal.hide();
+        await fetchReviews();
+      } catch (err) {
+        console.error('Error submitting review:', err);
+        error.value = err.message || 'Failed to submit review';
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const resetNewReview = () => {
+      // Cleanup any existing object URLs
+      if (newReview.value.imageFile?.startsWith('blob:')) {
+        URL.revokeObjectURL(newReview.value.imageFile);
+      }
+      if (newReview.value.videoFile?.startsWith('blob:')) {
+        URL.revokeObjectURL(newReview.value.videoFile);
+      }
+
+      newReview.value = {
+        eventId: "",
+        username: "",
+        category: "",
+        rating: "",
+        description: "",
+        imageFile: null,
+        imageFileObject: null,
+        videoFile: null,
+        videoFileObject: null
+      };
+    };
+
+    // Chart Functions
     const updateCharts = async () => {
       await nextTick();
       updateRatingChart();
@@ -300,28 +485,19 @@ export default {
 
     const updateRatingChart = () => {
       const ctx = document.getElementById("ratingChart");
+      if (!ctx || !ctx.getContext('2d')) return;
 
-      if (!ctx) {
-        return;
-      }
+      if (ratingChart) ratingChart.destroy();
 
-      const canvas_ctx = ctx.getContext('2d');
-      if (!canvas_ctx) {
-        return; // Exit if context cannot be acquired
-      }
-
-      if (ratingChart) ratingChart.destroy();  // Clean up previous chart
-
-      ratingChart = new Chart(ctx.getContext('2d'), {  // Ensure 2D context is acquired
+      ratingChart = new Chart(ctx, {
         type: "bar",
         data: {
           labels: Object.values(ratingLabels),
-          datasets: [
-            {
-              label: "Number of Reviews",
-              data: eventRatings.value,
-            },
-          ],
+          datasets: [{
+            label: "Number of Reviews",
+            data: eventRatings.value,
+            backgroundColor: '#36b598',
+          }],
         },
         options: {
           responsive: true,
@@ -338,25 +514,25 @@ export default {
 
     const updateDemographicsChart = () => {
       const ctx = document.getElementById("demographicsChart");
-      if (!ctx) {
-        return;
-      }
-
-      const canvas_ctx = ctx.getContext('2d');
-      if (!canvas_ctx) {
-        return; // Exit if context cannot be acquired
-      }
+      if (!ctx || !ctx.getContext('2d')) return;
 
       if (demographicsChart) demographicsChart.destroy();
+      
       demographicsChart = new Chart(ctx, {
         type: "pie",
         data: {
           labels: Object.keys(eventDemographics.value),
-          datasets: [
-            {
-              data: Object.values(eventDemographics.value),
-            },
-          ],
+          datasets: [{
+            data: Object.values(eventDemographics.value),
+            backgroundColor: [
+              '#36b598',
+              '#2d9b82',
+              '#248169',
+              '#1b6751',
+              '#124d3a',
+              '#093322'
+            ],
+          }],
         },
         options: {
           responsive: true,
@@ -370,43 +546,48 @@ export default {
       });
     };
 
-    const resetNewReview = () => {
-      newReview.value = {
-        eventId: "",
-        username: "",
-        category: "",
-        rating: "",
-        description: "",
-        imageFile: null,
-        videoFile: null,
-      };
-    };
-
+    // Lifecycle Hooks
     onMounted(async () => {
       await nextTick();
-      // Add some sample reviews for testing
-      reviews.value = [
-        { eventId: "001", username: "User1", rating: 4, description: "Great event!", category: "Food & Beverages", imageFile: "https://picsum.photos/600/400?random=1"},
-        { eventId: "002", username: "User2", rating: 5, description: "Awesome experience!", category: "Artist, Creator, Crafts", imageFile: "https://picsum.photos/600/400?random=2" },
-        { eventId: "001", username: "User3", rating: 3, description: "Good, but could be better.", category: "Jewellery & Accessories", imageFile: "https://picsum.photos/600/400?random=3" },
-        { eventId: "001", username: "User4", rating: 5, description: "Loved it!", category: "Fashion, Apparel & Clothing",imageFile: "https://picsum.photos/600/400?random=4" },
-        { eventId: "002", username: "User5", rating: 4, description: "Very enjoyable.", category: "Food & Beverages", imageFile: "https://picsum.photos/600/400?random=5" },
-      ];
-
+      
+      // Initialize modal
       const modalElement = document.getElementById('reviewModal');
       if (modalElement) {
         reviewModal = new Modal(modalElement);
       }
-      updateCharts();
+
+      // Set up real-time updates
+      const unsubscribe = onSnapshot(reviewsCollection, (snapshot) => {
+        reviews.value = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          rating: parseInt(doc.data().rating)
+        }));
+        updateCharts();
+      });
+
+      await fetchReviews();
+
+      // Cleanup on unmount
+      return () => {
+        unsubscribe();
+        if (ratingChart) ratingChart.destroy();
+        if (demographicsChart) demographicsChart.destroy();
+      };
     });
 
     return {
+      // State
       newReview,
       reviews,
       searchEventId,
       ratingLabels,
       filteredReviews,
-      openReviewModal,
+      loading,
+      error,
+
+      // Methods
+      openReviewModal: () => reviewModal.show(),
       submitReview,
       searchReviews,
       handleImageUpload,
