@@ -4,18 +4,16 @@ import App from './App.vue';
 import router from './router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import '@fortawesome/fontawesome-free/css/all.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
-// Initialize AOS ( for animation )
-AOS.init({
-  // Global settings:
-  duration: 800,
-  easing: 'ease-in-out',
-  once: true,
-  mirror: false
-});
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {fas} from '@fortawesome/free-solid-svg-icons';
+import {fab} from '@fortawesome/free-brands-svg-icons';
+import {far} from '@fortawesome/free-regular-svg-icons';
 
-createApp(App).use(router).mount('#app');
+library.add(fas,far,fab);
+
+createApp(App)
+.use(router)
+.component("fa", FontAwesomeIcon)
+.mount('#app');

@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="col-lg-2 col-md-3 footer-links">
+    <div class="col-lg-4 col-md-6 footer-links">
       <h5>Useful Links</h5>
       <ul>
         <li><router-link to="/" class="text-decoration-none text-white">Home</router-link></li>
@@ -39,7 +39,7 @@
       </ul>
     </div>
 
-    <!-- <div class="col-lg-2 col-md-3 footer-links">
+    <div class="col-lg-2 col-md-3 footer-links">
       <h5>Our Services</h5>
       <ul>
         <li><a href="#" class="text-decoration-none text-white">Web Design</a></li>
@@ -48,7 +48,7 @@
         <li><a href="#" class="text-decoration-none text-white">Marketing</a></li>
         <li><a href="#" class="text-decoration-none text-white">Graphic Design</a></li>
       </ul>
-    </div> -->
+    </div>
 
     <div class="col-lg-4 col-md-12 footer-newsletter">
       <h5>Our Newsletter</h5>
@@ -99,20 +99,22 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 0px;
+  /* padding: 30px; */
   max-width: 100%;
   margin: 0 auto;
   font-family: 'Roboto', sans-serif;
   padding-top: 80px; /* Adjust this based on your nav bar height */
 }
-.footer{
+.footer {
+  position: relative; /* Ensure footer is positioned relative to the main content */
+  z-index: 10; /* Make sure it appears above the main content */
   color: white; 
   background-color: black;
   padding: 50px 0; /* Changed to vertical padding only */
   width: 100%;
   height: auto; /* Let content determine height */
   min-height: 200px;
-  margin-top:10px
+  margin-top: 10px;
 }
 
 .footer h5{

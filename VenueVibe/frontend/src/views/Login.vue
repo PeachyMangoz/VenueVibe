@@ -139,6 +139,7 @@ export default {
 
 .container {
     margin: auto;
+    padding-top: 80px;
 }
 
 * {
@@ -288,6 +289,7 @@ width: 100%;
   position: absolute;
   width: 100%;
   height: 100%;
+  padding-top: 80px;
   top: 0;
   left: 0;
 }
@@ -320,10 +322,12 @@ form {
 form.sign-up-form {
   opacity: 0;
   z-index: 1;
+  padding-top: 80px;
 }
 
 form.sign-in-form {
   z-index: 2;
+  padding-top: 80px;
 }
 
 .title {
@@ -441,7 +445,7 @@ form.sign-in-form {
 }
 
 .image {
-  width: 100%;
+  width: 80%;
   transition: transform 1.1s ease-in-out;
   transition-delay: 0.4s;
 }
@@ -469,6 +473,7 @@ form.sign-in-form {
   color: #fff;
   transition: transform 0.9s ease-in-out;
   transition-delay: 0.6s;
+  padding-top: 80px;
 }
 
 .panel h3 {
@@ -543,7 +548,7 @@ form.sign-in-form {
 
 @media (max-width: 870px) {
   .container {
-    min-height: 800px;
+    min-height: 600px;
     height: 100vh;
   }
   .signin-signup {
@@ -644,7 +649,7 @@ form.sign-in-form {
   }
 }
 
-@media (max-width: 570px) {
+@media (max-width: 870px) {
   form {
     padding: 0 1.5rem;
   }
@@ -652,24 +657,35 @@ form.sign-in-form {
   .image {
     display: none;
   }
-  .panel .content {
-    padding: 0.5rem 1rem;
+  .left-panel .content {
+    padding: 4rem 1rem;
+  }
+
+  .right-panel .content {
+    padding: 4rem 1rem;
+    padding-top: 21rem;
   }
   .container {
     padding: 1.5rem;
   }
+  .content p{
+    display: none;
+  }
 
+  .content h3{
+   padding-bottom: 1rem;
+  }
   .container:before {
-    bottom: 72%;
+    bottom: 70%;
     left: 50%;
+    z-index: 1;
   }
 
   .container.sign-up-mode:before {
-    bottom: 28%;
+    bottom: 20%;
     left: 50%;
   }
 }
-
 
 </style>
 

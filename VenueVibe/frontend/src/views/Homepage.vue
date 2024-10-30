@@ -2,13 +2,17 @@
     <div>
         <!-- Splash Screen -->
         <div id="splash-screen">
-            <div class="animated-text fw-bold">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
+            <div class="animated-text">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
         </div>
 
         <!-- Navbar -->
         <NavBar />
 
         <!-- Banner Section -->
+    <div class="wrapper">
+    <div class="left"></div>
+    <div class="right"></div>
+
         <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
             <div class="position-relative">
                 <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
@@ -28,8 +32,8 @@
         <div class="container mt-5 main-content">
             <div class="main-banner">
                 <h2>WHERE TO BOOTH FOR CREATORS?</h2>
-                <p>From bustling street markets to upscale fairs, artists can find a variety of spaces...</p>
-                <a href="#" class="btn btn-light mt-3">READ MORE</a>
+                <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
+                <router-link to="/login" class="btn btn-light mt-3">Log in</router-link>
             </div>
 
             <!-- Carousel Section -->
@@ -77,41 +81,83 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
+
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default {
-    name: 'HomePage',
-    mounted() {
-        // Initially lock scrolling
-        document.body.style.overflow = 'hidden';
+  name: 'HomePage',
+  mounted() {
+    // Initially lock scrolling
+    document.body.style.overflow = 'hidden';
 
-        // Splash screen hide logic
-        setTimeout(() => {
-            const splashScreen = document.getElementById('splash-screen');
-            if (splashScreen) {
-                splashScreen.classList.add('splash-hidden');
-                // Unlock scrolling after splash screen is hidden
-                document.body.style.overflow = 'auto';
+    // Splash screen hide logic
+    setTimeout(() => {
+      const splashScreen = document.getElementById('splash-screen');
+      if (splashScreen) {
+        splashScreen.classList.add('splash-hidden');
+        // Unlock scrolling after splash screen is hidden
+        document.body.style.overflow = 'auto';
 
-                // Now trigger GSAP animation after splash screen is hidden
-                gsap.fromTo(
-                  ".letter",                  // Select all elements with class "letter"
-                  { opacity: 0, y: 50 },      // Initial state: invisible and below the position
-                  {
-                    opacity: 1,               // Final state: fully visible
-                    y: 0,                     // Move to the original position
-                    duration: 1,              // Duration of 1 second per letter
-                    stagger: 0.1,             // Stagger effect: delay each letter by 0.1 second
-                    ease: "power2.out"        // Easing effect for smooth animation
-                  }
-                );
-            }
-        }, 3000);  // 3 seconds delay for the splash screen to disappear
+        // GSAP animation sequence
+        const timeline = gsap.timeline();
+
+        // Animate the left and right divs
+        timeline.to('.left', {
+          duration: 1, // Duration of 2 seconds
+          width: '50%', // Animate to 50% width
+          ease: "power2.inOut", // Smooth easing
+        }, 0.5); // Start after 0.8 seconds
+
+        timeline.to('.right', {
+          duration: 1, // Duration of 2 seconds
+          width: '50%', // Animate to 50% width
+          ease: "power3.inOut", // Smooth easing
+        }, 0.4); // Start after 0.6 seconds
+
+        // Animate the banner image sliding in from the left
+        timeline.fromTo('#imgBanner img', {
+          x: '-100%', // Initial state: off-screen on the left
+        }, {
+          x: '0%', // Final state: in its original position
+          duration: 1.5, // Duration of 2 seconds
+          ease: "power2.inOut", // Smooth easing
+        });
+
+                // Animate the main-banner sliding in from the left
+                timeline.fromTo('.main-banner', {
+          x: '120%', // Initial state: off-screen on the left
+        }, {
+          x: '0%', // Final state: in its original position
+          duration: 1.5, // Duration of 1 second
+          ease: "power2.inOut", // Smooth easing
+        }, "<"); // Start this animation simultaneously with the end of the imgBanner animation
+        
+
+        // Animate the letters after the banner image has appeared
+        timeline.fromTo(
+          ".letter", // Select all elements with class "letter"
+          { opacity: 0, y: 50 }, // Initial state: invisible and below the position
+          {
+            opacity: 1, // Final state: fully visible
+            y: 0, // Move to the original position
+            duration: 0.5, // Duration of 1 second per letter
+            stagger: 0.1, // Stagger effect: delay each letter by 0.1 second
+            ease: "power2.out", // Easing effect for smooth animation
+          }
+        );
+       
     }
+    }, 3000); // 3 seconds delay for the splash screen to disappear
+  }
 };
+
 </script>
 
 <style scoped>
@@ -321,6 +367,26 @@ body {
     display: inline-block;
     opacity: 0; /* Set initial opacity to 0 for GSAP animation */
 }
+
+.left,
+.right {
+  position: fixed;   /* Make the divs fixed to the viewport */
+  top: 0;
+  height: 100vh;     /* Full viewport height */
+  z-index: -1;       /* Ensure they stay behind other content */
+}
+
+.left {
+  background: #36b598;
+  left: 0%;
+  width: 0%;
+}
+
+.right {
+  background: #191921;
+  right: 0%;
+  width: 100%;
+}
 </style>
 
 <style>
@@ -333,6 +399,7 @@ body {
     margin: 0 auto;
     font-family: 'Roboto', sans-serif;
     padding-top: 80px;
+    padding-bottom: 80px;
 }
 
 </style>
