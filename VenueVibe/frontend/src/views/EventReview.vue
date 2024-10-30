@@ -1,31 +1,84 @@
 <template>
-  <div >
-           <!-- Section Title -->
+  <!-- Main Container -->
+  <div class="event-review-container">
+    <!-- Loading Overlay -->
+    <div 
+      v-if="loading" 
+      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" 
+      style="z-index: 1060;"
+    >
+      <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Please wait...</p>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div 
+      v-if="error" 
+      class="alert alert-danger alert-dismissible fade show m-3" 
+      role="alert"
+    >
+      {{ error }}
+      <button 
+        type="button" 
+        class="btn-close" 
+        @click="error = null" 
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Page Title -->
     <div class="container section-title" data-aos="fade-up">
-    <h2>Event Reviews</h2></div>
-    <div class="row mb-4">
-      <div class="col-md-1"></div>
-      <div class="col-md-5">
-        <div class="card h-100">
+      <h2>Event Reviews</h2>
+    </div>
+
+    <!-- Search and Submit Section -->
+    <div class="row mb-4 mx-3">
+      <!-- Search Reviews Card -->
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
           <div class="card-body">
             <h2>Search Reviews</h2>
             <form @submit.prevent="searchReviews">
               <div class="input-group mb-3">
-                <input type="text" v-model="searchEventId" class="form-control" placeholder="Enter Event ID" required />
-                <button class="btn green-btn" type="submit">Search</button>
+                <input 
+                  type="text" 
+                  v-model="searchEventId" 
+                  class="form-control" 
+                  placeholder="Enter Event ID" 
+                  required 
+                />
+                <button 
+                  class="btn green-btn" 
+                  type="submit"
+                  :disabled="loading"
+                >
+                  <i class="bi bi-search me-1"></i>
+                  Search
+                </button>
               </div>
-              <p class="button-info">
-                Click search button or enter to view data charts
+              <p class="button-info text-muted">
+                Click search button or press enter to view data charts
               </p>
             </form>
           </div>
         </div>
       </div>
-      <div class="col-md-5">
-        <div class="card h-100">
+
+      <!-- Submit Review Card -->
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
           <div class="card-body">
             <h2 class="card-title">Submit Your Review</h2>
-            <button class="btn green-btn" @click="openReviewModal">
+            <button 
+              class="btn green-btn" 
+              @click="openReviewModal"
+              :disabled="loading"
+            >
+              <i class="bi bi-plus-circle me-1"></i>
               Open Review Form
             </button>
           </div>
@@ -33,10 +86,14 @@
       </div>
     </div>
 
-    <div v-if="searchEventId && filteredReviews.length > 0" class="row mb-4 m-3">
-
+    <!-- Charts Section -->
+    <div 
+      v-if="searchEventId && filteredReviews.length > 0" 
+      class="row mb-4 mx-3"
+    >
+      <!-- Rating Distribution Chart -->
       <div class="col-md-6">
-        <div class="card">
+        <div class="card shadow-sm">
           <div class="card-body">
             <h2 class="card-title">
               Rating Distribution for Event {{ searchEventId }}
@@ -47,13 +104,13 @@
           </div>
         </div>
       </div>
-      <!-- im going to change this to category/type of seller instead of age demogrpahic eg 
-             pet supplies/ artist / food -->
+
+      <!-- Demographics Chart -->
       <div class="col-md-6">
-        <div class="card">
+        <div class="card shadow-sm">
           <div class="card-body">
             <h2 class="card-title">
-              Demographics for Event {{ searchEventId }}
+              Category Distribution for Event {{ searchEventId }}
             </h2>
             <div class="chart-container">
               <canvas id="demographicsChart"></canvas>
@@ -63,58 +120,86 @@
       </div>
     </div>
 
+    <!-- Reviews Section -->
     <section id="reviews" class="reviews-section section">
-      <div>
-        <p v-if="filteredReviews.length === 0" class="text-muted">
+      <!-- No Reviews Message -->
+      <div class="container" v-if="filteredReviews.length === 0">
+        <div class="alert alert-info text-center">
+          <i class="bi bi-info-circle me-2"></i>
           No reviews found for this event.
-        </p>
+        </div>
       </div>
 
-      <div class="container">
+      <!-- Reviews Grid -->
+      <div class="container" v-else>
         <div class="row gy-4">
           <!-- Review Card -->
-          <div v-for="(review, index) in filteredReviews" 
-              :key="index" 
-              class="col-xl-4 col-md-6" 
-              data-aos="fade-up" 
-              :data-aos-delay="100 * (index + 1)">
-            <article class="card h-100">
+          <div 
+            v-for="(review, index) in filteredReviews" 
+            :key="index" 
+            class="col-xl-4 col-md-6" 
+            data-aos="fade-up" 
+            :data-aos-delay="100 * (index + 1)"
+          >
+            <article class="card h-100 shadow-sm">
               <!-- Review Image -->
               <div class="post-img">
-                <img v-if="review.imageFile" 
-                    :src="review.imageFile" 
-                    class="img-fluid w-100" 
-                    alt="Review Image" 
-                    style="height: 250px; object-fit: cover;">
-                <video v-if="review.videoFile" 
-                      :src="review.videoFile" 
-                      class="img-fluid w-100" 
-                      controls></video>
+                <img 
+                  v-if="review.imageFile" 
+                  :src="review.imageFile" 
+                  class="img-fluid w-100" 
+                  alt="Review Image" 
+                  style="height: 250px; object-fit: cover;"
+                  @error="handleImageError"
+                />
+                <div 
+                  v-else 
+                  class="no-image-placeholder d-flex align-items-center justify-content-center"
+                  style="height: 250px; background-color: #f8f9fa;"
+                >
+                  <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                </div>
               </div>
 
-              <!-- Category -->
+              <!-- Review Content -->
               <div class="card-body">
+                <!-- Category -->
                 <p class="post-category d-flex align-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop me-2" viewBox="0 0 16 16">
-                    <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5M4 15h3v-5H4zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm3 0h-2v3h2z"/>
-                  </svg>
+                  <i class="bi bi-shop me-2"></i>
                   {{ review.category }}
                 </p>
 
-                <!-- Title/Description -->
+                <!-- Title -->
                 <h2 class="title">
-                  <a href="#" class="text-decoration-none">Event {{ review.eventId }}</a>
+                  <a href="#" class="text-decoration-none">
+                    Event {{ review.eventId }}
+                  </a>
                 </h2>
-                <p class="card-text mb-4 text-center">" {{ review.description }} "</p>
+
+                <!-- Description -->
+                <p class="card-text mb-4 text-center">
+                  "{{ review.description }}"
+                </p>
 
                 <!-- Author Info -->
-                <div class="d-flex align-items-center">
-                  <img src="https://via.placeholder.com/50" alt="" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                <div class="d-flex align-items-center mt-auto">
+                  <div class="user-avatar rounded-circle me-3 bg-secondary text-white d-flex align-items-center justify-content-center" 
+                       style="width: 50px; height: 50px;">
+                    <i class="bi bi-person-circle"></i>
+                  </div>
                   <div class="post-meta">
                     <p class="post-author mb-0">{{ review.username }}</p>
-                    <p class="post-date mb-0 text-muted">
-                      Rating: {{ review.rating }}/5
-                    </p>
+                    <div class="rating text-warning">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="bi" 
+                        :class="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                      ></i>
+                      <span class="ms-2 text-muted">
+                        {{ review.rating }}/5
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -124,30 +209,63 @@
       </div>
     </section>
 
-
     <!-- Review Modal -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <div 
+      class="modal fade" 
+      id="reviewModal" 
+      tabindex="-1" 
+      aria-labelledby="reviewModalLabel" 
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="reviewModalLabel">
+              <i class="bi bi-pencil-square me-2"></i>
               Submit Your Review
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button 
+              type="button" 
+              class="btn-close" 
+              data-bs-dismiss="modal" 
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitReview">
+              <!-- Event ID -->
               <div class="mb-3">
                 <label for="eventId" class="form-label">Event ID:</label>
-                <input type="text" id="eventId" v-model="newReview.eventId" class="form-control" required />
+                <input 
+                  type="text" 
+                  id="eventId" 
+                  v-model="newReview.eventId" 
+                  class="form-control" 
+                  required 
+                />
               </div>
+
+              <!-- Username -->
               <div class="mb-3">
                 <label for="username" class="form-label">Username:</label>
-                <input type="text" id="username" v-model="newReview.username" class="form-control" required />
+                <input 
+                  type="text" 
+                  id="username" 
+                  v-model="newReview.username" 
+                  class="form-control" 
+                  required 
+                />
               </div>
+
+              <!-- Category -->
               <div class="mb-3">
                 <label for="category" class="form-label">Category:</label>
-                <select id="category" v-model="newReview.category" class="form-select" required>
+                <select 
+                  id="category" 
+                  v-model="newReview.category" 
+                  class="form-select" 
+                  required
+                >
                   <option value="" disabled selected>Select a category</option>
                   <option value="Food & Beverages">Food & Beverages</option>
                   <option value="Artist, Creator, Crafts">Artist, Creator, Crafts</option>
@@ -157,19 +275,40 @@
                   <option value="Others">Others</option>
                 </select>
               </div>
+
+              <!-- Rating -->
               <div class="mb-3">
                 <label for="rating" class="form-label">Rating:</label>
-                <select id="rating" v-model="newReview.rating" class="form-select" required>
+                <select 
+                  id="rating" 
+                  v-model="newReview.rating" 
+                  class="form-select" 
+                  required
+                >
                   <option value="">Select a rating</option>
-                  <option v-for="n in 5" :key="n" :value="n">
+                  <option 
+                    v-for="n in 5" 
+                    :key="n" 
+                    :value="n"
+                  >
                     {{ n }} - {{ ratingLabels[n] }}
                   </option>
                 </select>
               </div>
+
+              <!-- Description -->
               <div class="mb-3">
                 <label for="description" class="form-label">Description & Opinion:</label>
-                <textarea id="description" v-model="newReview.description" class="form-control" required></textarea>
+                <textarea 
+                  id="description" 
+                  v-model="newReview.description" 
+                  class="form-control" 
+                  rows="4"
+                  required
+                ></textarea>
               </div>
+
+              <!-- Image Upload -->
               <div class="mb-3">
                 <label for="imageFile" class="form-label">Upload Image (optional):</label>
                 <input 
@@ -178,37 +317,41 @@
                   @change="handleImageUpload" 
                   class="form-control" 
                   accept="image/*"
+                  :disabled="loading"
                 />
-                <!-- Image preview -->
-                <div v-if="newReview.imageFile" class="mt-2">
+                <!-- Image Preview -->
+                <div v-if="newReview.imageFile" class="mt-2 preview-container">
                   <img 
                     :src="newReview.imageFile" 
                     class="review-preview-image" 
                     alt="Preview"
                   />
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
+                    @click="removeImage"
+                  >
+                    <i class="bi bi-x"></i>
+                  </button>
                 </div>
               </div>
-              <div class="mb-3">
-                <label for="videoFile" class="form-label">Upload Video (optional):</label>
-                <input type="file" id="videoFile" @change="handleVideoUpload" class="form-control" accept="video/*" />
+
+              <!-- Submit Button -->
+              <div class="text-end">
+                <button 
+                  type="submit" 
+                  class="btn green-btn"
+                  :disabled="loading"
+                >
+                  <i class="bi bi-check-circle me-1"></i>
+                  Submit Review
+                </button>
               </div>
-              <button type="submit" class="btn btn-primary">
-                Submit Review
-              </button>
             </form>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div v-if="loading" class="text-center">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
-  <div v-if="error" class="alert alert-danger">
-    {{ error }}
   </div>
 </template>
 
