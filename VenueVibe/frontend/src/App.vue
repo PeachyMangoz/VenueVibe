@@ -32,7 +32,6 @@
       <h5>Useful Links</h5>
       <ul>
         <li><router-link to="/" class="text-decoration-none text-white">Home</router-link></li>
-        <!-- IDK WHAT TO PUT HERE HONESTLY -->
         <li><router-link to="/booths" class="text-decoration-none text-white">Booth Listings</router-link></li>
         <li><router-link to="/eventreviews" class="text-decoration-none text-white">Event Reviews</router-link></li>
         <li><router-link to="/collaborate" class="text-decoration-none text-white">Collaborate</router-link></li>

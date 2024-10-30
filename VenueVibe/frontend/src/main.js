@@ -2,18 +2,29 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+
+// Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
+// Font Awesome imports
 import { library } from '@fortawesome/fontawesome-svg-core';
-import {fas} from '@fortawesome/free-solid-svg-icons';
-import {fab} from '@fortawesome/free-brands-svg-icons';
-import {far} from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 
-library.add(fas,far,fab);
+// Add icons to the library
+library.add(fas, far, fab);
 
-createApp(App)
-.use(router)
-.component("fa", FontAwesomeIcon)
-.mount('#app');
+
+const app = createApp(App);
+app.use(router);
+
+// Register Font Awesome component globally
+// You can use either 'fa' or 'font-awesome-icon' as the component name
+app.component('fa', FontAwesomeIcon);
+app.component('font-awesome-icon', FontAwesomeIcon); // Optional: register with full name too
+
+app.mount('#app');
