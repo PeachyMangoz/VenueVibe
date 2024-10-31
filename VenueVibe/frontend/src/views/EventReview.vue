@@ -110,7 +110,7 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h2 class="card-title">
-              Category Distribution for Event {{ searchEventId }}
+              Category Distribution for {{ searchEventId }}
             </h2>
             <div class="chart-container">
               <canvas id="demographicsChart"></canvas>
@@ -172,7 +172,7 @@
                 <!-- Title -->
                 <h2 class="title">
                   <a href="#" class="text-decoration-none">
-                    Event {{ review.eventId }}
+                     {{ review.eventId }}
                   </a>
                 </h2>
 
@@ -185,7 +185,8 @@
                 <div class="d-flex align-items-center mt-auto">
                   <div class="user-avatar rounded-circle me-3 bg-secondary text-white d-flex align-items-center justify-content-center" 
                        style="width: 50px; height: 50px;">
-                    <i class="bi bi-person-circle"></i>
+                       <img src="../images/img2.png" height=100% width= 100% style="border-radius: 50%;">
+                    <!-- <i class="bi bi-person-circle"></i> -->
                   </div>
                   <div class="post-meta">
                     <p class="post-author mb-0">{{ review.username }}</p>
