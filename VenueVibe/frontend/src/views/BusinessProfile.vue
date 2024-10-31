@@ -17,7 +17,69 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <form @submit.prevent="saveBusinessProfile">
+        <!-- View Mode -->
+        <div v-if="hasProfile && !isEditing">
+          <div class="d-flex justify-content-end mb-4">
+            <button 
+              @click="toggleEdit"
+              class="btn btn-primary"
+              :disabled="loading"
+            >
+              Edit Profile
+            </button>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h5 fw-bold">Business Name</h3>
+            <p>{{ businessName }}</p>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h5 fw-bold">Business Description</h3>
+            <p>{{ description }}</p>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h5 fw-bold">Business Interests</h3>
+            <div class="d-flex flex-wrap gap-2">
+              <span 
+                v-for="(interest, index) in interests" 
+                :key="index"
+                class="badge bg-primary"
+              >
+                {{ interest }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h5 fw-bold">Business Experience</h3>
+            <p>{{ experience }}</p>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h5 fw-bold">Products</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="product in products" :key="product.id">
+                    <td>{{ product.name }}</td>
+                    <td>${{ product.price.toFixed(2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <form v-else @submit.prevent="saveBusinessProfile">
           <div class="mb-4">
             <label for="businessName" class="form-label fw-semibold">Business Name</label>
             <input 
@@ -130,10 +192,19 @@
             </button>
           </div>
 
-          <div>
+          <div class="d-flex gap-2">
+            <button 
+              v-if="hasProfile"
+              type="button"
+              @click="toggleEdit"
+              class="btn btn-secondary flex-grow-1"
+              :disabled="loading"
+            >
+              Cancel
+            </button>
             <button 
               type="submit"
-              class="btn btn-success w-100"
+              class="btn btn-success flex-grow-1"
               :disabled="loading || !isFormValid"
             >
               {{ loading ? 'Saving...' : 'Save Business Profile' }}
@@ -170,6 +241,8 @@ export default {
     const userId = ref(null)
     const loading = ref(false)
     const notification = ref(null)
+    const hasProfile = ref(false)
+    const isEditing = ref(false)
 
     const isFormValid = computed(() => {
       return businessName.value.trim() &&
@@ -197,6 +270,7 @@ export default {
           interests.value = data.interests || []
           experience.value = data.experience || ''
           products.value = data.products || []
+          hasProfile.value = true
         }
       } catch (error) {
         console.error("Error fetching business profile: ", error)
@@ -222,6 +296,8 @@ export default {
             price: Number(p.price)
           }))
         })
+        hasProfile.value = true
+        isEditing.value = false
         showNotification('Business profile saved successfully')
       } catch (error) {
         console.error("Error saving business profile: ", error)
@@ -229,6 +305,10 @@ export default {
       } finally {
         loading.value = false
       }
+    }
+
+    const toggleEdit = () => {
+      isEditing.value = !isEditing.value
     }
 
     const addInterest = () => {
@@ -247,6 +327,12 @@ export default {
       products.value = products.value.filter(product => product.id !== id)
     }
 
+    onMounted(() => {
+      // Assume userId is set somewhere in your app
+      userId.value = 'current-user-id' // Replace with actual user ID
+      fetchBusinessProfile()
+    })
+
     return {
       businessName,
       description,
@@ -255,8 +341,11 @@ export default {
       products,
       loading,
       notification,
+      hasProfile,
+      isEditing,
       isFormValid,
       saveBusinessProfile,
+      toggleEdit,
       addInterest,
       removeInterest,
       addProduct,
