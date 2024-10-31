@@ -1,0 +1,107 @@
+const express = require('express');
+const cors = require('cors');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const admin = require('firebase-admin');
+
+const app = express();
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
+});
+
+app.use(cors());
+app.use(express.json());
+
+app.post('/api/create-setup-intent', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    await admin.auth().verifyIdToken(token);
+
+    const customersRef = admin.firestore().collection('customers');
+    const customerDoc = await customersRef.doc(userId).get();
+    
+    let stripeCustomerId;
+    if (!customerDoc.exists) {
+      const customer = await stripe.customers.create({
+        metadata: {
+          firebaseUserId: userId
+        }
+      });
+      await customersRef.doc(userId).set({
+        stripeCustomerId: customer.id
+      });
+      stripeCustomerId = customer.id;
+    } else {
+      stripeCustomerId = customerDoc.data().stripeCustomerId;
+    }
+
+    const setupIntent = await stripe.setupIntents.create({
+      customer: stripeCustomerId,
+      payment_method_types: ['card']
+    });
+
+    res.json({ clientSecret: setupIntent.client_secret });
+  } catch (error) {
+    console.error('Error creating setup intent:', error);
+    res.status(500).json({ error: 'Failed to create setup intent' });
+  }
+});
+
+app.post('/api/set-default-payment-method', async (req, res) => {
+  try {
+    const { userId, paymentMethodId } = req.body;
+    
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    await admin.auth().verifyIdToken(token);
+
+    const customerDoc = await admin.firestore()
+      .collection('customers')
+      .doc(userId)
+      .get();
+
+    if (!customerDoc.exists) {
+      throw new Error('Customer not found');
+    }
+
+    const { stripeCustomerId } = customerDoc.data();
+
+    await stripe.customers.update(stripeCustomerId, {
+      invoice_settings: {
+        default_payment_method: paymentMethodId
+      }
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error setting default payment method:', error);
+    res.status(500).json({ error: 'Failed to set default payment method' });
+  }
+});
+
+app.delete('/api/payment-methods/:paymentMethodId', async (req, res) => {
+  try {
+    const { paymentMethodId } = req.params;
+    const { userId } = req.body;
+
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    await admin.auth().verifyIdToken(token);
+
+    await stripe.paymentMethods.detach(paymentMethodId);
+
+    await admin.firestore()
+      .collection('paymentMethods')
+      .doc(paymentMethodId)
+      .delete();
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting payment method:', error);
+    res.status(500).json({ error: 'Failed to delete payment method' });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
