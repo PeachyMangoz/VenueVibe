@@ -31,11 +31,12 @@ export default {
     return {
       navLinks: [
         { name: 'Home', path: '/' },
-        { name: "Apply", path: '/apply' },
+        { name: 'Apply', path: '/eventapplications' },
         { name: 'Booths', path: '/booths' },
         { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Collaborate', path: '/collaborate' },
         { name: 'About', path: '/about' },
+        { name: 'Profiles', path:'/businessprofile'},
         { name: 'Login', path: '/login' },
       ],
     };
