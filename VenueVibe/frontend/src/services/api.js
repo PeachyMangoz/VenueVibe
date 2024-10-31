@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const boothAPI = axios.create({
-  baseURL: 'http://localhost:8081', // Booth Listing service URL
+  baseURL: 'http://34.31.89.5:8081', // Booth Listing service URL
 });
 
 // const eventAPI = axios.create({
