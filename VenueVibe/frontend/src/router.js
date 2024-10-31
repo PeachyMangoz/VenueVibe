@@ -14,6 +14,7 @@ import Login from './views/Login.vue';
 import BusinessProfile from './views/BusinessProfile.vue';
 import ApplicationProfiles from './views/ApplicationProfiles.vue';
 import EventApplications from './views/EventApplications.vue';
+import Payments from './views/Payments.vue'
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/apply', name: 'Apply', component: NotFound },
@@ -27,6 +28,7 @@ const routes = [
   { path: '/businessprofile', name: 'BusinessProfile', component: BusinessProfile },
   { path: '/applicationprofiles', name: 'ApplicationProfiles', component: ApplicationProfiles },
   { path: '/eventapplications', name:'EventApplications', component: EventApplications},
+  { path: '/payments', name:'Payments', component: Payments },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ];
 const router = createRouter({

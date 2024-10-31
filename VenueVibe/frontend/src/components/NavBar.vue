@@ -64,6 +64,7 @@ export default {
         { name: 'Event Reviews', path: '/eventreviews' },
         { name: 'Collaborate', path: '/collaborate' },
         { name: 'About', path: '/about' },
+        { name: 'Payments', path: '/payments'}
       ],
     };
   },
