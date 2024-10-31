@@ -1,7 +1,7 @@
 # ReviewSearch.vue
 <template>
-  <div class="col-md-6">
-    <div class="card h-100 shadow-sm">
+  <div class="col-md-6" >
+    <div class="card h-100 shadow-sm" >
       <div class="card-body">
         <h2>Search Reviews</h2>
         <form @submit.prevent="handleSearch">
@@ -65,27 +65,5 @@ const handleSearch = () => {
 };
 </script>
 
-<style scoped>
-.green-btn {
-  background-color: #36b598;
-  color: white;
-}
+<style src="@/styles/review.css" scoped />
 
-.green-btn:hover {
-  background-color: #2d9b82;
-  color: white;
-}
-
-.button-info {
-  color: grey;
-  font-size: 0.75em;
-  text-align: right;
-}
-
-h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #545252;
-}
-</style>
