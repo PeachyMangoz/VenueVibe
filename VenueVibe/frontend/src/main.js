@@ -5,6 +5,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 
+
 // Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
