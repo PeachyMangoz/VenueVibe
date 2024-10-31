@@ -1,4 +1,13 @@
 <template>
+  <div class="container section-title" data-aos="fade-up">
+    <h2>
+      <div class="title-with-lines">
+        <span class="line"></span>
+        Business Profile
+        <span class="line"></span>
+      </div>
+    </h2>
+  </div>
   <div class="container py-5">
     <div v-if="loading" class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 1000;">
       <div class="spinner-border text-primary" role="status">
@@ -8,8 +17,6 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <h1 class="card-title h3 mb-4">Business Profile</h1>
-        
         <form @submit.prevent="saveBusinessProfile">
           <div class="mb-4">
             <label for="businessName" class="form-label fw-semibold">Business Name</label>
@@ -258,3 +265,47 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 30px 0;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.title-with-lines {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.line {
+  width: 70px;
+  height: 3px;
+  background: #36b598;
+  display: inline-block;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  animation: fadeIn 1.5s;
+}
+</style>
