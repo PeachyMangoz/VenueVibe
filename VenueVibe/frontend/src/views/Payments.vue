@@ -1,4 +1,13 @@
 <template>
+  <div class="container section-title" data-aos="fade-up">
+    <h2>
+      <div class="title-with-lines">
+        <span class="line"></span>
+        Payments
+        <span class="line"></span>
+      </div>
+    </h2>
+  </div>
   <div class="payments-page">
     <div v-if="loading" class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -6,7 +15,6 @@
 
     <div class="payments-container">
       <div class="header">
-        <h1 class="title">Payments & Billing</h1>
         <button
           @click="showPaymentModal = true"
           class="add-payment-btn"
@@ -150,9 +158,7 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { loadStripe } from '@stripe/stripe-js'
-import { db, auth } from './firebase'
-import { getAuth } from 'firebase/auth'
+import { db } from '../firebase'
 import { 
   collection, 
   getDocs, 
@@ -231,17 +237,6 @@ export default {
       }
     }
 
-    // Setup component lifecycle
-    onMounted(() => {
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          userId.value = user.uid
-          fetchPaymentMethods()
-          fetchTransactions()
-          initializeStripe()
-        }
-      })
-    })
 
     onUnmounted(() => {
       if (card.value) {
@@ -954,5 +949,47 @@ tr:hover td {
   .filter-month {
     width: 100%;
   }
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 30px 0;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.title-with-lines {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.line {
+  width: 70px;
+  height: 3px;
+  background: #36b598;
+  display: inline-block;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  animation: fadeIn 1.5s;
 }
 </style>
