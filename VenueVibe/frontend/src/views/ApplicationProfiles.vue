@@ -2,62 +2,39 @@
   <div class="container py-5">
     <h2 class="h3 mb-4">Application Profiles</h2>
 
-    <div class="row g-4 mb-4">
-      <div v-for="profile in applicationProfiles" 
-           :key="profile.id" 
-           class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h3 class="h5 mb-2">{{ profile.name }}</h3>
-                <p class="text-muted mb-2">{{ profile.description }}</p>
-                <p class="small">
-                  <span class="fw-semibold">Focus:</span> {{ profile.focus }}
-                </p>
-              </div>
-              <div class="btn-group">
-                <button @click="editProfile(profile.id)"
-                        class="btn btn-outline-secondary btn-sm">
-                  Edit
-                </button>
-                <button @click="deleteProfile(profile.id)"
-                        class="btn btn-danger btn-sm">
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <button @click="showNewProfileForm = true"
-            class="btn btn-primary w-100 mb-4">
+            class="btn btn-primary w-100 mb-4"
+            v-if="!showNewProfileForm">
       Create New Application Profile
     </button>
 
     <div v-if="showNewProfileForm" 
-         class="card mt-4">
+         class="card mb-4 shadow-sm">
       <div class="card-body">
         <h3 class="h5 mb-4">
           {{ editingProfileId ? 'Edit' : 'Create New' }} Application Profile
         </h3>
         <div class="mb-4">
           <div class="mb-3">
+            <label class="form-label">Profile Name</label>
             <input v-model="newProfile.name" 
-                   placeholder="Profile Name"
-                   class="form-control mb-3">
+                   placeholder="Enter profile name"
+                   class="form-control mb-3"
+                   required>
             
+            <label class="form-label">Profile Description</label>
             <textarea v-model="newProfile.description" 
-                      placeholder="Profile Description"
+                      placeholder="Enter profile description"
                       class="form-control mb-3"
-                      style="min-height: 100px;">
+                      style="min-height: 100px;"
+                      required>
             </textarea>
             
+            <label class="form-label">Profile Focus</label>
             <input v-model="newProfile.focus" 
-                   placeholder="Profile Focus"
-                   class="form-control">
+                   placeholder="Enter profile focus"
+                   class="form-control"
+                   required>
           </div>
           
           <div class="d-flex justify-content-end gap-2">
@@ -66,20 +43,67 @@
               Cancel
             </button>
             <button @click="saveProfile"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                    :disabled="!isFormValid">
               Save Profile
             </button>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="profiles-list">
+      <h3 class="h4 mb-4" v-if="applicationProfiles.length > 0">Your Profiles</h3>
+      
+      <div class="row g-4">
+        <div v-for="profile in applicationProfiles" 
+             :key="profile.id" 
+             class="col-12">
+          <div class="card shadow-sm hover-shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="profile-info flex-grow-1">
+                  <div class="d-flex justify-content-between">
+                    <h4 class="h5 mb-3">{{ profile.name }}</h4>
+                    <span class="text-muted small">
+                      Created: {{ formatDate(profile.createdAt) }}
+                    </span>
+                  </div>
+                  <p class="text-muted mb-2">{{ profile.description }}</p>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary-subtle text-primary">
+                      Focus: {{ profile.focus }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-actions mt-3 d-flex justify-content-end gap-2">
+                <button @click="editProfile(profile.id)"
+                        class="btn btn-outline-primary btn-sm">
+                  Edit
+                </button>
+                <button @click="confirmDelete(profile.id)"
+                        class="btn btn-outline-danger btn-sm">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="applicationProfiles.length === 0" 
+           class="text-center py-5 text-muted">
+        <p>No application profiles created yet. Create your first profile to get started!</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { db } from '../firebase'
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
 
 export default {
   name: 'ApplicationProfiles',
@@ -91,25 +115,54 @@ export default {
       description: '',
       focus: '',
     })
-    const userId = ref(null)
+    const userId = ref(null) 
     const editingProfileId = ref(null)
 
+    const isFormValid = computed(() => {
+      return newProfile.name.trim() && 
+             newProfile.description.trim() && 
+             newProfile.focus.trim()
+    })
+
     const fetchApplicationProfiles = async () => {
-      const querySnapshot = await getDocs(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'))
-      applicationProfiles.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      try {
+        const querySnapshot = await getDocs(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'))
+        applicationProfiles.value = querySnapshot.docs
+          .map(doc => ({ 
+            id: doc.id, 
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date() 
+          }))
+          .sort((a, b) => b.createdAt - a.createdAt)
+      } catch (error) {
+        console.error("Error fetching profiles: ", error)
+      }
     }
 
     const saveProfile = async () => {
       try {
-        if (editingProfileId.value) {
-          await updateDoc(doc(db, 'businessProfiles', userId.value, 'applicationProfiles', editingProfileId.value), newProfile)
-        } else {
-          await addDoc(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'), newProfile)
+        const profileData = {
+          ...newProfile,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
         }
+
+        if (editingProfileId.value) {
+          await updateDoc(
+            doc(db, 'businessProfiles', userId.value, 'applicationProfiles', editingProfileId.value), 
+            profileData
+          )
+        } else {
+          await addDoc(
+            collection(db, 'businessProfiles', userId.value, 'applicationProfiles'), 
+            profileData
+          )
+        }
+        
         showNewProfileForm.value = false
         editingProfileId.value = null
         Object.assign(newProfile, { name: '', description: '', focus: '' })
-        fetchApplicationProfiles()
+        await fetchApplicationProfiles()
       } catch (error) {
         console.error("Error saving profile: ", error)
       }
@@ -124,10 +177,16 @@ export default {
       }
     }
 
+    const confirmDelete = async (id) => {
+      if (window.confirm('Are you sure you want to delete this profile?')) {
+        await deleteProfile(id)
+      }
+    }
+
     const deleteProfile = async (id) => {
       try {
         await deleteDoc(doc(db, 'businessProfiles', userId.value, 'applicationProfiles', id))
-        fetchApplicationProfiles()
+        await fetchApplicationProfiles()
       } catch (error) {
         console.error("Error deleting profile: ", error)
       }
@@ -139,16 +198,60 @@ export default {
       Object.assign(newProfile, { name: '', description: '', focus: '' })
     }
 
+    const formatDate = (date) => {
+      if (!date) return ''
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    }
+
+    onMounted(() => {
+      userId.value = 'testUser' 
+      fetchApplicationProfiles()
+    })
+
     return {
       applicationProfiles,
       showNewProfileForm,
       newProfile,
+      isFormValid,
       saveProfile,
       editProfile,
       deleteProfile,
+      confirmDelete,
       cancelEdit,
-      editingProfileId
+      editingProfileId,
+      formatDate
     }
   }
 }
 </script>
+
+<style scoped>
+.hover-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.badge {
+  padding: 0.5em 1em;
+}
+
+.profiles-list {
+  margin-top: 2rem;
+}
+
+.profile-info {
+  padding-right: 1rem;
+}
+
+.profile-actions {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+</style>
