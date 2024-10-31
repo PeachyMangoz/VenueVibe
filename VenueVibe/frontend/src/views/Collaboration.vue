@@ -11,70 +11,64 @@ defineElement(lottie.loadAnimation);
 <template>
   <main>
     <div v-if="loading">
-      <!-- Display a loading message or spinner while data is being retrieved -->
       <p>Loading users...</p>
     </div>
-    <!-- <div v-for="user in users"> -->
     <div class="container-fluid px-0 mx-0" v-else-if="users">
       <div
-        class="row d-md-flex banner mx-0"
+        class="row banner mx-0"
         :style="{ background: `url(${currentSlide.profile_highlight})` }"
       >
-        <div class="content active col-lg-6 col-md-12">
-          <ul id="links">
-            <li>
-              <a target="_blank" :href="`${currentSlide.instagram_link}`"
-                ><fa :icon="['fab', 'instagram']"></fa
-              ></a>
-            </li>
-            <li>
-              <a target="_blank" :href="`${currentSlide.website_link}`"
-                ><fa :icon="['fas', 'globe']"></fa
-              ></a>
-            </li>
-            <li>
-              <a target="_blank" :href="`${currentSlide.portforlio_link}`"
-                ><fa :icon="['fas', 'hashtag']"></fa
-              ></a>
-            </li>
-          </ul>
-          <h4>
-            <span>{{ currentSlide.profile_type }}</span
-            ><span>{{ currentSlide.interests }}</span>
-          </h4>
-          <h1 class="business-name">{{ currentSlide.business_name }}</h1>
-          <p>{{ currentSlide.bio }}</p>
-
-          <div class="buttons">
-            <a href="#" class="btn btn-outline-secondary">
-              <lord-icon
-                src="https://cdn.lordicon.com/qnpnzlkk.json"
-                trigger="hover"
-                colors="primary:#e4e4e4"
-                style="width: 18px; height: 18px"
-              >
-              </lord-icon>
-              Connect & Chat
-            </a>
-            <a href="#" class="btn btn-outline-secondary">
-              <lord-icon
-                src="https://cdn.lordicon.com/jkzgajyr.json"
-                trigger="hover"
-                colors="primary:#e4e4e4"
-                style="width: 18px; height: 18px"
-              >
-              </lord-icon>
-              Bookmark
-            </a>
+        <!-- Left Column: Content -->
+        <div class="col-lg-6 content-wrapper">
+          <div class="content active">
+            <ul id="links">
+              <li>
+                <a target="_blank" :href="`${currentSlide.instagram_link}`">
+                  <fa :icon="['fab', 'instagram']"></fa>
+                </a>
+              </li>
+              <li>
+                <a target="_blank" :href="`${currentSlide.website_link}`">
+                  <fa :icon="['fas', 'globe']"></fa>
+                </a>
+              </li>
+              <li>
+                <a target="_blank" :href="`${currentSlide.portforlio_link}`">
+                  <fa :icon="['fas', 'hashtag']"></fa>
+                </a>
+              </li>
+            </ul>
+            <h4>
+              <span>{{ currentSlide.profile_type }}</span>
+              <span>{{ currentSlide.interests }}</span>
+            </h4>
+            <h1 class="business-name">{{ currentSlide.business_name }}</h1>
+            <p>{{ currentSlide.bio }}</p>
+            <div class="buttons">
+              <a href="#" class="btn btn-outline-secondary">
+                <lord-icon
+                  src="https://cdn.lordicon.com/qnpnzlkk.json"
+                  trigger="hover"
+                  colors="primary:#e4e4e4"
+                  style="width: 18px; height: 18px"
+                ></lord-icon>
+                Connect & Chat
+              </a>
+              <a href="#" class="btn btn-outline-secondary">
+                <lord-icon
+                  src="https://cdn.lordicon.com/jkzgajyr.json"
+                  trigger="hover"
+                  colors="primary:#e4e4e4"
+                  style="width: 18px; height: 18px"
+                ></lord-icon>
+                Bookmark
+              </a>
+            </div>
           </div>
         </div>
-        <div class="carousel-buttons">
-          <!-- Navigation buttons -->
-          <button @click="prevUser" class="carousel-control prev"><</button>
-          <button @click="nextUser" class="carousel-control next">></button>
-        </div>
-        <!-- Thumbnails -->
-        <div class="carousel-box col-lg-6">
+
+        <!-- Right Column: Carousel Box -->
+        <div class="col-lg-6 col-md-12 carousel-box">
           <div
             v-for="(user, index) in rotatedUsers"
             :key="user.id"
@@ -91,9 +85,12 @@ defineElement(lottie.loadAnimation);
             </div>
           </div>
         </div>
+        <div class="carousel-buttons col-lg-6 align-items-center">
+          <button @click="prevUser" class="carousel-control prev"><</button>
+          <button @click="nextUser" class="carousel-control next">></button>
+        </div>
       </div>
     </div>
-    <!-- </div> -->
   </main>
 </template>
 
@@ -233,7 +230,7 @@ export default {
         this.triggerSlideAnimation();
         setTimeout(() => {
           // Reorder the array so the clicked user is at the front
-          
+
           const usersAfterClicked = this.users.slice(index);
           // Extract the part of the array from the beginning to the clicked user
           const usersBeforeClicked = this.users.slice(0, index);
@@ -312,6 +309,13 @@ export default {
   visibility: visible;
   transform: scale(1);
   transition: 0.5s;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .banner .content h1 {
@@ -417,12 +421,13 @@ export default {
   position: relative;
   min-width: 70vh;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(20px);
   border-radius: 10px;
   max-width: 80vw; /* Limit the maximum width of the carousel box */
   overflow-x: auto; /* Enable horizontal scrolling if there are too many thumbnails */
+  overflow-y: hidden;
 }
 
 .carousel-box .carousel-item {
@@ -469,4 +474,43 @@ export default {
     transform: translateX(100%);
   }
 }
+/* Remove excessive space on medium screens */
+@media (max-width: 1700px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .banner .carousel-box {
+    position: absolute;
+    bottom: 18%;
+  }
+  .carousel-buttons {
+    bottom: 5%;
+  }
+
+  .banner .content p {
+    max-height: 100px; /* Set a fixed height for the paragraph */
+    overflow-y: auto; 
+    text-overflow: ellipsis; /* Optional: show "..." at the end if there's more text */
+    white-space: normal; /* Allows the text to wrap onto multiple lines */
+  }
+
+  .carousel-box .carousel-item img {
+    max-height: 20vh; /* Further reduce max-height for mobile */
+  }
+
+  .banner .content{
+    margin-bottom: 20%;
+  }
+}
+
+@media (max-width: 1200px){
+    .banner .content p {
+    max-height: 50px; /* Set a fixed height for the paragraph */
+    overflow-y: auto; 
+    text-overflow: ellipsis; /* Optional: show "..." at the end if there's more text */
+    white-space: normal; /* Allows the text to wrap onto multiple lines */
+  }
+}
+
 </style>
