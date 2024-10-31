@@ -104,8 +104,8 @@ try {
   const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
   console.log('Successfully registered!', userCredential.user)
 
-  // Redirect to the homepage after successful registration
-  router.push('/Homepage')
+  // Redirect to Home after successful registration
+  router.push('/')
 } catch (error) {
   console.error('Error during registration:', error.code)
   alert(error.message) // Display error message to the user
@@ -120,7 +120,7 @@ const signIn = () => { // we also renamed this method
     .signInWithEmailAndPassword(signInEmail.value, signInPassword.value) // THIS LINE CHANGED
     .then((data) => {
       console.log('Successfully logged in!');
-      router.push('/Homepage') // redirect to the feed
+      router.push('/') // redirect to Home
     })
     .catch(error => {
       console.log(error.code)
