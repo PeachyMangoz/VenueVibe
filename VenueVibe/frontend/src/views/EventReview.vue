@@ -93,7 +93,7 @@ import ReviewSearch from '@/components/review/ReviewSearch.vue';
 import ReviewFormButton from '@/components/review/ReviewFormButton.vue';
 import RatingChart from '@/components/review/ReviewCharts/RatingChart.vue';
 import DemographicsChart from '@/components/review/ReviewCharts/DemographicsChart.vue';
-import LoadingOverlay from '@/components/review/LoadingOverlay.vue';
+// import LoadingOverlay from '@/components/review/LoadingOverlay.vue';
 
 const reviewFormRef = ref(null);
 const {
