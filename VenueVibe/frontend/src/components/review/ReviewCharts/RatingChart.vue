@@ -76,7 +76,7 @@ onBeforeUnmount(() => {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: #36b598;
+  color: #6f6e6e;
   text-align: center;
 }
 </style>
