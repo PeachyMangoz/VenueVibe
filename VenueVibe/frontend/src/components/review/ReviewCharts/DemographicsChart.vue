@@ -92,7 +92,9 @@ onBeforeUnmount(() => {
 
 .card-title {
   font-size: 1.25rem;
+  font-weight: bold;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: #36b598;
+  text-align: center;
 }
 </style>

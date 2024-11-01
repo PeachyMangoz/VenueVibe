@@ -3,7 +3,7 @@
   <article class="card h-100 shadow-sm">
     <!-- Review Image -->
     <div class="post-img">
-      <img src="../../images/img4.png" height=100% width=100%>
+      <img src="https://picsum.photos/1920/1080?random=${Date.now()}" height=100% width=100%>
       <!-- <img 
         v-if="review.imageFile" 
         :src="review.imageFile" 

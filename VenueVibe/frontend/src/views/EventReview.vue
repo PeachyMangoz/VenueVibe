@@ -2,6 +2,20 @@
 <template>
   <div class="event-review-container">
     <LoadingOverlay v-if="loading" />
+    <!-- Video Background -->
+    <video
+      class="background-video"
+      autoplay
+      muted
+      loop
+      playsinline
+    >
+      <source src="/videos/market.mp4" type="video/mp4">
+    </video>
+
+    <!-- Overlay -->
+    <div class="video-overlay"></div>
+
     
     <!-- Error Alert -->
     <div 
@@ -19,8 +33,8 @@
     </div>
 
     <!-- Page Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Event Reviews</h2>
+    <div class="container section-title"  data-aos="fade-up">
+      <h2  style="color:white; font-size: 70px;">Event Reviews</h2>
     </div>
 
     <div class="row mb-4 mx-3">
@@ -138,3 +152,53 @@ onBeforeUnmount(() => {
 </script>
 
 <style src="@/styles/review.css" scoped />
+
+<style scoped>
+.event-review-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: transparent; /* Make sure container is transparent */
+}
+
+.background-video {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
+  z-index: -1;
+}
+
+/* Add this to make content sections transparent */
+.container, 
+.section,
+.reviews-section,
+.row {
+  background-color: transparent !important;
+}
+
+/* Ensure content is above video but below overlay */
+.content-wrapper,
+.section-title,
+.reviews-section,
+#reviews,
+.alert,
+.row {
+  position: relative;
+  z-index: 1;
+}
+</style>
