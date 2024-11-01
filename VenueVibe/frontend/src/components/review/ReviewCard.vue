@@ -1,56 +1,67 @@
-# ReviewCard.vue
 <template>
-  <article class="card h-100 shadow-sm">
-    <!-- Review Image -->
-    <div class="post-img">
-      <img src="https://picsum.photos/1920/1080?random=${Date.now()}" height=100% width=100%>
-      <!-- <img 
+  <article class="card h-100 review-card">
+    <!-- Image Section -->
+    <!-- <div class="image-container">
+      <img 
         v-if="review.imageFile" 
         :src="review.imageFile" 
-        class="img-fluid w-100" 
-        alt="Review Image" 
-        style="height: 250px; object-fit: cover;"
-        @error="$emit('image-error')"
+        class="review-image" 
+        alt="Review Image"
+        @error="handleImageError"
+        @load="handleImageLoad"
       />
-      <div 
-        v-else 
-        class="no-image-placeholder d-flex align-items-center justify-content-center"
-        style="height: 250px; background-color: #f8f9fa;"
-      >
-        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-      </div> -->
-    </div>
+      <div v-else class="no-image">
+        <i class="bi bi-image placeholder-icon"></i>
+      </div>
+    </div> -->
 
-    <!-- Review Content -->
-    <div class="card-body">
-      <p class="post-category d-flex align-items-center">
+    <!-- Content Section -->
+    <div class="card-body d-flex flex-column">
+      <!-- Category -->
+      <div class="category">
         <i class="bi bi-shop me-2"></i>
         {{ review.category }}
-      </p>
+      </div>
 
-      <h2 class="title">
-        <span class="event-title">{{ review.eventId }}</span>
-      </h2>
+      <!-- Event ID -->
+      <h3 class="event-id">
+        {{ review.eventId }}
+      </h3>
 
-      <p class="description text-center">
-        "{{ review.description }}"
-      </p>
+      <!-- Review Text -->
+      <div class="review-content">
+        <p class="review-text">
+          "{{ review.description }}"
+        </p>
+      </div>
 
-      <!-- Author Info -->
-      <div class="d-flex align-items-center mt-auto">
-        <div class="user-avatar">
-          <img src="../../images/img2.png" alt="User avatar">
-        </div>
-        <div class="post-meta">
-          <p class="post-author mb-0">{{ review.username }}</p>
-          <div class="rating text-warning">
-            <i 
-              v-for="star in 5" 
-              :key="star"
-              class="bi" 
-              :class="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
-            ></i>
-            <span class="ms-2 text-muted">{{ review.rating }}/5</span>
+      <!-- User Info & Rating -->
+      <div class="user-section">
+        <div class="user-info">
+          <!-- User Avatar -->
+          <div class="avatar-wrapper">
+            <img 
+              src="@/images/img2.png" 
+              alt="User avatar"
+              class="avatar"
+            >
+          </div>
+
+          <!-- User Details -->
+          <div class="user-details">
+            <p class="username">{{ review.username }}</p>
+            <!-- Rating -->
+            <div class="rating">
+              <div class="stars">
+                <i 
+                  v-for="star in 5" 
+                  :key="star"
+                  class="bi" 
+                  :class="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                ></i>
+              </div>
+              <span class="rating-text">{{ review.rating }}/5</span>
+            </div>
           </div>
         </div>
       </div>
@@ -59,82 +70,211 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   review: {
     type: Object,
-    required: true
+    required: true,
+    validator: (review) => {
+      return review.eventId && 
+             review.username && 
+             review.category && 
+             review.rating && 
+             review.description;
+    }
   }
 });
 
-defineEmits(['image-error']);
+const emit = defineEmits(['image-error']);
+
+const handleImageError = () => {
+  console.error('Image failed to load:', props.review.imageFile);
+  emit('image-error');
+};
+
+const handleImageLoad = () => {
+  console.log('Image loaded successfully');
+};
 </script>
 
 <style scoped>
-.event-title {
-  color: #333;
+/* Card Container */
+.review-card {
+  transition: all 0.3s ease;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Section */
+.image-container {
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.review-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.review-card:hover .review-image {
+  transform: scale(1.05);
+}
+
+.no-image {
+  height: 100%;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  color: #ccc;
+}
+
+/* Category */
+.category {
+  font-size: 0.9rem;
+  color: #36b598;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+/* Event ID */
+.event-id {
   font-size: 1.5rem;
   font-weight: 600;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.3;
 }
 
-.event-title:hover {
-  color: #666;
+/* Review Content */
+.review-content {
+  margin: 1.5rem 0;
 }
 
-.title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: left;  /* Changed from center to left */
-}
-
-.description {
-  margin-bottom: 1.5rem;
+.review-text {
+  font-style: italic;
+  color: #555;
   text-align: center;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.user-avatar {
+/* User Section */
+.user-section {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-wrapper {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 1rem;
+  border: 2px solid #36b598;
 }
 
-.user-avatar img {
+.avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.post-category {
-  font-size: 14px;
-  color: #36b598;
-  margin-bottom: 10px;
-  font-weight: 500;
+.user-details {
+  flex: 1;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Rating */
+.rating {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.post-meta {
-  flex: 1;
-}
-
-.post-author {
-  font-weight: 600;
-  font-size: 16px;
-  margin-bottom: 0.25rem;
-  color: #333;
-}
-
-.rating {
+.stars {
   color: #ffd700;
   font-size: 0.9rem;
 }
 
-.rating i {
+.stars i {
   margin-right: 2px;
+}
+
+.rating-text {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.loading {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.5) 50%, 
+    rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .image-container {
+    height: 200px;
+  }
+
+  .event-id {
+    font-size: 1.25rem;
+  }
+
+  .review-text {
+    font-size: 0.9rem;
+  }
+}
+
+/* Glass Effect Enhancement */
+.card {
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+  box-shadow: 
+    0 10px 20px rgba(0, 0, 0, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.06);
 }
 </style>

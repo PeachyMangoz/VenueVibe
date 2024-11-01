@@ -1,5 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+// Import Firebase Storage
+import { getStorage } from "firebase/storage";
+
+
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,6 +23,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+// Initialize Firebase Storage
+const storage = getStorage(app);
+export { storage };
+
 // Allow users to sign up and log in using email/password, phone number, or social media accounts (Google, Facebook, etc.).
 // import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 // const auth = getAuth();
@@ -30,3 +38,4 @@ export const db = getFirestore(app);
 //   .catch((error) => {
 //     console.error(error);
 //   });
+

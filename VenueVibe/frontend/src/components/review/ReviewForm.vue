@@ -151,6 +151,10 @@
 import { ref, onMounted } from 'vue';
 import { Modal } from 'bootstrap';
 
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage } from "firebase/storage";
+
+const storage = getStorage();
 const props = defineProps({
   loading: {
     type: Boolean,
@@ -197,7 +201,7 @@ function getInitialFormData() {
 }
 
 // Methods
-const handleImageUpload = (event) => {
+const handleImageUpload = async (event) => {
   const file = event.target.files[0];
   if (file) {
     if (!file.type.startsWith('image/')) {
@@ -210,8 +214,23 @@ const handleImageUpload = (event) => {
       return;
     }
 
-    formData.value.imageFileObject = file;
-    formData.value.imageFile = URL.createObjectURL(file);
+    try {
+      // Create a unique filename
+      const filename = `${Date.now()}-${file.name}`;
+      const imageRef = storageRef(storage, `reviewImages/${filename}`);
+      
+      // Upload the file
+      const snapshot = await uploadBytes(imageRef, file);
+      
+      // Get the download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      
+      formData.value.imageFile = downloadURL;
+      formData.value.imageFileObject = file;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert('Failed to upload image');
+    }
   }
 };
 
