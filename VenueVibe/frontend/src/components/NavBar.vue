@@ -74,7 +74,7 @@ export default {
 <style scoped>
 .navbar {
   padding: 20px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .navbar-brand {

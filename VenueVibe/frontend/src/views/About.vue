@@ -22,9 +22,21 @@
       <section class="hero-section text-white py-5 mb-5">
         <div class="container">
           <div class="row align-items-center">
+            <!-- Text Column -->
             <div class="col-md-6" data-aos="fade-right">
               <h1 class="display-4 fw-bold">About Us</h1>
               <p class="lead">Bridging the gap between event organizers and small businesses</p>
+            </div>
+            <!-- Image Column -->
+            <div class="col-md-6" data-aos="fade-left">
+              <img 
+                src="@/images/img6.jpg" 
+                alt="About Us" 
+                class="hero-image"
+                height=" 400px"
+                data-aos="fade-left"
+                style="border-radius: 20px;"
+              >
             </div>
           </div>
         </div>
