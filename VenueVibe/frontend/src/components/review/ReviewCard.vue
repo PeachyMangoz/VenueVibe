@@ -3,7 +3,8 @@
   <article class="card h-100 shadow-sm">
     <!-- Review Image -->
     <div class="post-img">
-      <img 
+      <img src="../../images/img4.png" height=100% width=100%>
+      <!-- <img 
         v-if="review.imageFile" 
         :src="review.imageFile" 
         class="img-fluid w-100" 
@@ -17,7 +18,7 @@
         style="height: 250px; background-color: #f8f9fa;"
       >
         <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-      </div>
+      </div> -->
     </div>
 
     <!-- Review Content -->
