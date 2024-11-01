@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.VITE_FIREBASE_API_KEY,
+  apiKey: "AIzaSyBzp3OrAjzTsz4q00I3DDZ5q9xf5EkDBLk",
   authDomain: "venuevibe-a1675.firebaseapp.com",
   projectId: "venuevibe-a1675",
   storageBucket: "venuevibe-a1675.appspot.com",
   messagingSenderId: "605698985809",
-  appId: "1:605698985809:web:ca6e225a8202acf781cd70",
+  appId: "1:605698985809:web:98aafba37ec4606481cd70"
 };
 
 // Initialize Firebase
