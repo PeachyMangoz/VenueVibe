@@ -126,10 +126,10 @@
                       <i class="bi bi-check-circle-fill"></i>
                       Verified business profiles and reviews
                     </li>
-                    <li data-aos="fade-right" data-aos-delay="300">
+                    <!-- <li data-aos="fade-right" data-aos-delay="300">
                       <i class="bi bi-check-circle-fill"></i>
                       Direct communication channels
-                    </li>
+                    </li> -->
                     <li data-aos="fade-right" data-aos-delay="400">
                       <i class="bi bi-check-circle-fill"></i>
                       Secure booking and payment system

@@ -16,7 +16,7 @@
         <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
             <div class="position-relative">
                 <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
-                <div class="centered-text">
+                <div class="centered-text " style="color:white;">
                     <!-- Split "Boothy" into individual spans for animation -->
                     <span class="letter">B</span>
                     <span class="letter">o</span>
@@ -342,10 +342,10 @@ body {
     animation-range: exit;
 }
 
-#imgBanner img {
-    filter: grayscale(100%);
+/* #imgBanner img {
+    filter: grayscale(50%);
 
-}
+} */
 
 .position-relative {
     position: relative;
