@@ -3,7 +3,7 @@
     <div class="forms-container">
       <div class="signin-signup">
         <!-- Sign-In Form -->
-        <form class="sign-in-form">
+        <form @submit.prevent="signIn" class="sign-in-form">
           <h2 class="title">Sign in</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
@@ -13,7 +13,7 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="signInPassword" placeholder="Password" />
           </div>
-          <button @click="signIn" value="Login" class="btn solid">Login</button>
+          <button type="button" @click="signIn" value="Login" class="btn solid">Login</button>
           <p class="social-text">Or Sign in with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon">
@@ -29,7 +29,7 @@
         </form>
 
         <!-- Sign-Up Form -->
-        <form class="sign-up-form">
+        <form @submit.prevent="signIn" class="sign-up-form">
           <h2 class="title">Sign up</h2>
 
           <div class="input-field">
@@ -40,7 +40,7 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="password" placeholder="Password" />
           </div>
-          <button @click="register" class="btn">Sign Up</button>
+          <button type="button" @click="register" class="btn">Sign Up</button>
           <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon">
@@ -84,7 +84,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
 import { useRouter } from 'vue-router' // Import the Vue router
 
 // Initialize reactive variables for form inputs
@@ -97,6 +97,20 @@ const router = useRouter()
 // Get Firebase Auth instance
 const auth = getAuth() // Initialize Firebase Auth
 
+// Function to handle error messages
+const handleError = (error) => {
+  const errorMessages = {
+    'auth/invalid-email': 'The email address is not valid.',
+    'auth/user-disabled': 'The user corresponding to the email address has been disabled.',
+    'auth/user-not-found': 'No user found corresponding to the email address.',
+    'auth/wrong-password': 'The password is invalid or the user does not have a password.',
+    'auth/email-already-in-use': 'The email address is already in use by another account.',
+    'auth/weak-password': 'The password is too weak. It should be at least 6 characters long.',
+    // Add more error codes and messages as needed
+  };
+  return errorMessages[error.code] || 'An unknown error occurred. Please try again.';
+}
+
 // Register function
 const register = async () => {
 try {
@@ -108,24 +122,26 @@ try {
   router.push('/')
 } catch (error) {
   console.error('Error during registration:', error.code)
-  alert(error.message) // Display error message to the user
+  alert(handleError(error)); // Display error message to the user
 }
 };
 
-const signInEmail = ref('')
-const signInPassword = ref('')
-const signIn = () => { // we also renamed this method
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(signInEmail.value, signInPassword.value) // THIS LINE CHANGED
-    .then((data) => {
-      console.log('Successfully logged in!');
-      router.push('/') // redirect to Home
-    })
-    .catch(error => {
-      console.log(error.code)
-      alert(error.message);
-    });
+const signInEmail = ref('');
+const signInPassword = ref('');
+
+const signIn = async () => {
+  try {
+    // Use signInWithEmailAndPassword method to sign in a user
+    const userCredential = await signInWithEmailAndPassword(auth, signInEmail.value, signInPassword.value);
+    console.log('Successfully logged in!', userCredential.user);
+
+    // Redirect to Home after successful login
+    router.push('/');
+  } 
+  catch (error) {
+    console.error('Error during sign-in:', error.code);
+    alert(handleError(error)); // Display error message to the user
+  }
 }
 </script>
 

@@ -1,4 +1,9 @@
 <template>
+  <head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/png" href="/VenueVibe/frontend/public/favicon.ico"/>
+    <title>Boothy</title>
+</head>
   <div id="app">
     <header></header>
 
