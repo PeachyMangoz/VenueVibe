@@ -165,6 +165,20 @@ const signIn = async () => {
 }
 </script>
 
+<script>
+export default {
+  data() {
+    return {
+      isSignUpMode: false,
+      };
+  },
+  methods: {
+    toggleMode() {
+      this.isSignUpMode = !this.isSignUpMode;
+    }}};
+
+</script>
+
 
 <style scoped>
 
