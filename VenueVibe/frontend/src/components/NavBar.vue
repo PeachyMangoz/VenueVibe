@@ -45,7 +45,7 @@
                 </router-link>
               </li>
               <li>
-                <a class="dropdown-item" href="#" @click.prevent="logout">Logout</a>
+                <a class="dropdown-item" href="#" @click.prevent="logout">Log Out</a>
               </li>
             </ul>
           </li>

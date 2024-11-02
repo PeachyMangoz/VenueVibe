@@ -13,7 +13,7 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="signInPassword" placeholder="Password" />
           </div>
-          <button type="button" @click="signIn" value="Login" class="btn solid">Login</button>
+          <button type="button" @click="signIn" value="Login" class="btn solid">Log In</button>
           <p class="social-text">Or Sign in with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon">
