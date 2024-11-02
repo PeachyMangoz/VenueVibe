@@ -84,18 +84,24 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
-import { useRouter } from 'vue-router' // Import the Vue router
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from 'vue-router'; // Import the Vue router
+import { useStore } from 'vuex'; // Import Vuex store
 
 // Initialize reactive variables for form inputs
-const email = ref('')
-const password = ref('')
+const email = ref('');
+const password = ref('');
+const signInEmail = ref('');
+const signInPassword = ref('');
 
 // Get a reference to the Vue router
-const router = useRouter()
+const router = useRouter();
 
 // Get Firebase Auth instance
-const auth = getAuth() // Initialize Firebase Auth
+const auth = getAuth(); // Initialize Firebase Auth
+
+// Access the Vuex store
+const store = useStore(); // Access Vuex store to commit mutations
 
 // Function to handle error messages
 const handleError = (error) => {
@@ -106,58 +112,59 @@ const handleError = (error) => {
     'auth/wrong-password': 'The password is invalid or the user does not have a password.',
     'auth/email-already-in-use': 'The email address is already in use by another account.',
     'auth/weak-password': 'The password is too weak. It should be at least 6 characters long.',
-    // Add more error codes and messages as needed
   };
   return errorMessages[error.code] || 'An unknown error occurred. Please try again.';
 }
 
 // Register function
 const register = async () => {
-try {
-  // Use createUserWithEmailAndPassword method to register a new user
-  const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
-  console.log('Successfully registered!', userCredential.user)
+  try {
+    // Use createUserWithEmailAndPassword method to register a new user
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    const user = userCredential.user;
 
-  // Redirect to Home after successful registration
-  router.push('/')
-} catch (error) {
-  console.error('Error during registration:', error.code)
-  alert(handleError(error)); // Display error message to the user
+    console.log('Successfully registered!', user);
+
+    // Update Vuex store: Set user data and loggedIn status
+    store.commit('SET_LOGGED_IN', true);
+    store.commit('SET_USER', {
+      displayName: user.displayName,
+      email: user.email
+    });
+
+    // Redirect to Home after successful registration
+    router.push('/');
+  } catch (error) {
+    console.error('Error during registration:', error.code);
+    alert(handleError(error)); // Display error message to the user
+  }
 }
-};
 
-const signInEmail = ref('');
-const signInPassword = ref('');
-
+// Sign-in function
 const signIn = async () => {
   try {
     // Use signInWithEmailAndPassword method to sign in a user
     const userCredential = await signInWithEmailAndPassword(auth, signInEmail.value, signInPassword.value);
-    console.log('Successfully logged in!', userCredential.user);
+    const user = userCredential.user;
+
+    console.log('Successfully logged in!', user);
+
+    // Update Vuex store: Set user data and loggedIn status
+    store.commit('SET_LOGGED_IN', true);
+    store.commit('SET_USER', {
+      displayName: user.displayName,
+      email: user.email
+    });
 
     // Redirect to Home after successful login
     router.push('/');
-  } 
-  catch (error) {
+  } catch (error) {
     console.error('Error during sign-in:', error.code);
     alert(handleError(error)); // Display error message to the user
   }
 }
 </script>
 
-<script>
-export default {
-  data() {
-    return {
-      isSignUpMode: false,
-      };
-  },
-  methods: {
-    toggleMode() {
-      this.isSignUpMode = !this.isSignUpMode;
-    }}};
-
-</script>
 
 <style scoped>
 

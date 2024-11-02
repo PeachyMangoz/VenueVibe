@@ -1,9 +1,8 @@
-
-
 // src/main.js
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store';
 
 
 // Bootstrap imports
@@ -41,6 +40,9 @@ const app = createApp(App);
 // Use router
 app.use(router);
 
+// Register the Vuex store
+app.use(store);
+
 // Register Font Awesome component globally
 // You can use either 'fa' or 'font-awesome-icon' as the component name
 app.component('fa', FontAwesomeIcon);
@@ -48,3 +50,5 @@ app.component('font-awesome-icon', FontAwesomeIcon); // Optional: register with 
 
 // Mount app
 app.mount('#app');
+
+window.store = store;
