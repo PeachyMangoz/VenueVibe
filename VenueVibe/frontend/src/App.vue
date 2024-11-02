@@ -43,7 +43,7 @@
       </ul>
     </div>
 
-    <div class="col-lg-2 col-md-3 footer-links">
+    <!-- <div class="col-lg-2 col-md-3 footer-links">
       <h5>Our Services</h5>
       <ul>
         <li><a href="#" class="text-decoration-none text-white">Web Design</a></li>
@@ -52,7 +52,7 @@
         <li><a href="#" class="text-decoration-none text-white">Marketing</a></li>
         <li><a href="#" class="text-decoration-none text-white">Graphic Design</a></li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="col-lg-4 col-md-12 footer-newsletter">
       <h5>Our Newsletter</h5>
