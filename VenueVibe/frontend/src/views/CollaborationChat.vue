@@ -27,7 +27,7 @@
               <p class="chat-name">{{ getChatPartnerName(chat) }}</p>
               <p class="chat-preview">{{ chat.lastMessage }}</p>
             </div>
-            <!-- <span class="chat-time">{{ chat.time }}</span> -->
+            <span class="chat-time">{{ formatDate(chat.lastMessageTimeStamp) || " " }}</span>
           </li>
         </ul>
       </div>
@@ -133,7 +133,7 @@ export default {
         return {
           id: chatDoc.id,
           lastMessage: chatData.lastMessage || "",
-          lastMessageTime: chatData.lastMessageTime || null,
+          lastMessageTimeStamp: chatData.lastMessageTimeStamp || null,
           users: chatData.users || [],
           userInfo,
         };
@@ -376,24 +376,6 @@ getChatPartnerName(chat) {
   flex-direction: column;
 }
 
-.profile-section {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-.profile-pic {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-}
-.username {
-  margin: 0.5rem 0;
-  font-size: 1.2rem;
-}
-.status {
-  font-size: 0.9rem;
-  color: green;
-}
-
 .search-bar input {
   width: 100%;
   padding: 0.5rem;
@@ -406,23 +388,30 @@ getChatPartnerName(chat) {
   margin: 1rem 0 0.5rem;
 }
 
+ul, ol {
+  padding: 0;
+  margin: 0;
+}
+
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.5rem;
   cursor: pointer;
 }
+
 .chat-pic {
-  width: 40px;
-  height: 40px;
+  width: 15%;
+  height: auto;
   border-radius: 50%;
-  margin-right: 0.5rem;
+  margin-right: 0.3rem;
 }
 .chat-info {
   flex-grow: 1;
 }
 .chat-name {
   font-weight: bold;
+  margin: 0;
 }
 .chat-preview {
   font-size: 0.9rem;
@@ -432,7 +421,9 @@ getChatPartnerName(chat) {
   font-size: 0.8rem;
   color: #aaa;
 }
-
+.active{
+    background-color: rgba(0, 0, 0, 0.1);
+}
 /* Main chat area styling */
 .chat-area {
   width: 75%;
@@ -448,18 +439,6 @@ getChatPartnerName(chat) {
   border-bottom: 1px solid #ddd;
 }
 
-.tabs button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  margin-left: 1rem;
-  cursor: pointer;
-}
-.tabs .active {
-  color: #22a1f3;
-  font-weight: bold;
-}
-
 .messages {
   flex-grow: 1;
   padding: 1rem;
@@ -469,6 +448,7 @@ getChatPartnerName(chat) {
 
 .message {
   max-width: 70%;
+  width: fit-content;
   margin: 0.5rem 0;
   padding: 0.75rem 1rem;
   border-radius: 10px;
