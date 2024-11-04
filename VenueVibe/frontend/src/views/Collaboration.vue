@@ -45,7 +45,7 @@ defineElement(lottie.loadAnimation);
             <h1 class="business-name">{{ currentSlide.business_name }}</h1>
             <p>{{ currentSlide.bio }}</p>
             <div class="buttons">
-              <a href="#" class="btn btn-outline-secondary">
+              <router-link :to="{ name: 'CollaborateChat', params: { id: `${currentSlide.id}` }}" class="btn btn-outline-secondary">
                 <lord-icon
                   src="https://cdn.lordicon.com/qnpnzlkk.json"
                   trigger="hover"
@@ -53,7 +53,7 @@ defineElement(lottie.loadAnimation);
                   style="width: 18px; height: 18px"
                 ></lord-icon>
                 Connect & Chat
-              </a>
+              </router-link >
               <a href="#" class="btn btn-outline-secondary">
                 <lord-icon
                   src="https://cdn.lordicon.com/jkzgajyr.json"
