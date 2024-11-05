@@ -489,7 +489,7 @@ width: 2000px;
 top: -10%;
 right: 48%;
 transform: translateY(-50%);
-background-image: linear-gradient(-45deg, #d4d7d1 0%, #08f4bd 100%);
+background-image: linear-gradient(-45deg, #191921 0%, #08f4bd 100%);
 transition: 1.8s ease-in-out;
 border-radius: 50%;
 z-index: 6;
