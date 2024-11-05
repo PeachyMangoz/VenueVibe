@@ -7,8 +7,10 @@ import {
   query, 
   where,
   onSnapshot,
-  serverTimestamp 
+  serverTimestamp,
+  Timestamp 
 } from 'firebase/firestore';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db } from '../firebase';
 
 export function useReviews() {
@@ -25,16 +27,31 @@ export function useReviews() {
       : reviews.value;
   });
 
+  // Helper function to safely handle timestamps
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return new Date();
+    if (timestamp instanceof Timestamp) {
+      return timestamp.toDate();
+    }
+    return new Date(timestamp);
+  };
+
+  const formatReviewData = (doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      rating: parseInt(data.rating || 0),
+      createdAt: formatTimestamp(data.createdAt)
+    };
+  };
+
   const fetchReviews = async () => {
     loading.value = true;
     error.value = null;
     try {
       const querySnapshot = await getDocs(reviewsCollection);
-      reviews.value = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        rating: parseInt(doc.data().rating)
-      }));
+      reviews.value = querySnapshot.docs.map(formatReviewData);
     } catch (err) {
       console.error('Error fetching reviews:', err);
       error.value = 'Failed to load reviews';
@@ -58,11 +75,7 @@ export function useReviews() {
       );
       
       const querySnapshot = await getDocs(q);
-      reviews.value = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        rating: parseInt(doc.data().rating)
-      }));
+      reviews.value = querySnapshot.docs.map(formatReviewData);
     } catch (err) {
       console.error('Error searching reviews:', err);
       error.value = 'Failed to search reviews';
@@ -75,10 +88,30 @@ export function useReviews() {
     loading.value = true;
     error.value = null;
     try {
+      // Remove imageFileObject before sending to Firestore
+      const { imageFileObject, ...reviewDataWithoutFile } = reviewData;
+
+      // Upload image if it exists
+      let imageUrl = null;
+      if (imageFileObject) {
+        const storage = getStorage();
+        const timestamp = Date.now();
+        const safeFileName = imageFileObject.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const filename = `reviewImages/${timestamp}-${safeFileName}`;
+        const fileRef = storageRef(storage, filename);
+        
+        await uploadBytes(fileRef, imageFileObject);
+        imageUrl = await getDownloadURL(fileRef);
+      }
+
+      // Add document to Firestore
       await addDoc(reviewsCollection, {
-        ...reviewData,
+        ...reviewDataWithoutFile,
+        imageFile: imageUrl, // Store the URL instead of File object
+        rating: parseInt(reviewDataWithoutFile.rating || 0),
         createdAt: serverTimestamp()
       });
+
       await fetchReviews();
       return true;
     } catch (err) {
@@ -90,14 +123,12 @@ export function useReviews() {
     }
   };
 
-  // Set up real-time updates
   const setupRealtimeUpdates = () => {
     return onSnapshot(reviewsCollection, (snapshot) => {
-      reviews.value = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        rating: parseInt(doc.data().rating)
-      }));
+      reviews.value = snapshot.docs.map(formatReviewData);
+    }, (err) => {
+      console.error('Error in realtime updates:', err);
+      error.value = 'Failed to get realtime updates';
     });
   };
 
