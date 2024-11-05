@@ -133,7 +133,9 @@ const handleReviewSubmit = async (reviewData) => {
   }
 };
 
-const handleImageError = () => {
+const handleImageError = (reviewId) => {
+  console.error(`Image loading failed for review ${reviewId}`);
+  // Optionally show a notification or handle the error
   error.value = 'Failed to load one or more images';
 };
 

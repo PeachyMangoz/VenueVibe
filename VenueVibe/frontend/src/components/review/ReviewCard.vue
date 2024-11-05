@@ -1,10 +1,10 @@
 <template>
   <article class="card h-100 review-card">
     <!-- Image Section -->
-    <!-- <div class="image-container">
+    <div class="image-container">
       <img 
-        v-if="review.imageFile" 
-        :src="review.imageFile" 
+        v-if="imageUrl && !imageError" 
+        :src="imageUrl" 
         class="review-image" 
         alt="Review Image"
         @error="handleImageError"
@@ -13,7 +13,7 @@
       <div v-else class="no-image">
         <i class="bi bi-image placeholder-icon"></i>
       </div>
-    </div> -->
+    </div>
 
     <!-- Content Section -->
     <div class="card-body d-flex flex-column">
@@ -70,6 +70,9 @@
 </template>
 
 <script setup>
+import { ref, onMounted, computed } from 'vue';
+import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
+
 const props = defineProps({
   review: {
     type: Object,
@@ -86,14 +89,46 @@ const props = defineProps({
 
 const emit = defineEmits(['image-error']);
 
+const imageError = ref(false);
+const imageUrl = ref(null);
+
+// Function to get image URL from Firebase Storage
+const getImageUrl = async () => {
+  if (!props.review.imageFile) return null;
+  
+  try {
+    // If the imageFile is already a URL, use it directly
+    if (props.review.imageFile.startsWith('http')) {
+      return props.review.imageFile;
+    }
+    
+    // Otherwise, get URL from Firebase Storage
+    const storage = getStorage();
+    const imageRef = storageRef(storage, props.review.imageFile);
+    return await getDownloadURL(imageRef);
+  } catch (error) {
+    console.error('Error getting image URL:', error);
+    return null;
+  }
+};
+
 const handleImageError = () => {
   console.error('Image failed to load:', props.review.imageFile);
+  imageError.value = true;
   emit('image-error');
 };
 
 const handleImageLoad = () => {
+  imageError.value = false;
   console.log('Image loaded successfully');
 };
+
+// Load image when component mounts
+onMounted(async () => {
+  if (props.review.imageFile) {
+    imageUrl.value = await getImageUrl();
+  }
+});
 </script>
 
 <style scoped>
@@ -277,4 +312,6 @@ const handleImageLoad = () => {
     0 10px 20px rgba(0, 0, 0, 0.1),
     0 4px 6px rgba(0, 0, 0, 0.06);
 }
+
+
 </style>
