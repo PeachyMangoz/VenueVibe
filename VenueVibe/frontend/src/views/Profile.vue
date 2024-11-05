@@ -5,13 +5,14 @@
         <!-- Profile Photo Column -->
         <div class="col-lg-2 text-center">
           <img
-            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+            :src="profileImageUrl || 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'"
             class="rounded-circle mb-4"
             alt="Profile photo"
             width="150px"
             height="150px"
             style="object-fit: cover;"
           />
+          <input type="file" @change="uploadProfileImage" accept="image/*" class="form-control mt-3" />
           <h3 style="color:white" class="mb-0">{{ username }}</h3>
           <!-- <p class="text-muted">{{ email }}</p> -->
         </div>
@@ -151,75 +152,110 @@
     </body>
   </template>
   
-  <script>
-  import { ref, onMounted } from 'vue';
-  import { getAuth } from 'firebase/auth';
-  import { doc, getDoc, setDoc } from 'firebase/firestore';
-  import { db } from '../firebase'; // Adjust the path as necessary
-  
-  export default {
-    setup() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-  
-      const username = ref('');
-      const email = ref('');
-      const bio = ref('');
-      const business_name = ref('');
-      const website_link = ref('');
-      const portfolio_link = ref('');
-      const isCreator = ref(true); // Default to 'creator' profile type
-  
-      // Fetch user data from Firestore
-      const fetchUserData = async () => {
-        if (user) {
-          const userDoc = await getDoc(doc(db, 'user', user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            username.value = userData.username || '';
-            email.value = userData.email || '';
-            bio.value = userData.bio || '';
-            business_name.value = userData.business_name || '';
-            website_link.value = userData.website_link || '';
-            portfolio_link.value = userData.portfolio_link || '';
-            isCreator.value = userData.profile_type === 'creator'; // Check profile type
-          }
+<script>
+import { ref, onMounted } from 'vue';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // Adjust the path as necessary
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase Storage imports
+
+export default {
+  setup() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const storage = getStorage();
+
+    const username = ref('');
+    const email = ref('');
+    const bio = ref('');
+    const business_name = ref('');
+    const website_link = ref('');
+    const portfolio_link = ref('');
+    const isCreator = ref(true); // Default to 'creator' profile type
+    const profileImageUrl = ref(''); // Reactive variable for profile image URL
+
+    // Fetch user data from Firestore
+    const fetchUserData = async () => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'user', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          username.value = userData.username || '';
+          email.value = userData.email || '';
+          bio.value = userData.bio || '';
+          business_name.value = userData.business_name || '';
+          website_link.value = userData.website_link || '';
+          portfolio_link.value = userData.portfolio_link || '';
+          isCreator.value = userData.profile_type === 'creator';
+          profileImageUrl.value = userData.profile_image || ''; // Set profile image URL
         }
-      };
-  
-      // Update user profile in Firestore
-      const updateProfile = async () => {
-        if (user) {
+      }
+    };
+
+    // Update user profile in Firestore
+    const updateProfile = async () => {
+      if (user) {
+        await setDoc(doc(db, 'user', user.uid), {
+          bio: bio.value,
+          business_name: business_name.value,
+          profile_type: isCreator.value ? 'organiser' : 'creator',
+          website_link: website_link.value,
+          portfolio_link: portfolio_link.value,
+        }, { merge: true }); // Merge to update specific fields
+
+        alert('Profile updated successfully!');
+      }
+    };
+
+    // Upload profile image to Firebase Storage
+    const uploadProfileImage = async (event) => {
+      const file = event.target.files[0];
+      if (file && user) {
+        const storagePath = `profile_images/${user.uid}/${file.name}`;
+        const fileRef = storageRef(storage, storagePath);
+
+        try {
+          // Upload the file to Firebase Storage
+          await uploadBytes(fileRef, file);
+          console.log('File uploaded successfully!');
+
+          // Get the download URL of the uploaded image
+          const downloadUrl = await getDownloadURL(fileRef);
+
+          // Save the image URL to Firestore under the 'profile_image' field
           await setDoc(doc(db, 'user', user.uid), {
-            bio: bio.value,
-            business_name: business_name.value,
-            profile_type: isCreator.value ? 'organiser' : 'creator',
-            website_link: website_link.value,
-            portfolio_link: portfolio_link.value,
-          }, { merge: true }); // Merge to update specific fields
-  
-          alert('Profile updated successfully!');
+            profile_image: downloadUrl,
+          }, { merge: true });
+
+          // Update the profile image URL in the UI
+          profileImageUrl.value = downloadUrl;
+        } catch (error) {
+          console.error('Error uploading profile image:', error);
         }
-      };
-  
-      // Fetch user data when component is mounted
-      onMounted(() => {
-        fetchUserData();
-      });
-  
-      return {
-        username,
-        email,
-        bio,
-        business_name,
-        website_link,
-        portfolio_link,
-        isCreator,
-        updateProfile,
-      };
-    },
-  };
-  </script>
+      }
+    };
+
+    // Fetch user data when component is mounted
+    onMounted(() => {
+      fetchUserData();
+    });
+
+    return {
+      username,
+      email,
+      bio,
+      business_name,
+      website_link,
+      portfolio_link,
+      isCreator,
+      updateProfile,
+      uploadProfileImage,
+      profileImageUrl,
+    };
+  },
+};
+
+</script>
   
   <style scoped>
 
