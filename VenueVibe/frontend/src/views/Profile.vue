@@ -4,15 +4,26 @@
       <div class="row">
         <!-- Profile Photo Column -->
         <div class="col-lg-2 text-center">
-          <img
-            :src="profileImageUrl || 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'"
-            class="rounded-circle mb-4"
-            alt="Profile photo"
-            width="150px"
-            height="150px"
-            style="object-fit: cover;"
+          <input
+            type="file"
+            @change="uploadProfileImage"
+            accept="image/*"
+            class="form-control mt-3"
+            style="display: none;"
+            ref="fileInput"
           />
-          <input type="file" @change="uploadProfileImage" accept="image/*" class="form-control mt-3" />
+          <div class="profile-photo-container">
+            <img
+              @click="selectProfileImage"
+              :src="profileImageUrl || 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'"
+              class="rounded-circle mb-4"
+              alt="Profile photo"
+              width="150px"
+              height="150px"
+              style="object-fit: cover; cursor: pointer;"
+            />
+            <i class="fa fa-pencil-alt edit-icon pb-4" aria-hidden="true"></i>
+          </div>
           <h3 style="color:white" class="mb-0">{{ username }}</h3>
           <!-- <p class="text-muted">{{ email }}</p> -->
         </div>
@@ -152,110 +163,106 @@
     </body>
   </template>
   
-<script>
-import { ref, onMounted } from 'vue';
-import { getAuth } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Adjust the path as necessary
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase Storage imports
-
-export default {
-  setup() {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const storage = getStorage();
-
-    const username = ref('');
-    const email = ref('');
-    const bio = ref('');
-    const business_name = ref('');
-    const website_link = ref('');
-    const portfolio_link = ref('');
-    const isCreator = ref(true); // Default to 'creator' profile type
-    const profileImageUrl = ref(''); // Reactive variable for profile image URL
-
-    // Fetch user data from Firestore
-    const fetchUserData = async () => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, 'user', user.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          username.value = userData.username || '';
-          email.value = userData.email || '';
-          bio.value = userData.bio || '';
-          business_name.value = userData.business_name || '';
-          website_link.value = userData.website_link || '';
-          portfolio_link.value = userData.portfolio_link || '';
-          isCreator.value = userData.profile_type === 'creator';
-          profileImageUrl.value = userData.profile_image || ''; // Set profile image URL
+  <script>
+  import { ref, onMounted } from 'vue';
+  import { getAuth } from 'firebase/auth';
+  import { doc, getDoc, setDoc } from 'firebase/firestore';
+  import { db } from '../firebase'; // Adjust the path as necessary
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+  
+  export default {
+    setup() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const storage = getStorage();
+  
+      const username = ref('');
+      const email = ref('');
+      const bio = ref('');
+      const business_name = ref('');
+      const website_link = ref('');
+      const portfolio_link = ref('');
+      const isCreator = ref(true);
+      const profileImageUrl = ref('');
+  
+      const fetchUserData = async () => {
+        if (user) {
+          const userDoc = await getDoc(doc(db, 'user', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            username.value = userData.username || '';
+            email.value = userData.email || '';
+            bio.value = userData.bio || '';
+            business_name.value = userData.business_name || '';
+            website_link.value = userData.website_link || '';
+            portfolio_link.value = userData.portfolio_link || '';
+            isCreator.value = userData.profile_type === 'creator';
+            profileImageUrl.value = userData.profile_image || '';
+          }
         }
-      }
-    };
-
-    // Update user profile in Firestore
-    const updateProfile = async () => {
-      if (user) {
-        await setDoc(doc(db, 'user', user.uid), {
-          bio: bio.value,
-          business_name: business_name.value,
-          profile_type: isCreator.value ? 'organiser' : 'creator',
-          website_link: website_link.value,
-          portfolio_link: portfolio_link.value,
-        }, { merge: true }); // Merge to update specific fields
-
-        alert('Profile updated successfully!');
-      }
-    };
-
-    // Upload profile image to Firebase Storage
-    const uploadProfileImage = async (event) => {
-      const file = event.target.files[0];
-      if (file && user) {
-        const storagePath = `profile_images/${user.uid}/${file.name}`;
-        const fileRef = storageRef(storage, storagePath);
-
-        try {
-          // Upload the file to Firebase Storage
-          await uploadBytes(fileRef, file);
-          console.log('File uploaded successfully!');
-
-          // Get the download URL of the uploaded image
-          const downloadUrl = await getDownloadURL(fileRef);
-
-          // Save the image URL to Firestore under the 'profile_image' field
+      };
+  
+      const updateProfile = async () => {
+        if (user) {
           await setDoc(doc(db, 'user', user.uid), {
-            profile_image: downloadUrl,
+            bio: bio.value,
+            business_name: business_name.value,
+            profile_type: isCreator.value ? 'organiser' : 'creator',
+            website_link: website_link.value,
+            portfolio_link: portfolio_link.value,
           }, { merge: true });
-
-          // Update the profile image URL in the UI
-          profileImageUrl.value = downloadUrl;
-        } catch (error) {
-          console.error('Error uploading profile image:', error);
+          alert('Profile updated successfully!');
         }
-      }
-    };
-
-    // Fetch user data when component is mounted
-    onMounted(() => {
-      fetchUserData();
-    });
-
-    return {
-      username,
-      email,
-      bio,
-      business_name,
-      website_link,
-      portfolio_link,
-      isCreator,
-      updateProfile,
-      uploadProfileImage,
-      profileImageUrl,
-    };
-  },
-};
-
-</script>
+      };
+  
+      const uploadProfileImage = async (event) => {
+        const file = event.target.files[0];
+        if (file && user) {
+          const storagePath = `profile_images/${user.uid}/${file.name}`;
+          const fileRef = storageRef(storage, storagePath);
+  
+          try {
+            await uploadBytes(fileRef, file);
+            const downloadUrl = await getDownloadURL(fileRef);
+            await setDoc(doc(db, 'user', user.uid), {
+              profile_image: downloadUrl,
+            }, { merge: true });
+            profileImageUrl.value = downloadUrl;
+          } catch (error) {
+            console.error('Error uploading profile image:', error);
+          }
+        }
+      };
+  
+      // New method to trigger file input
+      const selectProfileImage = () => {
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+          fileInput.click();
+        }
+      };
+  
+      onMounted(() => {
+        fetchUserData();
+      });
+  
+      return {
+        username,
+        email,
+        bio,
+        business_name,
+        website_link,
+        portfolio_link,
+        isCreator,
+        updateProfile,
+        uploadProfileImage,
+        selectProfileImage, // Expose the new method
+        profileImageUrl,
+      };
+    },
+  };
+  </script>
+  
   
   <style scoped>
 
@@ -263,11 +270,37 @@ export default {
     background: #36b598;
   }
   
-  img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-  }
+  .profile-photo-container {
+  position: relative; /* Position relative to contain the icon */
+  display: inline-block; /* Allow the container to size around the image */
+}
+
+img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  transition: transform 0.3s ease, filter 0.3s ease; /* Transition for smooth scaling and filtering */
+}
+
+img:hover {
+  transform: scale(1.1); /* Enlarge the image */
+  filter: brightness(0.4); /* Darken the image */
+}
+
+.edit-icon {
+  position: absolute; /* Position absolute to the container */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust to center */
+  font-size: 38px; /* Icon size */
+  color: white; /* Icon color */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease; /* Smooth transition for opacity */
+}
+
+.profile-photo-container:hover .edit-icon {
+  opacity: 1; /* Show icon on hover */
+}
   
   .form-control:focus {
     box-shadow: none;
