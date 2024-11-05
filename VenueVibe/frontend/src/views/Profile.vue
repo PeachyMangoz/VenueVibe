@@ -1,6 +1,6 @@
 <template>
 <body>
-    <div class="container py-5">
+    <div class="container.fluid py-4 mx-3">
       <div class="row">
         <!-- Profile Photo Column -->
         <div class="col-lg-2 text-center">
@@ -12,8 +12,8 @@
             height="150px"
             style="object-fit: cover;"
           />
-          <h5 style="color:white" class="mb-0">{{ username }}</h5>
-          <p class="text-muted">{{ email }}</p>
+          <h3 style="color:white" class="mb-0">{{ username }}</h3>
+          <!-- <p class="text-muted">{{ email }}</p> -->
         </div>
   
         <!-- Main Form Column -->
@@ -23,6 +23,17 @@
               <h5 class="card-title mb-4">Profile Settings</h5>
               <form @submit.prevent="updateProfile">
                 <!-- Business Name -->
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input
+                    v-model="email"
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter Name of Your Business"
+                    required
+                    disabled
+                  />
+                </div>
                 <div class="mb-3">
                   <label class="form-label">Business Name</label>
                   <input
@@ -80,7 +91,6 @@
                     class="form-control"
                     placeholder="Enter Your Bio"
                     rows="4"
-                    required
                   ></textarea>
                 </div>
   
