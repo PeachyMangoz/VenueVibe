@@ -37,6 +37,10 @@
             <input type="text" v-model="email" placeholder="Email" />
           </div>
           <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" v-model="username" placeholder="Username" />
+          </div>
+          <div class="input-field">
             <i class="fas fa-lock"></i>
             <input type="password" v-model="password" placeholder="Password" />
           </div>
@@ -92,6 +96,7 @@ import { db } from "../firebase.js";
 
 // Initialize reactive variables for form inputs
 const email = ref('');
+const username = ref('')
 const password = ref('');
 const signInEmail = ref('');
 const signInPassword = ref('');
@@ -128,12 +133,15 @@ const register = async () => {
     console.log('Successfully registered!', user);
 
     // Create a Firestore document with just the user's UID as the doc ID (no fields yet)
-    await setDoc(doc(db, "user", user.uid), {});
+    await setDoc(doc(db, "user", user.uid), {
+      email: user.email, // Save the user's email in the Firestore document
+      username: username.value
+    });
 
     // Update Vuex store: Set user data and loggedIn status
     store.commit('SET_LOGGED_IN', true);
     store.commit('SET_USER', {
-      displayName: user.displayName,
+      displayName: username.value,
       email: user.email
     });
 
@@ -154,21 +162,32 @@ const signIn = async () => {
 
     console.log('Successfully logged in!', user);
 
-    // Update Vuex store: Set user data and loggedIn status
-    store.commit('SET_LOGGED_IN', true);
-    store.commit('SET_USER', {
-      displayName: user.displayName,
-      email: user.email,
-      uid: user.uid
-    });
+    // Fetch the user document from Firestore
+    const userDoc = await getDoc(doc(db, "user", user.uid));
 
-    // Redirect to Home after successful login
-    router.push('/');
+    if (userDoc.exists()) {
+      const userData = userDoc.data(); // Retrieve user data (email, username, etc.)
+      
+      // Update Vuex store: Set user data and loggedIn status
+      store.commit('SET_LOGGED_IN', true);
+      store.commit('SET_USER', {
+        displayName: userData.username, // Use the username from Firestore
+        email: user.email,
+        uid: user.uid
+      });
+
+      // Redirect to Home after successful login
+      router.push('/');
+    } else {
+      console.error('User data not found in Firestore');
+    }
+
   } catch (error) {
     console.error('Error during sign-in:', error.code);
     alert(handleError(error)); // Display error message to the user
   }
-}
+};
+
 </script>
 
 <script>

@@ -24,8 +24,10 @@ const store = createStore({
     fetchUser({ commit }, user) {
       commit("SET_LOGGED_IN", user !== null);
       if (user) {
+        // Check if the user data includes `username` 
+        const displayName = user.username || user.displayName || "User"; // Fallback to displayName or "User"
         commit("SET_USER", {
-          displayName: user.displayName,
+          displayName: displayName,
           email: user.email
         });
       } else {
