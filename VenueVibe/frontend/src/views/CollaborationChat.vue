@@ -27,7 +27,9 @@
               <p class="chat-name">{{ getChatPartnerName(chat) }}</p>
               <p class="chat-preview">{{ chat.lastMessage }}</p>
             </div>
-            <span class="chat-time">{{ formatDate(chat.lastMessageTimeStamp) || " " }}</span>
+            <span class="chat-time">{{
+              formatDate(chat.lastMessageTimeStamp) || " "
+            }}</span>
           </li>
         </ul>
       </div>
@@ -54,14 +56,16 @@
 
       <!-- Message Input -->
       <footer class="message-input">
-        <input
-          type="text"
-          placeholder="Write your message..."
-          v-model="newMessage"
-        />
-        <button @click="sendMessage" class="send-button">
-          <img src="path-to-send-icon.svg" alt="Send" />
-        </button>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            placeholder="Write your message..."
+            v-model="newMessage"
+            class="message-input-field"
+          />
+          <button @click="sendMessage" class="send-button">
+          </button>
+        </div>
       </footer>
     </section>
   </div>
@@ -101,24 +105,29 @@ export default {
     };
   },
   created() {
-    this.fetchUserChats().then(() => {
-    this.listenForChatUpdates(); // Start listening for updates after data retrieval
-    }).catch((error) => {
+    this.fetchUserChats()
+      .then(() => {
+        this.listenForChatUpdates(); // Start listening for updates after data retrieval
+      })
+      .catch((error) => {
         console.error("Error initializing chat data:", error);
-    });
+      });
   },
   methods: {
     listenForChatUpdates() {
-  const chatsRef = collection(db, "chat");
-  const q = query(chatsRef, where("users", "array-contains", this.currentUserId));
+      const chatsRef = collection(db, "chat");
+      const q = query(
+        chatsRef,
+        where("users", "array-contains", this.currentUserId)
+      );
 
-  onSnapshot(q, async (snapshot) => {
-    const updatedChats = await Promise.all(
-      snapshot.docs.map(async (chatDoc) => {
-        const chatData = { id: chatDoc.id, ...chatDoc.data() };
+      onSnapshot(q, async (snapshot) => {
+        const updatedChats = await Promise.all(
+          snapshot.docs.map(async (chatDoc) => {
+            const chatData = { id: chatDoc.id, ...chatDoc.data() };
 
-        // Initialize userInfo for real-time updates
-        const userInfo = {};
+            // Initialize userInfo for real-time updates
+            const userInfo = {};
             for (const userId of chatData.users) {
               const userDocRef = doc(db, "user", userId); // Correct usage of `doc()` with db and collection name
               const userDocSnapshot = await getDoc(userDocRef);
@@ -129,22 +138,22 @@ export default {
               }
             }
 
-        // Return the chat data including userInfo
-        return {
-          id: chatDoc.id,
-          lastMessage: chatData.lastMessage || "",
-          lastMessageTimeStamp: chatData.lastMessageTimeStamp || null,
-          users: chatData.users || [],
-          userInfo,
-        };
-      })
-    );
+            // Return the chat data including userInfo
+            return {
+              id: chatDoc.id,
+              lastMessage: chatData.lastMessage || "",
+              lastMessageTimeStamp: chatData.lastMessageTimeStamp || null,
+              users: chatData.users || [],
+              userInfo,
+            };
+          })
+        );
 
-    // Update the `userChats` data with the latest real-time updates
-    this.userChats = updatedChats;
-    console.log("Updated User Chats with Real-Time Data:", this.userChats);
-  });
-},
+        // Update the `userChats` data with the latest real-time updates
+        this.userChats = updatedChats;
+        console.log("Updated User Chats with Real-Time Data:", this.userChats);
+      });
+    },
 
     async fetchUserChats() {
       try {
@@ -206,60 +215,60 @@ export default {
     },
 
     async createNewChatWithSelectedUser() {
-  try {
-    // Fetch current user info and selected user info
-    const currentUserDocRef = doc(db, "user", this.currentUserId);
-    const selectedUserDocRef = doc(db, "user", this.selectedUserId);
+      try {
+        // Fetch current user info and selected user info
+        const currentUserDocRef = doc(db, "user", this.currentUserId);
+        const selectedUserDocRef = doc(db, "user", this.selectedUserId);
 
-    const currentUserSnapshot = await getDoc(currentUserDocRef);
-    const selectedUserSnapshot = await getDoc(selectedUserDocRef);
+        const currentUserSnapshot = await getDoc(currentUserDocRef);
+        const selectedUserSnapshot = await getDoc(selectedUserDocRef);
 
-    if (!currentUserSnapshot.exists() || !selectedUserSnapshot.exists()) {
-      throw new Error("User profile data missing for one of the users.");
-    }
+        if (!currentUserSnapshot.exists() || !selectedUserSnapshot.exists()) {
+          throw new Error("User profile data missing for one of the users.");
+        }
 
-    const {
-      username: currentDisplayName,
-      profile_image: currentProfilePic,
-    } = currentUserSnapshot.data();
-    const {
-      username: selectedDisplayName,
-      profile_image: selectedProfilePic,
-    } = selectedUserSnapshot.data();
+        const {
+          username: currentDisplayName,
+          profile_image: currentProfilePic,
+        } = currentUserSnapshot.data();
+        const {
+          username: selectedDisplayName,
+          profile_image: selectedProfilePic,
+        } = selectedUserSnapshot.data();
 
-    // Create userInfo object with only the required fields
-    const userInfo = {
-      [this.currentUserId]: {
-        username: currentDisplayName,
-        profile_image: currentProfilePic,
-      },
-      [this.selectedUserId]: {
-        username: selectedDisplayName,
-        profile_image: selectedProfilePic,
-      },
-    };
+        // Create userInfo object with only the required fields
+        const userInfo = {
+          [this.currentUserId]: {
+            username: currentDisplayName,
+            profile_image: currentProfilePic,
+          },
+          [this.selectedUserId]: {
+            username: selectedDisplayName,
+            profile_image: selectedProfilePic,
+          },
+        };
 
-    // Create a new chat document with user IDs and userInfo
-    const newChatDoc = await addDoc(collection(db, "chat"), {
-      users: [this.currentUserId, this.selectedUserId],
-      userInfo,
-      createdAt: serverTimestamp(),
-    });
+        // Create a new chat document with user IDs and userInfo
+        const newChatDoc = await addDoc(collection(db, "chat"), {
+          users: [this.currentUserId, this.selectedUserId],
+          userInfo,
+          createdAt: serverTimestamp(),
+        });
 
-    // Add new chat to userChats and select it
-    const newChat = {
-      id: newChatDoc.id,
-      users: [this.currentUserId, this.selectedUserId],
-      userInfo,
-      lastMessage: "",
-      lastMessageTime: null,
-    };
-    this.userChats.push(newChat);
-    this.selectChat(newChatDoc.id);
-  } catch (error) {
-    console.error("Error creating new chat:", error);
-  }
-},
+        // Add new chat to userChats and select it
+        const newChat = {
+          id: newChatDoc.id,
+          users: [this.currentUserId, this.selectedUserId],
+          userInfo,
+          lastMessage: "",
+          lastMessageTime: null,
+        };
+        this.userChats.push(newChat);
+        this.selectChat(newChatDoc.id);
+      } catch (error) {
+        console.error("Error creating new chat:", error);
+      }
+    },
 
     listenForMessages() {
       // Clean up previous listener if it exists
@@ -326,38 +335,54 @@ export default {
     },
 
     getChatPartnerProfileImage(chat) {
-  // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
-  if (!chat || !chat.users || !Array.isArray(chat.users) || !chat.userInfo) {
-    console.warn("Chat data is missing or improperly formatted:", chat);
-    return "/path-to-default-profile-pic.jpg"; // Return a default image if data is missing
-  }
+      // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
+      if (
+        !chat ||
+        !chat.users ||
+        !Array.isArray(chat.users) ||
+        !chat.userInfo
+      ) {
+        console.warn("Chat data is missing or improperly formatted:", chat);
+        return "/path-to-default-profile-pic.jpg"; // Return a default image if data is missing
+      }
 
-  // Find the partner ID
-  const partnerId = chat.users.find((userId) => userId !== this.currentUserId);
-  
-  // Return the partner's profile picture, or default if missing
-  return chat.userInfo[partnerId]?.profile_image || "/path-to-default-profile-pic.jpg";
-},
+      // Find the partner ID
+      const partnerId = chat.users.find(
+        (userId) => userId !== this.currentUserId
+      );
 
-getChatPartnerName(chat) {
-  // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
-  if (!chat || !chat.users || !Array.isArray(chat.users) || !chat.userInfo) {
-    console.warn("Chat data is missing or improperly formatted:", chat);
-    return "Unknown User"; // Return a default name if data is missing
-  }
+      // Return the partner's profile picture, or default if missing
+      return (
+        chat.userInfo[partnerId]?.profile_image ||
+        "/path-to-default-profile-pic.jpg"
+      );
+    },
 
-  // Find the partner ID
-  const partnerId = chat.users.find((userId) => userId !== this.currentUserId);
-  
-  // Return the partner's display name, or default if missing
-  return chat.userInfo[partnerId]?.username || "Unknown User";
-},
+    getChatPartnerName(chat) {
+      // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
+      if (
+        !chat ||
+        !chat.users ||
+        !Array.isArray(chat.users) ||
+        !chat.userInfo
+      ) {
+        console.warn("Chat data is missing or improperly formatted:", chat);
+        return "Unknown User"; // Return a default name if data is missing
+      }
+
+      // Find the partner ID
+      const partnerId = chat.users.find(
+        (userId) => userId !== this.currentUserId
+      );
+
+      // Return the partner's display name, or default if missing
+      return chat.userInfo[partnerId]?.username || "Unknown User";
+    },
 
     formatDate(timestamp) {
       return timestamp?.toDate().toLocaleTimeString() || "";
     },
   },
-
 };
 </script>
 
@@ -370,6 +395,7 @@ getChatPartnerName(chat) {
 /* Sidebar styling */
 .sidebar {
   width: 25%;
+  min-width: 15%;
   background-color: white;
   padding: 1rem;
   display: flex;
@@ -388,7 +414,8 @@ getChatPartnerName(chat) {
   margin: 1rem 0 0.5rem;
 }
 
-ul, ol {
+ul,
+ol {
   padding: 0;
   margin: 0;
 }
@@ -421,8 +448,8 @@ ul, ol {
   font-size: 0.8rem;
   color: #aaa;
 }
-.active{
-    background-color: rgba(0, 0, 0, 0.1);
+.active {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 /* Main chat area styling */
 .chat-area {
@@ -453,18 +480,43 @@ ul, ol {
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 1rem;
+  position: relative;
 }
 .message-incoming {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  background-color: rgb(54, 181, 152, 0.2);
+  border: 1px solid transparent;
   text-align: left;
 }
+.message-incoming:before {
+  content: "";
+  position: absolute;
+  left: -8px; /* Adjust this to position the tail */
+  bottom: 6px; /* Adjust to move tail vertically */
+  width: 0;
+  height: 0;
+  border-right: 8px solid rgb(54, 181, 152, 0.2); /* Matches background color */
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
 .message-outgoing {
-  background-color: #22a1f3;
-  color: #fff;
+  background-color: #fff;
+  color: black;
   margin-left: auto;
   text-align: right;
 }
+.message-outgoing:after {
+  content: "";
+  position: absolute;
+  right: -8px; /* Adjust this to position the tail */
+  bottom: 6px; /* Adjust to move tail vertically */
+  width: 0;
+  height: 0;
+  border-left: 8px solid #fff; /* Matches background color */
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
 .message-time {
   display: block;
   font-size: 0.75rem;
@@ -473,26 +525,38 @@ ul, ol {
 }
 
 .message-input {
-  display: flex;
   padding: 1rem;
   border-top: 1px solid #ddd;
 }
-.message-input input {
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.message-input-field {
+  width: 100%;
   flex-grow: 1;
-  padding: 0.75rem;
+  padding: 10px 40px 10px 15px; /* Extra padding on the right for the button */
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 20px;
-  margin-right: 0.5rem;
+  outline: none;
+  box-sizing: border-box;
 }
+
 .send-button {
-  background-color: #22a1f3;
-  color: white;
-  padding: 0.75rem;
+  position: absolute;
+  right: 10px; /* Adjust to position button inside input */
+  background-color:rgb(54, 181, 152, 0.2) ;
+  height: 10%;
+  width: auto;
   border: none;
+  outline: none;
   cursor: pointer;
+  padding: 0;
+
 }
-.send-button img {
-  width: 20px;
-  height: 20px;
-}
+
 </style>
