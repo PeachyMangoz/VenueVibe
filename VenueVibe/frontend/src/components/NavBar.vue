@@ -35,6 +35,11 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
               <li>
+                <router-link class="dropdown-item" to="/profile">
+                  User Profile
+                </router-link>
+              </li>
+              <li>
                 <router-link class="dropdown-item" to="/businessprofile">
                   Business Profile
                 </router-link>

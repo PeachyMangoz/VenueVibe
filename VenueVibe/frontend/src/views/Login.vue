@@ -91,7 +91,7 @@ import { ref } from 'vue'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'vue-router'; // Import the Vue router
 import { useStore } from 'vuex'; // Import Vuex store
-import { doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+import { doc, setDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
 import { db } from "../firebase.js";
 
 // Initialize reactive variables for form inputs

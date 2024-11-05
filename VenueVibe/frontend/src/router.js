@@ -6,7 +6,6 @@ import EventReview from './views/EventReview.vue';
 // import Organizers from './views/Organizers.vue';
 // import Events from './views/Events.vue';
 // import Contact from './views/Contact.vue';
-// import Profile from './views/Profile.vue';
 import About from './views/About.vue';
 import NotFound from './views/NotFound.vue';
 import Collaboration from './views/Collaboration.vue';
@@ -16,6 +15,7 @@ import ApplicationProfiles from './views/ApplicationProfiles.vue';
 import EventApplications from './views/EventApplications.vue';
 import Payments from './views/Payments.vue';
 import Chat from './views/CollaborationChat.vue';
+import Profile from './views/Profile.vue';
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/apply', name: 'Apply', component: NotFound },
@@ -31,6 +31,7 @@ const routes = [
   { path: '/applicationprofiles', name: 'ApplicationProfiles', component: ApplicationProfiles },
   { path: '/eventapplications', name:'EventApplications', component: EventApplications},
   { path: '/payments', name:'Payments', component: Payments },
+  { path: '/profile', name:'Profile', component: Profile },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ];
 const router = createRouter({
