@@ -118,7 +118,6 @@ export default {
   width: 100%;
   height: auto; /* Let content determine height */
   min-height: 200px;
-  margin-top: 10px;
 }
 
 .footer h5{
