@@ -3,7 +3,7 @@
     <div class="container.fluid py-4 mx-3">
       <div class="row">
         <!-- Profile Photo Column -->
-        <div class="col-lg-2 text-center">
+        <div class="col-lg-2 text-center mt-4">
           <input
             type="file"
             @change="uploadProfileImage"
