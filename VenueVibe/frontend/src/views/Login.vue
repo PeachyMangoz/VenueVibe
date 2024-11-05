@@ -87,6 +87,8 @@ import { ref } from 'vue'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from 'vue-router'; // Import the Vue router
 import { useStore } from 'vuex'; // Import Vuex store
+import { doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../firebase.js";
 
 // Initialize reactive variables for form inputs
 const email = ref('');
@@ -125,6 +127,9 @@ const register = async () => {
 
     console.log('Successfully registered!', user);
 
+    // Create a Firestore document with just the user's UID as the doc ID (no fields yet)
+    await setDoc(doc(db, "user", user.uid), {});
+
     // Update Vuex store: Set user data and loggedIn status
     store.commit('SET_LOGGED_IN', true);
     store.commit('SET_USER', {
@@ -153,7 +158,8 @@ const signIn = async () => {
     store.commit('SET_LOGGED_IN', true);
     store.commit('SET_USER', {
       displayName: user.displayName,
-      email: user.email
+      email: user.email,
+      uid: user.uid
     });
 
     // Redirect to Home after successful login
