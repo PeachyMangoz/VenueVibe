@@ -114,6 +114,8 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { db } from '../firebase'
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
 
+// You can use this.$route.params.boothId to get the booth ID
+
 export default {
   name: 'ApplicationProfiles',
   setup() {

@@ -15,6 +15,7 @@
         <p><strong>Created At:</strong> {{ formatDate(booth.created_at) }}</p>
         <p><strong>Updated At:</strong> {{ formatDate(booth.updated_at) }}</p>
       </div>
+      <button @click="applyForBooth" class="apply-button">Apply</button>
       <router-link to="/booths">
         <button class="back-button">Back to Booth Listings</button>
       </router-link>
@@ -64,6 +65,9 @@ export default {
       const date = new Date(timestamp);
       return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     },
+    applyForBooth() {
+      this.$router.push(`/applicationprofiles?boothId=${this.booth.booth_id}`);
+    },
     loadGoogleMaps() {
       const loader = new Loader({
         apiKey: 'AIzaSyAeSyt0WZgXPM3dw-fB_ryg1Vs0Yq6OFl4',  /* Restricted API key */
@@ -101,6 +105,18 @@ export default {
 </script>
 
 <style scoped>
+.apply-button {
+  background-color: #16697a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
 .booth-details-container {
   display: flex;
   flex-direction: column;
