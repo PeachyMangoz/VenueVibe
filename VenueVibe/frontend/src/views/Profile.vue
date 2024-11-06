@@ -68,8 +68,26 @@
                       class="toggle-input"
                     />
                     <label for="roleToggle" class="toggle-label">
-                      <span class="toggle-text left">Creator</span>
-                      <span class="toggle-text right">Organiser</span>
+                      <span class="toggle-text left">Organiser</span>
+                      <span class="toggle-text right">Creator</span>
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Collab Toggle -->
+                <div class="mb-3">
+                  <label class="form-label">Collaboration</label>
+                  <div class="toggle-switch">
+                    <input
+                      type="checkbox"
+                      id="collabToggle"
+                      v-model="collab"
+                      class="toggle-input"
+                    />
+                    <label for="collabToggle" class="toggle-label">
+                      <span class="toggle-text left">No</span>
+                      <span class="toggle-text right">Yes</span>
                       <span class="toggle-slider"></span>
                     </label>
                   </div>
@@ -183,6 +201,7 @@
       const website_link = ref('');
       const portfolio_link = ref('');
       const isCreator = ref(true);
+      const collab = ref(false);  // New collab field
       const profileImageUrl = ref('');
   
       const fetchUserData = async () => {
@@ -197,6 +216,7 @@
             website_link.value = userData.website_link || '';
             portfolio_link.value = userData.portfolio_link || '';
             isCreator.value = userData.profile_type === 'creator';
+            collab.value = userData.collab || false;  // Fetch the collab value
             profileImageUrl.value = userData.profile_image || '';
           }
         }
@@ -207,9 +227,10 @@
           await setDoc(doc(db, 'user', user.uid), {
             bio: bio.value,
             business_name: business_name.value,
-            profile_type: isCreator.value ? 'organiser' : 'creator',
+            profile_type: isCreator.value ? 'creator' : 'organiser',
             website_link: website_link.value,
             portfolio_link: portfolio_link.value,
+            collab: collab.value,  // Update collab value
           }, { merge: true });
           alert('Profile updated successfully!');
         }
@@ -254,6 +275,7 @@
         website_link,
         portfolio_link,
         isCreator,
+        collab,
         updateProfile,
         uploadProfileImage,
         selectProfileImage, // Expose the new method
