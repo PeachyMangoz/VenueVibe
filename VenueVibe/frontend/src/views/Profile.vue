@@ -1,5 +1,5 @@
 <template>
-<body>
+  <body>
     <div class="container.fluid py-4 mx-3">
       <div class="row">
         <!-- Profile Photo Column -->
@@ -25,9 +25,8 @@
             <i class="fa fa-pencil-alt edit-icon pb-4" aria-hidden="true"></i>
           </div>
           <h3 style="color:white" class="mb-0">{{ username }}</h3>
-          <!-- <p class="text-muted">{{ email }}</p> -->
         </div>
-  
+
         <!-- Main Form Column -->
         <div class="col-lg-6 mt-4">
           <div class="card">
@@ -56,7 +55,7 @@
                     required
                   />
                 </div>
-  
+
                 <!-- Profile Type Toggle -->
                 <div class="mb-3">
                   <label class="form-label">Profile Type</label>
@@ -92,7 +91,19 @@
                     </label>
                   </div>
                 </div>
-  
+
+                <!-- Collab Background Upload (appears if collab is true) -->
+                <div v-if="collab" class="mb-3">
+                  <label class="form-label">Upload Collab Background</label>
+                  <input
+                    type="file"
+                    @change="uploadCollabBackground"
+                    accept="image/*"
+                    class="form-control"
+                    ref="collabBackgroundInput"  
+                  />
+                </div>
+
                 <!-- Links -->
                 <div class="mb-3">
                   <label class="form-label">Website Link</label>
@@ -112,7 +123,7 @@
                     placeholder="Enter Link to Your Portfolio"
                   />
                 </div>
-  
+
                 <!-- Business Bio -->
                 <div class="mb-3">
                   <label class="form-label">Business Bio</label>
@@ -123,7 +134,7 @@
                     rows="4"
                   ></textarea>
                 </div>
-  
+
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary">Save Profile</button>
                 </div>
@@ -131,7 +142,7 @@
             </div>
           </div>
         </div>
-  
+
         <!-- Additional Profile Columns -->
         <div class="col-lg-4 mt-4">
           <div class="row">
@@ -154,7 +165,7 @@
                 </div>
               </div>
             </div>
-  
+
             <!-- Application Profiles Box -->
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
@@ -178,112 +189,132 @@
         </div>
       </div>
     </div>
-    </body>
-  </template>
-  
-  <script>
-  import { ref, onMounted } from 'vue';
-  import { getAuth } from 'firebase/auth';
-  import { doc, getDoc, setDoc } from 'firebase/firestore';
-  import { db } from '../firebase'; // Adjust the path as necessary
-  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-  
-  export default {
-    setup() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      const storage = getStorage();
-  
-      const username = ref('');
-      const email = ref('');
-      const bio = ref('');
-      const business_name = ref('');
-      const website_link = ref('');
-      const portfolio_link = ref('');
-      const isCreator = ref(true);
-      const collab = ref(false);  // New collab field
-      const profileImageUrl = ref('');
-  
-      const fetchUserData = async () => {
-        if (user) {
-          const userDoc = await getDoc(doc(db, 'user', user.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            username.value = userData.username || '';
-            email.value = userData.email || '';
-            bio.value = userData.bio || '';
-            business_name.value = userData.business_name || '';
-            website_link.value = userData.website_link || '';
-            portfolio_link.value = userData.portfolio_link || '';
-            isCreator.value = userData.profile_type === 'creator';
-            collab.value = userData.collab || false;  // Fetch the collab value
-            profileImageUrl.value = userData.profile_image || '';
-          }
+  </body>
+</template>
+
+<script>
+import { ref, onMounted } from 'vue';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // Adjust the path as necessary
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+export default {
+  setup() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const storage = getStorage();
+
+    const username = ref('');
+    const email = ref('');
+    const bio = ref('');
+    const business_name = ref('');
+    const website_link = ref('');
+    const portfolio_link = ref('');
+    const isCreator = ref(true);
+    const collab = ref(false);  // New collab field
+    const profileImageUrl = ref('');
+    const collabBackgroundUrl = ref('');  // Collab background URL
+    const collabBackgroundInput = ref(null); // Ref for collab background input
+
+    const fetchUserData = async () => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'user', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          username.value = userData.username || '';
+          email.value = userData.email || '';
+          bio.value = userData.bio || '';
+          business_name.value = userData.business_name || '';
+          website_link.value = userData.website_link || '';
+          portfolio_link.value = userData.portfolio_link || '';
+          isCreator.value = userData.profile_type === 'creator';
+          collab.value = userData.collab || false;  // Fetch the collab value
+          profileImageUrl.value = userData.profile_image || '';
+          collabBackgroundUrl.value = userData.collab_background || '';  // Fetch the collab background URL
         }
-      };
-  
-      const updateProfile = async () => {
-        if (user) {
-          await setDoc(doc(db, 'user', user.uid), {
-            bio: bio.value,
-            business_name: business_name.value,
-            profile_type: isCreator.value ? 'creator' : 'organiser',
-            website_link: website_link.value,
-            portfolio_link: portfolio_link.value,
-            collab: collab.value,  // Update collab value
-          }, { merge: true });
-          alert('Profile updated successfully!');
+      }
+    };
+
+    const updateProfile = async () => {
+      if (user) {
+        await setDoc(doc(db, 'user', user.uid), {
+          bio: bio.value,
+          business_name: business_name.value,
+          profile_type: isCreator.value ? 'creator' : 'organiser',
+          website_link: website_link.value,
+          portfolio_link: portfolio_link.value,
+          collab: collab.value,  // Update collab value
+        }, { merge: true });
+        alert('Profile updated successfully!');
+      }
+    };
+
+    const uploadProfileImage = async (event) => {
+      const file = event.target.files[0];
+      if (file && user) {
+        const storagePath = `profile_images/${user.uid}/${file.name}`;
+        const fileRef = storageRef(storage, storagePath);
+
+        try {
+          await uploadBytes(fileRef, file);
+          const downloadUrl = await getDownloadURL(fileRef);
+          await setDoc(doc(db, 'user', user.uid), { profile_image: downloadUrl }, { merge: true });
+          profileImageUrl.value = downloadUrl;
+        } catch (error) {
+          console.error('Error uploading profile image:', error);
         }
-      };
-  
-      const uploadProfileImage = async (event) => {
-        const file = event.target.files[0];
-        if (file && user) {
-          const storagePath = `profile_images/${user.uid}/${file.name}`;
-          const fileRef = storageRef(storage, storagePath);
-  
-          try {
-            await uploadBytes(fileRef, file);
-            const downloadUrl = await getDownloadURL(fileRef);
-            await setDoc(doc(db, 'user', user.uid), {
-              profile_image: downloadUrl,
-            }, { merge: true });
-            profileImageUrl.value = downloadUrl;
-          } catch (error) {
-            console.error('Error uploading profile image:', error);
-          }
+      }
+    };
+
+    const uploadCollabBackground = async (event) => {
+      const file = event.target.files[0];
+      if (file && user) {
+        const storagePath = `collab_backgrounds/${user.uid}/${file.name}`;
+        const fileRef = storageRef(storage, storagePath);
+
+        try {
+          await uploadBytes(fileRef, file);
+          const downloadUrl = await getDownloadURL(fileRef);
+          await setDoc(doc(db, 'user', user.uid), { collab_background: downloadUrl }, { merge: true });
+          collabBackgroundUrl.value = downloadUrl;
+        } catch (error) {
+          console.error('Error uploading collab background:', error);
         }
-      };
-  
-      // New method to trigger file input
-      const selectProfileImage = () => {
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) {
-          fileInput.click();
-        }
-      };
-  
-      onMounted(() => {
-        fetchUserData();
-      });
-  
-      return {
-        username,
-        email,
-        bio,
-        business_name,
-        website_link,
-        portfolio_link,
-        isCreator,
-        collab,
-        updateProfile,
-        uploadProfileImage,
-        selectProfileImage, // Expose the new method
-        profileImageUrl,
-      };
-    },
-  };
-  </script>
+      }
+    };
+
+    const selectProfileImage = () => {
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) {
+        fileInput.click();
+      }
+    };
+
+    onMounted(() => {
+      fetchUserData();
+    });
+
+    return {
+      username,
+      email,
+      bio,
+      business_name,
+      website_link,
+      portfolio_link,
+      isCreator,
+      collab,
+      profileImageUrl,
+      collabBackgroundUrl,
+      collabBackgroundInput,
+      uploadProfileImage,
+      uploadCollabBackground,
+      selectProfileImage,
+      updateProfile
+    };
+  },
+};
+</script>
   
   
   <style scoped>
