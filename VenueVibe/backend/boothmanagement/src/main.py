@@ -1,5 +1,4 @@
-# main.py
-from fastapi import FastAPI, HTTPException, status, Query
+from fastapi import FastAPI, HTTPException, status, Query, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from config.firebase_db import FirestoreClient
 from services.booth_service import BoothService
@@ -9,20 +8,23 @@ import uvicorn
 
 app = FastAPI(title="Booth Listing Microservice")
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://34.31.89.5"],  # Frontend URL
+    allow_origins=["http://localhost:80"],  # Frontend URL
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Initialize Firestore client and BoothService
+# Create a router and prefix it with "/api"
+router = APIRouter(prefix="/api")
+
 firestore_client = FirestoreClient()
 db = firestore_client.get_client()
 booth_service = BoothService(db)
 
-@app.post("/booths/", response_model=Booth, status_code=status.HTTP_201_CREATED)
+@router.post("/booths", response_model=Booth, status_code=status.HTTP_201_CREATED)
 def create_booth(booth: BoothCreate, user_id: str = Query(..., description="ID of the user creating the booth")):
     """
     Create a new booth.
@@ -33,7 +35,7 @@ def create_booth(booth: BoothCreate, user_id: str = Query(..., description="ID o
     created_booth = booth_service.create_booth(booth)
     return created_booth
 
-@app.get("/booths/{booth_id}", response_model=Booth)
+@router.get("/booths/{booth_id}", response_model=Booth)
 def get_booth(booth_id: str):
     """
     Retrieve a booth by its ID.
@@ -43,7 +45,7 @@ def get_booth(booth_id: str):
         raise HTTPException(status_code=404, detail="Booth not found.")
     return booth
 
-@app.put("/booths/{booth_id}", response_model=Booth)
+@router.put("/booths/{booth_id}", response_model=Booth)
 def update_booth(
     booth_id: str,
     booth_update: BoothUpdate,
@@ -61,7 +63,7 @@ def update_booth(
     except PermissionError as pe:
         raise HTTPException(status_code=403, detail=str(pe))
 
-@app.delete("/booths/{booth_id}", status_code=status.HTTP_200_OK)
+@router.delete("/booths/{booth_id}", status_code=status.HTTP_200_OK)
 def delete_booth(
     booth_id: str,
     user_id: str = Query(..., description="ID of the user attempting to delete the booth")
@@ -78,13 +80,15 @@ def delete_booth(
     except PermissionError as pe:
         raise HTTPException(status_code=403, detail=str(pe))
 
-@app.get("/booths/", response_model=List[Booth])
+@router.get("/booths", response_model=List[Booth])
 def list_booths(limit: int = Query(100, ge=1, le=1000, description="Number of booths to retrieve")):
     """
     List all booths with an optional limit.
     """
     booths = booth_service.list_booths(limit)
     return booths
+
+app.include_router(router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8081)
