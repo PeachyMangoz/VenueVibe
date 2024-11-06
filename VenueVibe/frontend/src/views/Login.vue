@@ -135,7 +135,8 @@ const register = async () => {
     // Create a Firestore document with just the user's UID as the doc ID (no fields yet)
     await setDoc(doc(db, "user", user.uid), {
       email: user.email, // Save the user's email in the Firestore document
-      username: username.value
+      username: username.value,
+      collab: false
     });
 
     // Update Vuex store: Set user data and loggedIn status
