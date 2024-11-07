@@ -9,7 +9,7 @@
     </h2>
   </div>
 
-  <div class="container py-5">
+  <div class="container pb-5">
 
     <button @click="showNewProfileForm = true"
             class="btn btn-primary w-100 mb-4"
@@ -18,7 +18,7 @@
     </button>
 
     <div v-if="showNewProfileForm" 
-         class="card mb-4 shadow-sm">
+         class="card shadow-sm">
       <div class="card-body">
         <h3 class="h5 mb-4">
           {{ editingProfileId ? 'Edit' : 'Create New' }} Application Profile
@@ -267,7 +267,6 @@ export default {
 }
 .section-title {
   text-align: center;
-  margin-bottom: 50px;
   padding: 30px 0;
 }
 
