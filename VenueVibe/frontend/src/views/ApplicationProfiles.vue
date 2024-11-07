@@ -62,10 +62,10 @@
     </div>
 
     <div class="profiles-list">
-      <h3 class="h4 mb-4" v-if="applicationProfiles.length > 0">Your Profiles</h3>
+      <h3 class="h4 mb-4" v-if="profiles.length > 0">Your Profiles</h3>
       
       <div class="row g-4">
-        <div v-for="profile in applicationProfiles" 
+        <div v-for="profile in profiles" 
              :key="profile.id" 
              class="col-12">
           <div class="card shadow-sm hover-shadow">
@@ -101,7 +101,7 @@
         </div>
       </div>
 
-      <div v-if="applicationProfiles.length === 0" 
+      <div v-if="profiles.length === 0" 
            class="text-center py-5 text-muted">
         <p>No application profiles created yet. Create your first profile to get started!</p>
       </div>
@@ -113,13 +113,18 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { db } from '../firebase'
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // You can use this.$route.params.boothId to get the booth ID
 
 export default {
-  name: 'ApplicationProfiles',
+  name: 'profiles',
   setup() {
-    const applicationProfiles = ref([])
+    const auth = getAuth(); // Get the auth instance
+    const user = auth.currentUser;
+    const storage = getStorage();
+    const profiles = ref([])
     const showNewProfileForm = ref(false)
     const newProfile = reactive({
       name: '',
@@ -135,10 +140,10 @@ export default {
              newProfile.focus.trim()
     })
 
-    const fetchApplicationProfiles = async () => {
+    const fetchProfiles = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'businessProfiles', userId.value, 'applicationProfiles'))
-        applicationProfiles.value = querySnapshot.docs
+        const querySnapshot = await getDocs(collection(db, 'application_profiles', user.uid, 'profiles'))
+        profiles.value = querySnapshot.docs
           .map(doc => ({ 
             id: doc.id, 
             ...doc.data(),
@@ -160,12 +165,12 @@ export default {
 
         if (editingProfileId.value) {
           await updateDoc(
-            doc(db, 'businessProfiles', userId.value, 'applicationProfiles', editingProfileId.value), 
+            doc(db, 'application_profiles', user.uid, 'profiles', editingProfileId.value), 
             profileData
           )
         } else {
           await addDoc(
-            collection(db, 'businessProfiles', userId.value, 'applicationProfiles'), 
+            collection(db, 'application_profiles', user.uid, 'profiles'), 
             profileData
           )
         }
@@ -173,14 +178,14 @@ export default {
         showNewProfileForm.value = false
         editingProfileId.value = null
         Object.assign(newProfile, { name: '', description: '', focus: '' })
-        await fetchApplicationProfiles()
+        await fetchProfiles()
       } catch (error) {
         console.error("Error saving profile: ", error)
       }
     }
 
     const editProfile = (id) => {
-      const profile = applicationProfiles.value.find(p => p.id === id)
+      const profile = profiles.value.find(p => p.id === id)
       if (profile) {
         Object.assign(newProfile, profile)
         editingProfileId.value = id
@@ -196,8 +201,8 @@ export default {
 
     const deleteProfile = async (id) => {
       try {
-        await deleteDoc(doc(db, 'businessProfiles', userId.value, 'applicationProfiles', id))
-        await fetchApplicationProfiles()
+        await deleteDoc(doc(db, 'application_profiles', user.uid, 'Profiles', id))
+        await fetchProfiles()
       } catch (error) {
         console.error("Error deleting profile: ", error)
       }
@@ -219,12 +224,15 @@ export default {
     }
 
     onMounted(() => {
-      userId.value = 'testUser' 
-      fetchApplicationProfiles()
-    })
+      const user = auth.currentUser; // Get current user from Firebase Auth
+      if (user) {
+        userId.value = user.uid;
+        fetchProfiles();
+      }
+    });
 
     return {
-      applicationProfiles,
+      profiles,
       showNewProfileForm,
       newProfile,
       isFormValid,
