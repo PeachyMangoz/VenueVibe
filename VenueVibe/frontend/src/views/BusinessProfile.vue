@@ -8,7 +8,7 @@
       </div>
     </h2>
   </div>
-  <div class="container py-5">
+  <div class="container pb-5">
     <div v-if="loading" class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 1000;">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -379,7 +379,7 @@ export default {
 <style scoped>
 .section-title {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
   padding: 30px 0;
 }
 
