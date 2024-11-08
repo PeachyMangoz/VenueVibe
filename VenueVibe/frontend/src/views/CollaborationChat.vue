@@ -97,6 +97,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
+import { mapGetters } from "vuex";
 
 export default {
   props: ["id"],
@@ -109,20 +110,23 @@ export default {
       messages: [],
       newMessage: "",
       chatId: null,
-      currentUserId: "pvXAaR3AemPHAycewSDP", // Replace with actual user ID from auth
+      currentUserId: "", // Replace with actual user ID from auth
       selectedUserId: this.id,
       userChats: [], // Stores all chats for the current user
       unsubscribeMessagesListener: null,
     };
   },
   created() {
-    this.fetchUserChats()
-      .then(() => {
-        this.listenForChatUpdates(); // Start listening for updates after data retrieval
-      })
-      .catch((error) => {
-        console.error("Error initializing chat data:", error);
-      });
+    // this.fetchUserChats()
+    //   .then(() => {
+    //     this.listenForChatUpdates(); // Start listening for updates after data retrieval
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error initializing chat data:", error);
+    //   });
+  },
+  computed:{
+    ...mapGetters(["user", "isLoggedIn", "userId"]),
   },
   methods: {
     scrollToBottom() {
@@ -405,6 +409,17 @@ export default {
   },
   mounted() {
     this.scrollToBottom();
+    if (this.isLoggedIn) {
+        console.log("Logged-in User ID:", this.userId);
+        this.currentUserId = this.userId;
+        this.fetchUserChats()
+      .then(() => {
+        this.listenForChatUpdates(); // Start listening for updates after data retrieval
+      })
+      .catch((error) => {
+        console.error("Error initializing chat data:", error);
+      });
+    }
   },
 };
 </script>
