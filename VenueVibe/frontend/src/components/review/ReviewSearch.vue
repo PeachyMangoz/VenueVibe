@@ -10,7 +10,7 @@
               type="text" 
               v-model="searchInput" 
               class="form-control" 
-              placeholder="Enter Event ID" 
+              placeholder="Enter Event ID (case sensitive)" 
               required 
               :disabled="loading"
             />
