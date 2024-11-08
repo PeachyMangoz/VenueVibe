@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="container section-title" data-aos="fade-up">
     <h2>
       <div class="title-with-lines">
