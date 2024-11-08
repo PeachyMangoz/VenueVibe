@@ -101,18 +101,18 @@ defineElement(lottie.loadAnimation);
     </div>
     <div v-else>
       <!-- <div class="container-content"> -->
-        <section class="hero-section d-flex align-items-center">
+        <section class="header-section d-flex align-items-center">
       <div class="container text-center">
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <img src="https://i.pinimg.com/originals/ac/e9/14/ace9144fefcf5b9bafd87b7b66e2b627.gif" alt="Hero" class="hero-image" />
+            <img src="https://i.pinimg.com/originals/ac/e9/14/ace9144fefcf5b9bafd87b7b66e2b627.gif" class="header-image" />
           </div>
-          <div class="col-md-6 text-left">
+          <div class="col-md-6 text-left" style="margin-top: auto; margin-bottom: auto;">
             <h1>Find Your Next</h1>
-            <h1><span>BOOTHY </span>partner</h1>
-            <p>Take your boothing experience to the next level !</p>
+            <h1><span>BOOTHY </span>partner !</h1>
+            <p>And take your boothing experience to the next level</p>
             <div class="mt-4">
-              <button class="btn btn-dark">Get started today</button>
+              <button @click="updatecollab" class="btn btn-dark">Get started today</button>
             </div>
           </div>
         </div>
@@ -180,6 +180,7 @@ import {
   where,
   doc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 export default {
   data() {
@@ -360,6 +361,27 @@ export default {
       this.isSliding = false;
       this.slideDirection = "";
     },
+    async updatecollab(){
+      try {
+        if (this.isLoggedIn) {
+          const userRef = doc(db, "user", this.userId);
+
+          // Update the 'collab' field in Firestore
+          await updateDoc(userRef, {
+            collab: true, // Set collab to true or any value you'd like
+          });
+          console.log("Collab field updated successfully!");
+          alert("You have successfully started collaborating!");
+          this.fetchUserCollabStatus();
+          this.fetchUsers();
+        } else {
+          console.error("No user is currently signed in.");
+          alert("Please sign in to start collaborating.");
+        }
+      } catch (error) {
+        console.error("Error updating collab field:", error);
+      }
+    }
   },
 
   mounted() {
@@ -634,23 +656,27 @@ export default {
 }
 
 /* Hero section styling */
-.hero-section {
+.header-section {
   background-color: #E9E9E0;
   min-height: 55vh;
 }
 
-.hero-image {
+.header-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.hero-section h1 {
+.header-section h1 {
   font-size: 4rem;
   font-weight: bold;
 }
 
-.hero-section p {
+.header-section span {
+  color: rgb(54, 181, 152);;
+}
+
+.header-section p {
   font-size: 1.25rem;
   margin-top: 1rem;
 }
@@ -698,7 +724,7 @@ export default {
   width: 150px;
   height: 150px;
   display: inline-block;
-  overflow: hidden;
+
 }
 
 .timeline-step h5 {
@@ -722,13 +748,19 @@ export default {
   .timeline-dot {
     top: 8px; /* Adjust to position dot on the line */
   }
-  .hero-section h1 {
+  .header-section h1 {
     font-size: 3rem;
+  }
+  .header-section p {
+    font-size: 1rem;
   }
 }
 @media (min-width: 768px) and (max-width: 992px){
-  .hero-section h1 {
+  .header-section h1 {
     font-size: 2rem;
+  }
+  .header-section p {
+    font-size: 1rem;
   }
   .timeline-dot{
     width: 10px;
@@ -757,8 +789,11 @@ export default {
     left: 50%;
     transform: translateX(-50%);
   }
-  .hero-section h1 {
+  .header-section h1 {
     font-size: 2rem;
+  }
+  .header-section p {
+    font-size: 1rem;
   }
 }
 </style>
