@@ -29,7 +29,7 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/businessprofile', name: 'BusinessProfile', component: BusinessProfile },
   { path: '/applicationprofiles', name: 'ApplicationProfiles', component: ApplicationProfiles },
-  { path: '/applicationprofiles/:boothId', name: 'ApplicationProfiles', component: ApplicationProfiles },
+  // { path: '/applicationprofiles/:boothId', name: 'ApplicationProfiles', component: ApplicationProfiles },
   { path: '/eventapplications', name:'EventApplications', component: EventApplications},
   { path: '/payments', name:'Payments', component: Payments },
   { path: '/profile', name:'Profile', component: Profile },

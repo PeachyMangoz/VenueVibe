@@ -8,7 +8,7 @@
       </div>
     </h2>
   </div>
-  <div class="container py-5">
+  <div class="container pb-5">
     <div v-if="loading" class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 1000;">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -31,7 +31,7 @@
 
           <div class="mb-4">
             <h3 class="h5 fw-bold">Business Name</h3>
-            <p>{{ businessName }}</p>
+            <p>{{ business_name }}</p>
           </div>
 
           <div class="mb-4">
@@ -40,14 +40,14 @@
           </div>
 
           <div class="mb-4">
-            <h3 class="h5 fw-bold">Business Interests</h3>
+            <h3 class="h5 fw-bold">Business Services Offered</h3>
             <div class="d-flex flex-wrap gap-2">
               <span 
-                v-for="(interest, index) in interests" 
+                v-for="(service, index) in services_offered" 
                 :key="index"
                 class="badge bg-primary"
               >
-                {{ interest }}
+                {{ service }}
               </span>
             </div>
           </div>
@@ -81,10 +81,10 @@
         <!-- Edit Mode -->
         <form v-else @submit.prevent="saveBusinessProfile">
           <div class="mb-4">
-            <label for="businessName" class="form-label fw-semibold">Business Name</label>
+            <label for="business_name" class="form-label fw-semibold">Business Name</label>
             <input 
-              id="businessName"
-              v-model.trim="businessName" 
+              id="business_name"
+              v-model.trim="business_name" 
               class="form-control"
               placeholder="Enter your business name"
               :disabled="loading"
@@ -106,20 +106,20 @@
           </div>
 
           <div class="mb-4">
-            <label class="form-label fw-semibold">Business Interests</label>
+            <label class="form-label fw-semibold">Business Services Offered</label>
             <div class="mb-2">
-              <div v-for="(interest, index) in interests" 
-                   :key="index" 
-                   class="d-flex gap-2 mb-2">
+              <div v-for="(service, index) in services_offered" 
+                  :key="index" 
+                  class="d-flex gap-2 mb-2">
                 <input 
-                  v-model.trim="interests[index]"
+                  v-model.trim="services_offered[index]"
                   class="form-control"
-                  placeholder="Enter an interest"
+                  placeholder="Enter a service"
                   :disabled="loading"
                 >
                 <button 
                   type="button"
-                  @click="removeInterest(index)"
+                  @click="removeService(index)"
                   class="btn btn-danger"
                   :disabled="loading"
                 >
@@ -129,11 +129,11 @@
             </div>
             <button 
               type="button"
-              @click="addInterest"
+              @click="addService"
               class="btn btn-primary"
               :disabled="loading"
             >
-              + Add Interest
+              + Add Service
             </button>
           </div>
 
@@ -225,17 +225,23 @@
   </div>
 </template>
 
+
 <script>
 import { ref, computed, onMounted } from 'vue'
-import { db } from '../firebase'
+import { db } from '../firebase' // Ensure you have your Firebase config in this file
 import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default {
   name: 'BusinessProfile',
   setup() {
-    const businessName = ref('')
+    const auth = getAuth(); // Get the auth instance
+    const user = auth.currentUser;
+    const storage = getStorage();
+    const business_name = ref('')
     const description = ref('')
-    const interests = ref([])
+    const services_offered = ref([])
     const experience = ref('')
     const products = ref([])
     const userId = ref(null)
@@ -245,7 +251,7 @@ export default {
     const isEditing = ref(false)
 
     const isFormValid = computed(() => {
-      return businessName.value.trim() &&
+      return business_name.value.trim() &&
              description.value.trim() &&
              products.value.every(p => p.name.trim() && p.price >= 0)
     })
@@ -260,16 +266,23 @@ export default {
     const fetchBusinessProfile = async () => {
       loading.value = true
       try {
-        const docRef = doc(db, 'businessProfiles', userId.value)
-        const docSnap = await getDoc(docRef)
+        const userDocRef = doc(db, 'user', user.uid)
+        const userDocSnap = await getDoc(userDocRef)
 
-        if (docSnap.exists()) {
-          const data = docSnap.data()
-          businessName.value = data.businessName || ''
-          description.value = data.description || ''
-          interests.value = data.interests || []
-          experience.value = data.experience || ''
-          products.value = data.products || []
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data()
+          business_name.value = userData.business_name || ''
+          description.value = userData.bio || ''
+        }
+
+        const businessDocRef = doc(db, 'business_profiles', user.uid)
+        const businessDocSnap = await getDoc(businessDocRef)
+
+        if (businessDocSnap.exists()) {
+          const businessData = businessDocSnap.data()
+          services_offered.value = businessData.services_offered || []
+          experience.value = businessData.experience || ''
+          products.value = businessData.products || []
           hasProfile.value = true
         }
       } catch (error) {
@@ -285,17 +298,21 @@ export default {
 
       loading.value = true
       try {
-        await setDoc(doc(db, 'businessProfiles', userId.value), {
-          businessName: businessName.value.trim(),
-          description: description.value.trim(),
-          interests: interests.value.map(i => i.trim()).filter(Boolean),
+        await setDoc(doc(db, 'users', user.uid), {
+          business_name: business_name.value.trim(),
+          bio: description.value.trim()
+        }, { merge: true })
+
+        await setDoc(doc(db, 'business_profiles', user.uid), {
+          services_offered: services_offered.value.map(i => i.trim()).filter(Boolean),
           experience: experience.value.trim(),
           products: products.value.map(p => ({
             ...p,
             name: p.name.trim(),
             price: Number(p.price)
           }))
-        })
+        }, { merge: true })
+
         hasProfile.value = true
         isEditing.value = false
         showNotification('Business profile saved successfully')
@@ -311,12 +328,12 @@ export default {
       isEditing.value = !isEditing.value
     }
 
-    const addInterest = () => {
-      interests.value.push('')
+    const addService = () => {
+      services_offered.value.push('')
     }
 
-    const removeInterest = (index) => {
-      interests.value.splice(index, 1)
+    const removeService = (index) => {
+      services_offered.value.splice(index, 1)
     }
 
     const addProduct = () => {
@@ -328,15 +345,17 @@ export default {
     }
 
     onMounted(() => {
-      // Assume userId is set somewhere in your app
-      userId.value = 'current-user-id' // Replace with actual user ID
-      fetchBusinessProfile()
-    })
+      const user = auth.currentUser; // Get current user from Firebase Auth
+      if (user) {
+        userId.value = user.uid;
+        fetchBusinessProfile();
+      }
+    });
 
     return {
-      businessName,
+      business_name,
       description,
-      interests,
+      services_offered,
       experience,
       products,
       loading,
@@ -346,8 +365,8 @@ export default {
       isFormValid,
       saveBusinessProfile,
       toggleEdit,
-      addInterest,
-      removeInterest,
+      addService,
+      removeService,
       addProduct,
       removeProduct,
     }
@@ -355,10 +374,12 @@ export default {
 }
 </script>
 
+
+
 <style scoped>
 .section-title {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
   padding: 30px 0;
 }
 
