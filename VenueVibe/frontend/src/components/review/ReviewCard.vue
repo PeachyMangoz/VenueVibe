@@ -24,7 +24,7 @@
       </div>
 
       <!-- Event ID -->
-      <h3 class="event-id">
+      <h3 class="event-id ">
         {{ review.eventId }}
       </h3>
 
@@ -130,6 +130,8 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style src="@/styles/review.css" scoped />
 
 <style scoped>
 /* Card Container */

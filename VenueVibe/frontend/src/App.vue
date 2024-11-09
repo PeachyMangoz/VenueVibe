@@ -93,6 +93,7 @@ export default {
 
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap');
 .header {
   background-color: #16697a;
   color: white;

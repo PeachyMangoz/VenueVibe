@@ -1,10 +1,9 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet"></
-</link>
+
 <template>
-    <div>
+    <div class="heading-montserrat">
         <!-- Splash Screen -->
-        <div id="splash-screen">
-            <div class="animated-text">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
+        <div id="splash-screen" class="heading-montserrat">
+            <div class="animated-text ">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
         </div>
 
         <!-- Banner Section -->
@@ -15,7 +14,7 @@
             <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
                 <div class="position-relative">
                     <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
-                    <div class="centered-text" style="color:white;">
+                    <div class="centered-text heading-montserrat" style="color:white;">
                         <span class="letter">B</span>
                         <span class="letter">o</span>
                         <span class="letter">o</span>
@@ -29,7 +28,7 @@
             <!-- Main Content Section -->
             <div class="container mt-5 main-content">
                 <div class="main-banner">
-                    <h2 class="heading-inter text-5xl font-bold tracking-tight">WHERE TO BOOTH FOR CREATORS?</h2>
+                    <h2 class="heading-montserrat text-5xl tracking-tight">WHERE TO BOOTH?</h2>
                     <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
                     <router-link to="/login" class="btn green-btn mt-3">Log in</router-link>
                 </div>
@@ -52,7 +51,7 @@
                         </label>
                     </div>
 
-                    <div class="player glass-effect">
+                    <div class="player glass-effect heading-montserrat">
                         <div class="upper-part">
                             <div class="info-area" id="test">
                                 <div class="song-info" id="song-info-1">
@@ -164,9 +163,12 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap');
+
 .heading-inter { font-family: 'Inter', sans-serif; } 
 .heading-playfair { font-family: 'Playfair Display', serif; } 
 .heading-montserrat { font-family: 'Montserrat', sans-serif; }
+
 
 /* Splash Screen Style */
 #splash-screen {
@@ -187,6 +189,7 @@ export default {
     opacity: 0;
     animation: fadeInOut 3s ease-in-out;
     animation-fill-mode: forwards;
+    
 }
 
 @keyframes fadeInOut {
@@ -270,16 +273,16 @@ input[type=radio] {
 #item-1:checked ~ .cards #song-3,
 #item-2:checked ~ .cards #song-1,
 #item-3:checked ~ .cards #song-2 {
-    transform: translatex(-40%) scale(.8);
-    opacity: .4;
+    transform: translatex(-70%) scale(.8);
+    opacity: .8;
     z-index: 0;
 }
 
 #item-1:checked ~ .cards #song-2,
 #item-2:checked ~ .cards #song-3,
 #item-3:checked ~ .cards #song-1 {
-    transform: translatex(40%) scale(.8);
-    opacity: .4;
+    transform: translatex(70%) scale(.8);
+    opacity: .8;
     z-index: 0;
 }
 
@@ -354,6 +357,7 @@ input[type=radio] {
 .subtitle, .time {
     font-size: 13px;
     line-height: 16px;
+    padding-right: 30px;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -383,13 +387,17 @@ input[type=radio] {
 }
 
 .left {
-    background: #27352e;
+    background-image: url('@/images/img3.png');
+    background-size: cover;  
+    filter: brightness(100%) contrast(90%) ;
     left: 0%;
     width: 0%;
 }
 
 .right {
-    background: #191919;
+    background-image: url('@/images/xmas.webp');
+    background-size: cover;  
+    filter: brightness(100%) contrast(90%);
     right: 0%;
     width: 100%;
 }

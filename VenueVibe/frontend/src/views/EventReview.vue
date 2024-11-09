@@ -1,6 +1,6 @@
 # EventReview.vue
 <template>
-  <div class="event-review-container">
+  <div class="event-review-container heading-montserrat">
     <LoadingOverlay v-if="loading" />
     <!-- Video Background -->
     <video
@@ -181,7 +181,9 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2); /* Adjust opacity as needed */
+  filter: contrast(200%) brightness(50%) saturate(140%);
+  background-color: rgba(51, 31, 4, 0.5); 
+  /* Adjust opacity as needed */
   z-index: -1;
 }
 
