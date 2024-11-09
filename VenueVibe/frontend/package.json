@@ -17,6 +17,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@lordicon/element": "^1.10.0",
+    "@vue-stripe/vue-stripe": "^4.5.0",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
@@ -28,8 +29,7 @@
     "lottie-web": "^5.12.2",
     "vue": "^3.3.4",
     "vue-router": "^4.4.5",
-    "vuex": "^4.1.0",
-    "@vue-stripe/vue-stripe": "^4.5.0"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",

@@ -1,6 +1,6 @@
 
 <template>
-    <div class="heading-montserrat">
+    <div>
         <!-- Splash Screen -->
         <div id="splash-screen" class="heading-montserrat">
             <div class="animated-text ">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
@@ -13,14 +13,14 @@
 
             <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
                 <div class="position-relative">
-                    <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
-                    <div class="centered-text heading-montserrat" style="color:white;">
-                        <span class="letter">B</span>
-                        <span class="letter">o</span>
-                        <span class="letter">o</span>
-                        <span class="letter">t</span>
-                        <span class="letter">h</span>
-                        <span class="letter">y</span>
+                    <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image" style="filter: brightness(0.8)">
+                    <div class="centered-text" style="color:white;">
+                        <span class="letter heading-montserrat">B</span>
+                        <span class="letter heading-montserrat">o</span>
+                        <span class="letter heading-montserrat">o</span>
+                        <span class="letter heading-montserrat">t</span>
+                        <span class="letter heading-montserrat">h</span>
+                        <span class="letter heading-montserrat">y</span>
                     </div>
                 </div>
             </div>
@@ -421,6 +421,13 @@ input[type=radio] {
 .letter {
     display: inline-block;
     opacity: 0;
+    font-size: 100px;
+    text-shadow: 
+    3px 3px 0 #333232,
+    -1px -1px 0 #333232,  
+    1px -1px 0 #333232,
+    -1px 1px 0 #333232,
+    1px 1px 0 #333232;
 }
 
 /* Main Content Layout */
