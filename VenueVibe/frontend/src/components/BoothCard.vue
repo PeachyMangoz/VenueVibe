@@ -1,5 +1,5 @@
 <template>
-  <div class="booth-card">
+  <div class="booth-card card">
     <img :src="boothImage" alt="Booth Image" class="booth-image" />
     <h3 class="booth-title">{{ booth.booth_title }}</h3>
     <p class="booth-price">Price: {{ booth.price }}</p>
@@ -49,8 +49,8 @@ export default {
 </script>
 
 <style scoped>
+
 .booth-card {
-  background-color: #ede7e3;
   padding: 15px;
   border-radius: 10px;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -67,12 +67,11 @@ export default {
 }
 
 .booth-title {
-  color: #16697a;
   margin: 10px 0;
 }
 
 .booth-price {
-  color: #ffa62b;
+  color: black;
   font-weight: bold;
 }
 
@@ -87,11 +86,11 @@ export default {
 }
 
 .view-details-button {
-  background-color: #ffa62b; 
-  color: white; 
+  background-color: #36b598;
+  color: white;
+  padding: 0.5rem 1rem;
   border: none;
-  padding: 10px 20px; 
-  border-radius: 5px; 
+  border-radius: 4px;
   font-size: 16px; 
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;

@@ -22,6 +22,13 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+
+// Check if the environment variable is available
+if (!process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY) {
+  console.error('Missing Stripe publishable key in environment variables')
+}
+
+
 // Initialize AOS ( for animation )
 AOS.init({
     // Global settings:

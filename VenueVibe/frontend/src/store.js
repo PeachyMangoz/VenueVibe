@@ -10,7 +10,13 @@ const store = createStore({
   getters: {
     user(state) {
       return state.user;
-    }
+    },
+    isLoggedIn(state) {
+      return state.user.loggedIn;
+    },
+    userId(state) {
+      return state.user.data ? state.user.data.uid : null;
+    },
   },
   mutations: {
     SET_LOGGED_IN(state, value) {
@@ -28,7 +34,8 @@ const store = createStore({
         const displayName = user.username || user.displayName || "User"; // Fallback to displayName or "User"
         commit("SET_USER", {
           displayName: displayName,
-          email: user.email
+          email: user.email,
+          uid: user.uid,
         });
       } else {
         commit("SET_USER", null);

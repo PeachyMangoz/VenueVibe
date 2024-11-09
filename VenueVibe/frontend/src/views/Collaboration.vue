@@ -1,22 +1,24 @@
 <script setup>
 import { db } from "../firebase.js";
-import { getDocs, collection, query, where } from "firebase/firestore";
 
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
+
+import { mapGetters } from "vuex";
 
 defineElement(lottie.loadAnimation);
 </script>
 
 <template>
   <main>
-    <div v-if="loading">
-      <p>Loading users...</p>
-    </div>
-    <div class="container-fluid px-0 mx-0" v-else-if="users">
+    <div class="container-fluid px-0 mx-0" v-if="collab">
+      <div v-if="loading">
+        <p>Loading users...</p>
+      </div>
       <div
+        v-else
         class="row banner mx-0"
-        :style="{ background: `url(${currentSlide.profile_highlight})` }"
+        :style="{ background: `url(${currentSlide.collab_background})` }"
       >
         <!-- Left Column: Content -->
         <div class="col-lg-6 content-wrapper">
@@ -45,7 +47,13 @@ defineElement(lottie.loadAnimation);
             <h1 class="business-name">{{ currentSlide.business_name }}</h1>
             <p>{{ currentSlide.bio }}</p>
             <div class="buttons">
-              <router-link :to="{ name: 'CollaborateChat', params: { id: `${currentSlide.id}` }}" class="btn btn-outline-secondary">
+              <router-link
+                :to="{
+                  name: 'CollaborateChat',
+                  params: { id: `${currentSlide.id}` },
+                }"
+                class="btn btn-outline-secondary"
+              >
                 <lord-icon
                   src="https://cdn.lordicon.com/qnpnzlkk.json"
                   trigger="hover"
@@ -53,7 +61,7 @@ defineElement(lottie.loadAnimation);
                   style="width: 18px; height: 18px"
                 ></lord-icon>
                 Connect & Chat
-              </router-link >
+              </router-link>
               <a href="#" class="btn btn-outline-secondary">
                 <lord-icon
                   src="https://cdn.lordicon.com/jkzgajyr.json"
@@ -91,10 +99,89 @@ defineElement(lottie.loadAnimation);
         </div>
       </div>
     </div>
+    <div v-else>
+      <!-- <div class="container-content"> -->
+        <section class="header-section d-flex align-items-center">
+      <div class="container text-center">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <img src="https://i.pinimg.com/originals/ac/e9/14/ace9144fefcf5b9bafd87b7b66e2b627.gif" class="header-image" />
+          </div>
+          <div class="col-md-6 text-left" style="margin-top: auto; margin-bottom: auto;">
+            <h1>Find Your Next</h1>
+            <h1><span>BOOTHY </span>partner !</h1>
+            <p>And take your boothing experience to the next level</p>
+            <div class="mt-4">
+              <button @click="updatecollab" class="btn btn-dark">Get started today</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="timeline-section py-5">
+    <div class="container">
+      <div class="row position-relative justify-content-center">
+        <p>How does it work?</p>
+        <!-- Background Line (full-width) -->
+        <div class="timeline-background-line"></div>
+
+        <!-- Step 1 -->
+        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
+          <div class="img-wrapper">
+            <img src="https://i.pinimg.com/originals/75/97/90/7597905e7bdd5703d4f694d8518fee08.gif" alt="Step 1" class="step-image mb-3" />
+          </div>
+          <div class="timeline-dot"></div> <!-- Dot on the line for Step 1 -->
+          <h5 class="mt-3">01</h5>
+          <p class="step-description">Look through our curated list of creators to find your perfect partner</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
+          <div class="img-wrapper">
+            <img src="../images/step2.gif" alt="Step 2" class="step-image mb-3" style="transform:scale(1.2)"  />
+          </div>
+          <div class="timeline-dot"></div> <!-- Dot on the line for Step 2 -->
+          <h5 class="mt-3">02</h5>
+          <p class="step-description">Connect & Chat with the creator you want!</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
+          <div class="img-wrapper">
+            <img src="https://i.pinimg.com/originals/ae/54/e4/ae54e4030cb392129805bc968f57792b.gif" alt="Step 3" class="step-image mb-3" />
+          </div>
+          <div class="timeline-dot"></div> <!-- Dot on the line for Step 3 -->
+          <h5 class="mt-3">03</h5>
+          <p class="step-description">Plan your next booth together!</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
+          <div class="img-wrapper">
+            <img src="../images/step4.gif" alt="Step 4" class="step-image mb-3" style="transform:scale(1.2); margin-bottom:0" />
+          </div>
+          <div class="timeline-dot"></div> <!-- Dot on the line for Step 4 -->
+          <h5 class="mt-3">04</h5>
+          <p class="step-description">Set up your booth</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+    </div>
   </main>
 </template>
 
 <script>
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 export default {
   data() {
     return {
@@ -104,9 +191,11 @@ export default {
       error: null, // Error message in case something goes wrong
       isSliding: false,
       slideDirection: "",
+      collab: false,
     };
   },
   computed: {
+    ...mapGetters(["user", "isLoggedIn", "userId"]),
     currentSlide() {
       // Dynamically get the user data at currentIndex
       return this.users[this.currentIndex] || {};
@@ -123,20 +212,43 @@ export default {
     },
   },
   methods: {
+    async fetchUserCollabStatus() {
+      try {
+        // Reference to the current user's document
+        const userDocRef = doc(db, "user", this.userId);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          this.collab = userData.collab || false; // Set collab status, defaulting to false if undefined
+        } else {
+          console.error("User document not found in Firestore.");
+        }
+      } catch (error) {
+        console.error("Error fetching user collab status:", error);
+      } finally {
+        this.loading = false; // Set loading to false once operation is complete
+      }
+    },
     async fetchUsers() {
       try {
-        // Fetch users from the 'user' collection
-        const userListing = await getDocs(collection(db, "user"));
+        // Create a query that only fetches users with collab set to true
+        const userQuery = query(
+          collection(db, "user"),
+          where("collab", "==", true)
+        );
 
-        // For each user, add to users array and fetch their business profiles
-        for (const user of userListing.docs) {
-          const userData = { ...user.data(), id: user.id };
-          this.users.push(userData);
+        // Fetch users that match the query
+        const userListing = await getDocs(userQuery);
 
-          // Fetch and merge the business profile for each user
-          await this.retrieveProfile(user.id);
-          console.log(this.users); // For debugging purposes
-        }
+        // Process each user document
+        userListing.forEach((doc) => {
+          if (doc.id !== this.userId) {
+            // Exclude the current user
+            const userData = { ...doc.data(), id: doc.id };
+            this.users.push(userData);
+          }
+        });
       } catch (err) {
         console.error("Error fetching users:", err); // Log error
         this.error = "Failed to load user data."; // Set user-friendly error message
@@ -145,62 +257,62 @@ export default {
       }
     },
 
-    // Fetch the business profile and portfolio items for each user
-    async retrieveProfile(userId) {
-      try {
-        // Query the 'business_profiles' collection where 'user_id' matches the userId
-        const q = query(
-          collection(db, "business_profiles"),
-          where("user_id", "==", userId)
-        );
-        const profileDocs = await getDocs(q);
+    // // Fetch the business profile and portfolio items for each user
+    // async retrieveProfile(userId) {
+    //   try {
+    //     // Query the 'business_profiles' collection where 'user_id' matches the userId
+    //     const q = query(
+    //       collection(db, "business_profiles"),
+    //       where("user_id", "==", userId)
+    //     );
+    //     const profileDocs = await getDocs(q);
 
-        // Find the corresponding user in the users array
-        const user = this.users.find((u) => u.id === userId);
-        if (user && profileDocs.docs.length > 0) {
-          // Assuming one business profile per user, take the first profile
-          const profileData = profileDocs.docs[0].data();
+    //     // Find the corresponding user in the users array
+    //     const user = this.users.find((u) => u.id === userId);
+    //     if (user && profileDocs.docs.length > 0) {
+    //       // Assuming one business profile per user, take the first profile
+    //       const profileData = profileDocs.docs[0].data();
 
-          // Retrieve portfolio items nested within the business profile
-          const portfolio = await this.retrieveNestedPortfolio(
-            profileDocs.docs[0].id
-          );
+    //       // Retrieve portfolio items nested within the business profile
+    //       const portfolio = await this.retrieveNestedPortfolio(
+    //         profileDocs.docs[0].id
+    //       );
 
-          // Add portfolio items to the business profile
-          profileData.portfolio_items = portfolio;
+    //       // Add portfolio items to the business profile
+    //       profileData.portfolio_items = portfolio;
 
-          // Merge the business profile data (with portfolio) into the user object
-          Object.assign(user, profileData);
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching business profile for user ${userId}:`,
-          error
-        );
-      }
-    },
+    //       // Merge the business profile data (with portfolio) into the user object
+    //       Object.assign(user, profileData);
+    //     }
+    //   } catch (error) {
+    //     console.error(
+    //       `Error fetching business profile for user ${userId}:`,
+    //       error
+    //     );
+    //   }
+    // },
 
-    // Fetch the portfolio items for a given business profile
-    async retrieveNestedPortfolio(businessProfileId) {
-      try {
-        const portfolioQuery = collection(
-          db,
-          "business_profiles",
-          businessProfileId,
-          "portfolio_items"
-        );
-        const portfolioDocs = await getDocs(portfolioQuery);
+    // // Fetch the portfolio items for a given business profile
+    // async retrieveNestedPortfolio(businessProfileId) {
+    //   try {
+    //     const portfolioQuery = collection(
+    //       db,
+    //       "business_profiles",
+    //       businessProfileId,
+    //       "portfolio_items"
+    //     );
+    //     const portfolioDocs = await getDocs(portfolioQuery);
 
-        // Return the array of portfolio items with IDs
-        return portfolioDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      } catch (error) {
-        console.error(
-          `Error fetching portfolio items for business profile ${businessProfileId}:`,
-          error
-        );
-        return []; // Return an empty array on error
-      }
-    },
+    //     // Return the array of portfolio items with IDs
+    //     return portfolioDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    //   } catch (error) {
+    //     console.error(
+    //       `Error fetching portfolio items for business profile ${businessProfileId}:`,
+    //       error
+    //     );
+    //     return []; // Return an empty array on error
+    //   }
+    // },
 
     // Navigate to the next user
     nextUser() {
@@ -249,11 +361,36 @@ export default {
       this.isSliding = false;
       this.slideDirection = "";
     },
+    async updatecollab(){
+      try {
+        if (this.isLoggedIn) {
+          const userRef = doc(db, "user", this.userId);
+
+          // Update the 'collab' field in Firestore
+          await updateDoc(userRef, {
+            collab: true, // Set collab to true or any value you'd like
+          });
+          console.log("Collab field updated successfully!");
+          alert("You have successfully started collaborating!");
+          this.fetchUserCollabStatus();
+          this.fetchUsers();
+        } else {
+          console.error("No user is currently signed in.");
+          alert("Please sign in to start collaborating.");
+        }
+      } catch (error) {
+        console.error("Error updating collab field:", error);
+      }
+    }
   },
 
   mounted() {
-    // Fetch users and their business profiles when the component is mounted
-    this.fetchUsers();
+    if (this.isLoggedIn) {
+      console.log("Logged-in User ID:", this.userId);
+      this.fetchUserCollabStatus();
+      // Fetch users and their business profiles when the component is mounted
+      this.fetchUsers();
+    }
   },
 };
 </script>
@@ -490,7 +627,7 @@ export default {
 
   .banner .content p {
     max-height: 100px; /* Set a fixed height for the paragraph */
-    overflow-y: auto; 
+    overflow-y: auto;
     text-overflow: ellipsis; /* Optional: show "..." at the end if there's more text */
     white-space: normal; /* Allows the text to wrap onto multiple lines */
   }
@@ -499,18 +636,165 @@ export default {
     max-height: 20vh; /* Further reduce max-height for mobile */
   }
 
-  .banner .content{
+  .banner .content {
     margin-bottom: 20%;
   }
 }
 
-@media (max-width: 1200px){
-    .banner .content p {
+@media (max-width: 1200px) {
+  .banner .content p {
     max-height: 50px; /* Set a fixed height for the paragraph */
-    overflow-y: auto; 
+    overflow-y: auto;
     text-overflow: ellipsis; /* Optional: show "..." at the end if there's more text */
     white-space: normal; /* Allows the text to wrap onto multiple lines */
   }
 }
 
+.container-content{
+  width: 100vw;
+  min-height: 95vh;
+}
+
+/* Hero section styling */
+.header-section {
+  background-color: #E9E9E0;
+  min-height: 55vh;
+}
+
+.header-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header-section h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.header-section span {
+  color: rgb(54, 181, 152);;
+}
+
+.header-section p {
+  font-size: 1.25rem;
+  margin-top: 1rem;
+}
+
+.timeline-section {
+  background-color: white;
+  text-align: center;
+  min-height: 30vh;
+  position: relative;
+}
+.timeline-background-line {
+  position: absolute;
+  top: 55%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #3d3d3d;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+/* Dot on the timeline line for each step */
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #3d3d3d;
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  top: -5px; /* Adjust to position dot on the line */
+  z-index: 2;
+}
+
+/* Step image styling */
+.step-image {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  z-index: 3;
+  position: relative;
+  object-fit: contain;
+}
+
+.img-wrapper{
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+
+}
+
+.timeline-step h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3d3d3d;
+  padding-top: 20px;
+  margin: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.step-description {
+  font-size: 1rem;
+  color: #3d3d3d;
+  z-index: 3;
+  position: relative;
+}
+
+@media (min-width: 992px) and (max-width: 1400px) { /* Show line only on lg and up */
+  .timeline-dot {
+    top: 8px; /* Adjust to position dot on the line */
+  }
+  .header-section h1 {
+    font-size: 3rem;
+  }
+  .header-section p {
+    font-size: 1rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 992px){
+  .header-section h1 {
+    font-size: 2rem;
+  }
+  .header-section p {
+    font-size: 1rem;
+  }
+  .timeline-dot{
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .timeline-background-line {
+    left: 96.8%;
+    top: 0;
+    bottom: 20;
+    width: 2px;
+    height: 95%; /* Ensures the line spans the full container height */
+    background-color: #3d3d3d;
+    position: absolute;
+    transform: translateX(-50%);
+    padding: 0;
+  }
+
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .header-section h1 {
+    font-size: 2rem;
+  }
+  .header-section p {
+    font-size: 1rem;
+  }
+}
 </style>
+

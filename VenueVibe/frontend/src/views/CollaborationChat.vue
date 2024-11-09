@@ -2,14 +2,24 @@
   <div class="chat-container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Search Bar -->
-      <div class="search-bar">
-        <input type="text" placeholder="Search" />
-      </div>
-
       <!-- Chat List -->
-      <div v-if="userChats.length" class="chat-list">
-        <h3>Last chats</h3>
+      <div class="chat-list">
+        <div class="row">
+          <div class="col-1">
+            <router-link :to="{ name: 'Collaborate'}" class="back-btn">
+                <span>&lt;</span>
+            </router-link> 
+          </div>
+          <div class="col-11">
+            <h3>Chats</h3>
+          </div>
+        </div>
+        <br />
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search" />
+        </div>
         <ul>
           <li
             v-for="chat in userChats"
@@ -25,7 +35,7 @@
             />
             <div class="chat-info">
               <p class="chat-name">{{ getChatPartnerName(chat) }}</p>
-              <p class="chat-preview">{{ chat.lastMessage }}</p>
+              <p class="chat-preview">{{ chat.lastMessage || "No message yet" }}</p>
             </div>
             <span class="chat-time">{{
               formatDate(chat.lastMessageTimeStamp) || " "
@@ -38,7 +48,7 @@
     <!-- Main Chat Area -->
     <section class="chat-area">
       <!-- Messages -->
-      <div class="messages">
+      <div class="messages" ref="messagesContainer">
         <div
           v-for="message in messages"
           :key="message.id"
@@ -64,6 +74,7 @@
             class="message-input-field"
           />
           <button @click="sendMessage" class="send-button">
+            <fa :icon="['fas', 'paper-plane']"></fa>
           </button>
         </div>
       </footer>
@@ -86,6 +97,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
+import { mapGetters } from "vuex";
 
 export default {
   props: ["id"],
@@ -98,22 +110,31 @@ export default {
       messages: [],
       newMessage: "",
       chatId: null,
-      currentUserId: "pvXAaR3AemPHAycewSDP", // Replace with actual user ID from auth
+      currentUserId: "", // Replace with actual user ID from auth
       selectedUserId: this.id,
       userChats: [], // Stores all chats for the current user
       unsubscribeMessagesListener: null,
     };
   },
   created() {
-    this.fetchUserChats()
-      .then(() => {
-        this.listenForChatUpdates(); // Start listening for updates after data retrieval
-      })
-      .catch((error) => {
-        console.error("Error initializing chat data:", error);
-      });
+    // this.fetchUserChats()
+    //   .then(() => {
+    //     this.listenForChatUpdates(); // Start listening for updates after data retrieval
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error initializing chat data:", error);
+    //   });
+  },
+  computed:{
+    ...mapGetters(["user", "isLoggedIn", "userId"]),
   },
   methods: {
+    scrollToBottom() {
+      const container = this.$refs.messagesContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    },
     listenForChatUpdates() {
       const chatsRef = collection(db, "chat");
       const q = query(
@@ -323,6 +344,9 @@ export default {
         });
 
         this.newMessage = "";
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -383,10 +407,28 @@ export default {
       return timestamp?.toDate().toLocaleTimeString() || "";
     },
   },
+  mounted() {
+    this.scrollToBottom();
+    if (this.isLoggedIn) {
+        console.log("Logged-in User ID:", this.userId);
+        this.currentUserId = this.userId;
+        this.fetchUserChats()
+      .then(() => {
+        this.listenForChatUpdates(); // Start listening for updates after data retrieval
+      })
+      .catch((error) => {
+        console.error("Error initializing chat data:", error);
+      });
+    }
+  },
 };
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Alkatra:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  font-family: "Poppins", sans-serif;
+}
 .chat-container {
   display: flex;
   height: 93vh;
@@ -407,11 +449,23 @@ export default {
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
+  margin-bottom: 10px;
 }
 
 .chat-list h3 {
-  font-size: 1.1rem;
-  margin: 1rem 0 0.5rem;
+  font-size: 25px;
+  margin-left: 10px;
+}
+
+.back-btn {
+display: inline-flex; 
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 25%;
+  text-align: center;
+  padding: 7px 13px;
+  text-decoration: none;
 }
 
 ul,
@@ -428,8 +482,8 @@ ol {
 }
 
 .chat-pic {
-  width: 15%;
-  height: auto;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   margin-right: 0.3rem;
 }
@@ -449,7 +503,8 @@ ol {
   color: #aaa;
 }
 .active {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 5%;
 }
 /* Main chat area styling */
 .chat-area {
@@ -544,19 +599,21 @@ ol {
   border-radius: 20px;
   outline: none;
   box-sizing: border-box;
+  margin-bottom: 5px
 }
 
 .send-button {
   position: absolute;
-  right: 10px; /* Adjust to position button inside input */
-  background-color:rgb(54, 181, 152, 0.2) ;
-  height: 10%;
-  width: auto;
+  right: 15px; /* Adjust to position button inside input */
+  background-color: rgb(54, 181, 152);
+  height: 70%;
+  width: 4%;
+  border-radius: 20%;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 0;
-
+  margin-bottom: 5px;
+  color: #fff;
 }
-
 </style>
