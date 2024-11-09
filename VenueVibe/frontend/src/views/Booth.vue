@@ -1,5 +1,5 @@
 <template>
-  <div class="container section-title mb-0" data-aos="fade-up">
+  <div class="container section-title" data-aos="fade-up">
     <h2>
       <div class="title-with-lines">
         <span class="line"></span>
@@ -8,26 +8,41 @@
       </div>
     </h2>
     <!-- Conditionally show the button if the user is an organiser -->
+    <button v-if="isOrganiser" class="btn custom-btn" @click="addNewBooth">Add New Booth</button>
   </div>
+
+  <!-- Booth listings -->
   <div>
     <section class="booth-listings">
       <BoothCard v-for="booth in booths" :key="booth.id" :booth="booth" />
-      <button v-if="isOrganiser" class="btn custom-btn" @click="addNewBooth">+ Add New Booth</button>
-    </section> 
+    </section>
   </div>
+
+  <!-- Modal for adding a new booth -->
+  <Modal v-if="showModal" :show="showModal" @close="closeModal">
+    <h3>Add New Booth</h3>
+    <!-- Modal form content can go here -->
+    <form @submit.prevent="submitBoothForm">
+      <label for="boothName">Booth Name:</label>
+      <input v-model="newBoothName" type="text" id="boothName" placeholder="Enter booth name" required />
+      <button type="submit">Submit</button>
+    </form>
+  </Modal>
 </template>
 
 <script>
 import BoothCard from '../components/BoothCard.vue';
-import { getAuth } from 'firebase/auth';
+import Modal from '../components/AddBoothForm.vue'; // Import the modal component
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Ensure this points to your Firebase setup
+import { db } from '../firebase'; 
 import { boothAPI } from '../services/api';
 
 export default {
   name: 'Booth',
   components: {
     BoothCard,
+    Modal // Register the modal component
   },
   data() {
     return {
@@ -35,16 +50,18 @@ export default {
       loading: true,
       error: null,
       isOrganiser: false, // Will be true if the user's profile_type is 'organiser'
+      showModal: false, // Controls modal visibility
+      newBoothName: '', // New booth name for the form
     };
   },
   async mounted() {
     this.fetchBooths();
-    await this.checkUserProfile(); // Check if the logged-in user is an organiser
+    this.checkUserProfile(); // Check if the logged-in user is an organiser
   },
   methods: {
     async fetchBooths() {
       try {
-        const response = await boothAPI.get('/booths'); // Fetch booths from the backend
+        const response = await boothAPI.get('/booths'); 
         this.booths = response.data;
       } catch (error) {
         this.error = 'Error fetching booths';
@@ -54,34 +71,41 @@ export default {
     },
     async checkUserProfile() {
       const auth = getAuth();
-      const user = auth.currentUser;
 
-      if (user) {
-        try {
-          const userDoc = await getDoc(doc(db, 'user', user.uid));
-          
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            
-            // Check if the profile_type is 'organiser'
-            if (userData.profile_type === 'organiser') {
-              this.isOrganiser = true;
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            const userDoc = await getDoc(doc(db, 'user', user.uid));
+
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              
+              if (userData.profile_type === 'organiser') {
+                this.isOrganiser = true;
+              }
+            } else {
+              console.error('User document not found!');
             }
-          } else {
-            console.error('User document not found!');
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
           }
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
+        } else {
+          console.error('No authenticated user found');
         }
-      } else {
-        console.error('No authenticated user found');
-      }
+      });
     },
     addNewBooth() {
-      // Logic for adding a new booth (could open a modal or navigate to a form page)
-      console.log("Add New Booth button clicked");
+      this.showModal = true; // Show the modal when button is clicked
     },
-  },
+    closeModal() {
+      this.showModal = false; // Hide the modal
+    },
+    submitBoothForm() {
+      console.log('New booth name:', this.newBoothName);
+      // Here you can handle the form submission (e.g., send data to an API or Firebase)
+      this.closeModal(); // Close the modal after form submission
+    }
+  }
 };
 </script>
 
