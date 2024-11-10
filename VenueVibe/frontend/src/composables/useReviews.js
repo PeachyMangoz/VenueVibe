@@ -42,6 +42,8 @@ export function useReviews() {
       id: doc.id,
       ...data,
       rating: parseInt(data.rating || 0),
+      transactionRange: data.transactionRange || '',
+      revenueRange: data.revenueRange || '',
       createdAt: formatTimestamp(data.createdAt)
     };
   };
@@ -90,7 +92,7 @@ export function useReviews() {
     try {
       // Remove imageFileObject before sending to Firestore
       const { imageFileObject, ...reviewDataWithoutFile } = reviewData;
-
+  
       // Upload image if it exists
       let imageUrl = null;
       if (imageFileObject) {
@@ -103,15 +105,17 @@ export function useReviews() {
         await uploadBytes(fileRef, imageFileObject);
         imageUrl = await getDownloadURL(fileRef);
       }
-
-      // Add document to Firestore
+  
+      // Add document to Firestore with new fields
       await addDoc(reviewsCollection, {
         ...reviewDataWithoutFile,
-        imageFile: imageUrl, // Store the URL instead of File object
+        imageFile: imageUrl,
         rating: parseInt(reviewDataWithoutFile.rating || 0),
+        transactionRange: reviewDataWithoutFile.transactionRange,
+        revenueRange: reviewDataWithoutFile.revenueRange,
         createdAt: serverTimestamp()
       });
-
+  
       await fetchReviews();
       return true;
     } catch (err) {
@@ -122,6 +126,8 @@ export function useReviews() {
       loading.value = false;
     }
   };
+
+  
 
   const setupRealtimeUpdates = () => {
     return onSnapshot(reviewsCollection, (snapshot) => {
