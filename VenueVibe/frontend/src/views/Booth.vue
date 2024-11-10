@@ -2,11 +2,16 @@
   <div class="container section-title" data-aos="fade-up">
     <h2>
       <div class="title-with-lines heading-montserrat">
-          Booth Listings
+        Booth Listings
       </div>
     </h2>
+
     <!-- Conditionally show the button if the user is an organiser -->
-    <button v-if="isOrganiser" class="btn custom-btn" @click="addNewBooth">Add New Booth</button>
+    <AddBoothFormButton 
+      v-if="isOrganiser"
+      :loading="loading"
+      @click="openReviewModal"
+    />
   </div>
 
   <!-- Booth listings -->
@@ -17,30 +22,27 @@
   </div>
 
   <!-- Modal for adding a new booth -->
-  <Modal v-if="showModal" :show="showModal" @close="closeModal">
-    <h3>Add New Booth</h3>
-    <!-- Modal form content can go here -->
-    <form @submit.prevent="submitBoothForm">
-      <label for="boothName">Booth Name:</label>
-      <input v-model="newBoothName" type="text" id="boothName" placeholder="Enter booth name" required />
-      <button type="submit">Submit</button>
-    </form>
-  </Modal>
+  <AddBoothForm 
+    ref="AddBoothFormRef"
+    @submit="handleBoothSubmit"
+  />
 </template>
 
 <script>
 import BoothCard from '../components/BoothCard.vue';
-import Modal from '../components/AddBoothForm.vue'; // Import the modal component
-import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
+import AddBoothForm from '@/components/AddBoothForm.vue';
+import AddBoothFormButton from '@/components/AddBoothFormButton.vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase'; 
+import { db } from '../firebase';
 import { boothAPI } from '../services/api';
 
 export default {
   name: 'Booth',
   components: {
     BoothCard,
-    Modal // Register the modal component
+    AddBoothForm, // Register the form component
+    AddBoothFormButton, // Register the button component
   },
   data() {
     return {
@@ -48,18 +50,13 @@ export default {
       loading: true,
       error: null,
       isOrganiser: false, // Will be true if the user's profile_type is 'organiser'
-      showModal: false, // Controls modal visibility
-      newBoothName: '', // New booth name for the form
+      AddBoothFormRef: null, // Reference to the review form
     };
-  },
-  async mounted() {
-    this.fetchBooths();
-    this.checkUserProfile(); // Check if the logged-in user is an organiser
   },
   methods: {
     async fetchBooths() {
       try {
-        const response = await boothAPI.get('/booths'); 
+        const response = await boothAPI.get('/booths');
         this.booths = response.data;
       } catch (error) {
         this.error = 'Error fetching booths';
@@ -77,7 +74,7 @@ export default {
 
             if (userDoc.exists()) {
               const userData = userDoc.data();
-              
+
               if (userData.profile_type === 'organiser') {
                 this.isOrganiser = true;
               }
@@ -92,17 +89,20 @@ export default {
         }
       });
     },
-    addNewBooth() {
-      this.showModal = true; // Show the modal when button is clicked
+    openReviewModal() {
+      // Open the modal by triggering the review form's `openModal` method
+      this.$refs.AddBoothFormRef.openModal();
     },
-    closeModal() {
-      this.showModal = false; // Hide the modal
-    },
-    submitBoothForm() {
-      console.log('New booth name:', this.newBoothName);
-      // Here you can handle the form submission (e.g., send data to an API or Firebase)
-      this.closeModal(); // Close the modal after form submission
+    handleBoothSubmit(reviewData) {
+      console.log('Submitted Booth:', reviewData);
+      // Logic for handling the review submission
+      // You can send this data to your API or Firebase, etc.
+      this.$refs.AddBoothFormRef.closeModal(); // Close modal after submission
     }
+  },
+  async mounted() {
+    this.fetchBooths();
+    this.checkUserProfile(); // Check if the logged-in user is an organiser
   }
 };
 </script>
@@ -124,14 +124,13 @@ export default {
   color: #333;
 }
 
-
 .btn.custom-btn {
   background-color: #36b598;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  font-size: 16px; 
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -149,3 +148,4 @@ export default {
   padding: 20px;
 }
 </style>
+
