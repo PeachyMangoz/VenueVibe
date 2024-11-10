@@ -98,6 +98,7 @@ export default {
         }
     },
     mounted() {
+        window.scrollTo(0, 0);
         // Initially lock scrolling
         document.body.style.overflow = 'hidden';
 
@@ -157,6 +158,12 @@ export default {
                 );
             }
         }, 3000);
+    },
+
+    beforeRouteLeave(to, from, next) {
+        // Ensure that scrolling is unlocked before navigating away
+        document.body.style.overflow = 'auto';
+        next();  // Proceed to the next route
     }
 };
 </script>
