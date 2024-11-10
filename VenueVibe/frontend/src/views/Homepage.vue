@@ -422,7 +422,10 @@ input[type=radio] {
     display: inline-block;
     opacity: 0;
     font-size: 100px;
-    text-shadow: #1a1a1a;
+    text-shadow: 
+    0 0 10px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Main Content Layout */
