@@ -3,9 +3,7 @@
   <div class="container section-title" data-aos="fade-up">
     <h2>
       <div class="title-with-lines"style="color:white">
-        <span class="line" ></span>
         Application Profiles
-        <span class="line"></span>
       </div>
     </h2>
   </div>
@@ -372,19 +370,6 @@ export default {
   color: #333;
 }
 
-.title-with-lines {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.line {
-  width: 70px;
-  height: 3px;
-  background: #36b598;
-  display: inline-block;
-}
 
 @keyframes fadeIn {
   0% {

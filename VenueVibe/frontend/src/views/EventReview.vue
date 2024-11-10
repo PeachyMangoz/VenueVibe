@@ -55,7 +55,8 @@
   </div>
 
     <!-- Charts Section -->
-    <div v-if="searchEventId && filteredReviews.length > 0" class="row mb-4 mx-3">
+     <div class="container">
+    <div v-if="searchEventId && filteredReviews.length > 0" class="row">
       <RatingChart 
         :reviews="filteredReviews"
         :event-id="searchEventId"
@@ -70,7 +71,7 @@
         :event-id="searchEventId"
       />
     </div>
-
+    </div>
     <!-- Reviews Section -->
     <section id="reviews" class="reviews-section section">
       <div class="container"  v-if="filteredReviews.length === 0">
