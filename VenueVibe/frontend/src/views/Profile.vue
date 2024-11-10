@@ -320,9 +320,11 @@ export default {
   <style scoped>
 
   body {
-    background: #36b598;
+    background-image: url('@/images/marketdark.jpg');
+    background-size:cover
   }
   
+
   .profile-photo-container {
   position: relative; /* Position relative to contain the icon */
   display: inline-block; /* Allow the container to size around the image */

@@ -1,5 +1,5 @@
   <template>
-  
+  <div class="image-container">
   <div class="container section-title heading-montserrat" data-aos="fade-up">
     <h2>
       <div class="title-with-lines">
@@ -176,6 +176,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -301,6 +302,11 @@ export default {
 <style src="@/styles/review.css" scoped />
 
 <style scoped>
+.img-container{
+  background-image: url('@/images/img1.png');
+  background-size: 1000px auto;
+}
+
 .section-title {
   text-align: center;
   margin-bottom: 50px;

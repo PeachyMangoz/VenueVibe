@@ -3,7 +3,7 @@
   <div class="col-md-6" >
     <div class="card h-100 shadow-sm" >
       <div class="card-body">
-        <h2>Search Reviews</h2>
+        <h2>Search For Event Data & Reviews</h2>
         <form @submit.prevent="handleSearch">
           <div class="input-group mb-3">
             <input 
