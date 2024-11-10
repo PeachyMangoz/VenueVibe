@@ -1,10 +1,9 @@
   <template>
-  <div class="container section-title" data-aos="fade-up">
+  
+  <div class="container section-title heading-montserrat" data-aos="fade-up">
     <h2>
       <div class="title-with-lines">
-        <span class="line"></span>
         Event Applications
-        <span class="line"></span>
       </div>
     </h2>
   </div>
@@ -25,7 +24,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
           <button
             @click="createNewApplication"
-            class="btn btn-success"
+            class="btn green-btn"
             :disabled="loading"
           >
             + View Available Booths
@@ -299,6 +298,7 @@ export default {
   },
 };
 </script>
+<style src="@/styles/review.css" scoped />
 
 <style scoped>
 .section-title {
@@ -314,19 +314,7 @@ export default {
   color: #333;
 }
 
-.title-with-lines {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
 
-.line {
-  width: 70px;
-  height: 3px;
-  background: #36b598;
-  display: inline-block;
-}
 
 @keyframes fadeIn {
   0% {

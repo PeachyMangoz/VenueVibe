@@ -1,10 +1,8 @@
 <template>
   <div class="container section-title" data-aos="fade-up">
     <h2>
-      <div class="title-with-lines">
-        <span class="line"></span>
+      <div class="title-with-lines heading-montserrat">
           Booth Listings
-        <span class="line"></span>
       </div>
     </h2>
     <!-- Conditionally show the button if the user is an organiser -->
@@ -109,6 +107,8 @@ export default {
 };
 </script>
 
+<style src="@/styles/review.css" scoped />
+
 <style scoped>
 .section-title {
   text-align: center;
@@ -124,19 +124,6 @@ export default {
   color: #333;
 }
 
-.title-with-lines {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.line {
-  width: 70px;
-  height: 3px;
-  background: #36b598;
-  display: inline-block;
-}
 
 .btn.custom-btn {
   background-color: #36b598;

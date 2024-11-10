@@ -13,7 +13,7 @@
 
             <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
                 <div class="position-relative">
-                    <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image" style="filter: brightness(0.8)">
+                    <img src="../images/img3 - Copy.png" class="img-fluid" alt="Banner Image" style="filter: brightness(0.8);">
                     <div class="centered-text" style="color:white;">
                         <span class="letter heading-montserrat">B</span>
                         <span class="letter heading-montserrat">o</span>
@@ -387,7 +387,7 @@ input[type=radio] {
 }
 
 .left {
-    background-image: url('@/images/img3.png');
+    background-image: url('@/images/img11.jpg');
     background-size: cover;  
     filter: brightness(100%) contrast(90%) ;
     left: 0%;

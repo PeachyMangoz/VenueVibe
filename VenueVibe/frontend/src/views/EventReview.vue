@@ -181,8 +181,8 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  filter: contrast(200%) brightness(50%) saturate(140%);
-  background-color: rgba(51, 31, 4, 0.5); 
+  filter: contrast(200%) brightness(5100%) saturate(140%);
+  /* background-color: rgba(51, 31, 4, 0.5);  */
   /* Adjust opacity as needed */
   z-index: -1;
 }
