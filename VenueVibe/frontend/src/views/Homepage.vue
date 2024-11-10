@@ -41,13 +41,13 @@
 
                     <div class="cards">
                         <label class="card" for="item-1" id="song-1">
-                            <img src="../images/img4.png" alt="Event Image">
+                            <img src="../images/img10.jpg" alt="Event Image">
                         </label>
                         <label class="card" for="item-2" id="song-2">
-                            <img src="../images/img2.png" alt="Event Image">
+                            <img src="../images/img9.jpg" alt="Event Image">
                         </label>
                         <label class="card" for="item-3" id="song-3">
-                            <img src="../images/img5.png" alt="Event Image">
+                            <img src="../images/NAO.webp" alt="Event Image">
                         </label>
                     </div>
 
@@ -55,7 +55,7 @@
                         <div class="upper-part">
                             <div class="info-area" id="test">
                                 <div class="song-info" id="song-info-1">
-                                    <div class="title">The Epitome Pushcarts By INVADE</div>
+                                    <div class="title">TGIF Bazaar @Sentosa Boardwalk</div>
                                     <div class="sub-line">
                                         <div class="subtitle">Event</div>
                                         <div class="time">2024</div>
@@ -395,7 +395,7 @@ input[type=radio] {
 }
 
 .right {
-    background-image: url('@/images/xmas.webp');
+    background-image: url('@/images/img7.jpg');
     background-size: cover;  
     filter: brightness(100%) contrast(90%);
     right: 0%;
@@ -422,12 +422,7 @@ input[type=radio] {
     display: inline-block;
     opacity: 0;
     font-size: 100px;
-    text-shadow: 
-    3px 3px 0 #333232,
-    -1px -1px 0 #333232,  
-    1px -1px 0 #333232,
-    -1px 1px 0 #333232,
-    1px 1px 0 #333232;
+    text-shadow: #1a1a1a;
 }
 
 /* Main Content Layout */

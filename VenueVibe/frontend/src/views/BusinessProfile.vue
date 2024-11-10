@@ -1,10 +1,9 @@
 <template>
+<div class="img-container">
   <div class="container section-title" data-aos="fade-up">
     <h2>
       <div class="title-with-lines">
-        <span class="line"></span>
         Business Profile
-        <span class="line"></span>
       </div>
     </h2>
   </div>
@@ -142,7 +141,7 @@
             <button
               type="button"
               @click="addService"
-              class="btn btn-primary"
+              class="btn green-btn"
               :disabled="loading"
             >
               + Add Service
@@ -201,7 +200,7 @@
             <button
               type="button"
               @click="addProduct"
-              class="btn btn-primary"
+              class="btn green-btn"
               :disabled="loading"
             >
               + Add Product
@@ -248,6 +247,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -415,7 +415,13 @@ export default {
 };
 </script>
 
+<style src="@/styles/review.css" scoped />
+
 <style scoped>
+.img-container{
+  background-image: url('@/images/img7.jpg');
+  background-size: 1000px auto;
+}
 .section-title {
   text-align: center;
   margin-bottom: 0px;

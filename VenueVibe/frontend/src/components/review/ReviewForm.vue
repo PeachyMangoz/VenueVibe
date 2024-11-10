@@ -133,7 +133,7 @@
             <div class="text-end">
               <button 
                 type="submit" 
-                class="btn"
+                class="btn green-btn"
                 :disabled="loading"
               >
                 <i class="bi bi-check-circle me-1"></i>
@@ -333,15 +333,6 @@ defineExpose({
 
 <style scoped>
 
-.green-btn {
-  background-color: #484039;
-  color: white;
-}
-
-.green-btn:hover {
-  background-color:#484039;
-  color: white;
-}
 
 .preview-container {
   max-width: 100%;
