@@ -612,7 +612,7 @@ export default {
   }
 }
 /* Remove excessive space on medium screens */
-@media (max-width: 1700px) {
+@media (max-width: 1600px) {
   .content-wrapper {
     flex-direction: column;
   }
