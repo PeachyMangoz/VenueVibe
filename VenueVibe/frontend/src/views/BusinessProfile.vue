@@ -2,12 +2,12 @@
 <div class="img-container">
   <div class="container section-title" data-aos="fade-up">
     <h2>
-      <div class="title-with-lines">
+      <div class="title-with-lines" style="color:white">
         Business Profile
       </div>
     </h2>
   </div>
-  <div class="container pb-5">
+  <div class="container pb-5" >
     <div
       v-if="loading"
       class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm " style="background-color:rgb(250,250,250,0.8); opacity:">
       <div class="card-body">
         <!-- View Mode -->
         <div v-if="hasProfile && !isEditing">
@@ -419,7 +419,7 @@ export default {
 
 <style scoped>
 .img-container{
-  background-image: url('@/images/img7.jpg');
+  background-image: url('@/images/img11.jpg');
   background-size: 1000px auto;
 }
 .section-title {
