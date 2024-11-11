@@ -31,7 +31,7 @@
                 <div class="main-banner">
                     <h2 class="heading-montserrat text-5xl tracking-tight">WHERE TO BOOTH?</h2>
                     <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
-                    <router-link to="/booths" class="btn green-btn mt-3">Find a Booth</router-link>
+                    <router-link to="/booths" class="btn green-btn mt-3 heading-montserrat">Find a Booth</router-link>
                 </div>
 
                  <!-- Add the Video Carousel here -->
@@ -91,7 +91,7 @@
             </div>
             <div class="section-title title-dark-glow">
                 <h2 style="margin-bottom: 30px;">So what are you waiting for?</h2>
-                <router-link to="/login" class="btn green-btn mt-3">Log in/Sign up</router-link>
+                <router-link to="/login" class="btn green-btn mt-3 heading-montserrat">Log in/Sign up</router-link>
             </div>
             
         </div>

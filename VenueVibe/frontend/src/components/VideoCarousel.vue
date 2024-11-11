@@ -23,10 +23,10 @@
         </div>
 
         <!-- Description Section -->
-        <div class="carousel-description">
+        <div class="carousel-description heading-montserrat">
           {{ card.description }}
         </div>
-        <div class="video-source">
+        <div class="video-source heading-montserrat">
           {{ card.source }}
         </div>
         <div class="video-link">
@@ -108,6 +108,7 @@ const previousCard = () => {
   }
 };
 </script>
+<style src="@/styles/review.css" scoped />
 
 <style scoped>
 /* Import Font Awesome */
@@ -233,7 +234,7 @@ const previousCard = () => {
 
 .tiktok-link {
   color: #000;
-  font-size: 1.5rem;
+  font-size: 3rem;
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -243,7 +244,7 @@ const previousCard = () => {
 
 .tiktok-link:hover {
   transform: scale(1.1);
-  color: #00f2ea; /* TikTok's cyan color */
+  color: #36b598; /* TikTok's cyan color */
 }
 
 /* Optional: Add a cool hover effect */
