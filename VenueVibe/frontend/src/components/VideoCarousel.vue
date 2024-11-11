@@ -29,6 +29,11 @@
         <div class="video-source">
           {{ card.source }}
         </div>
+        <div class="video-link">
+          <a :href="card.link" target="_blank" rel="noopener noreferrer" class="tiktok-link">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -60,25 +65,32 @@ const cards = [
     title: 'Public Garden',
     videoSrc: '/videos/Tiktok1.mp4',
     description: 'Recurring artisan trade show | Suntec Singapore Convention Centre',
-    source:' Creds: @halfacoffee. '
+    source:' Creds: @halfacoffee. ',
+    link:'https://www.tiktok.com/@halfacoffee/video/7419647197534244104?is_from_webapp=1&sender_device=pc&web_id=7393597550110246401'
+
   },
   {
     title: 'Resurrack Vintage Market',
     videoSrc: '/videos/Tiktok2.mp4',
-    description: 'EVERY WEEKEND | Bugis Street Art Lane',
-    source:' Creds: @hiddenjemmm. '
+    description: 'Every Weekend | Bugis Street Art Lane',
+    source:' Creds: @hiddenjemmm. ',
+    link:'https://www.tiktok.com/@hiddenjemmm/video/7432680759858613511?is_from_webapp=1&sender_device=pc&web_id=7393597550110246401'
+
   },
   {
-    title: 'Entertainment',
+    title: 'Night at Orchard',
     videoSrc: '/videos/Tiktok3.mp4',
     description: 'Monthly night market | Orchard Road',
-    source:' Creds: @kai.icloud. '
+    source:' Creds: @kai.icloud. ',
+    link:'https://www.tiktok.com/@kai.icloud/video/7385611305631223047?is_from_webapp=1&sender_device=pc&web_id=7393597550110246401'
+
   },
   {
-    title: 'Shopping',
-    videoSrc: '/videos/shopping.mp4',
-    description: 'Find amazing deals',
-    source:' Creds: @halfacoffee. '
+    title: 'Makers Market',
+    videoSrc: '/videos/Tiktok4.mp4',
+    description: 'INVADE Pop-up Markets | Islandwide',
+    source:' Creds: @invade.co. ',
+    link:'https://www.tiktok.com/@invade.co/video/7276691282121051393?is_from_webapp=1&sender_device=pc&web_id=7393597550110246401'
   }
 ];
 
@@ -98,6 +110,9 @@ const previousCard = () => {
 </script>
 
 <style scoped>
+/* Import Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
 .carousel-container {
   margin: auto;
   padding: 0px;
@@ -123,7 +138,7 @@ const previousCard = () => {
   /* Add minimum height to ensure content fits */
   min-height: 400px;
   /* Add padding bottom to make room for buttons */
-  padding-bottom: 60px; /* Increase this value if buttons still get cut */
+  padding-bottom: 40px; /* Increase this value if buttons still get cut */
 }
 
 
@@ -189,6 +204,7 @@ const previousCard = () => {
 
 .carousel-title {
   color: #333;
+  height:40px;
   text-align: center;
   font-size: 1.25rem;
   font-weight: bold;
@@ -215,5 +231,33 @@ const previousCard = () => {
   color:#333;
 }
 
+.tiktok-link {
+  color: #000;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.tiktok-link:hover {
+  transform: scale(1.1);
+  color: #00f2ea; /* TikTok's cyan color */
+}
+
+/* Optional: Add a cool hover effect */
+.tiktok-link i {
+  transition: all 0.3s ease;
+}
+
+.tiktok-link:hover i {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+}
 </style>

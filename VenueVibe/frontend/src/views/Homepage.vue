@@ -31,14 +31,15 @@
                 <div class="main-banner">
                     <h2 class="heading-montserrat text-5xl tracking-tight">WHERE TO BOOTH?</h2>
                     <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
-                    <router-link to="/login" class="btn green-btn mt-3">Log in</router-link>
+                    <router-link to="/booths" class="btn green-btn mt-3">Find a Booth</router-link>
                 </div>
 
                  <!-- Add the Video Carousel here -->
                 <div class="section-title container-fluid glass-effect-video">
                     <h2 style="margin-bottom: 30px;">Videos from Boothers</h2>
                  <VideoCarousel />  
-                 <h1> </h1>
+                 <!-- <h1> </h1> -->
+                 <p style="font-size: 12px; padding-top: 60px"> Tap on the TikTok icon to view the video with sound.</p>
                 </div>
 
                 <!-- 3D Carousel Section -->
@@ -87,6 +88,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="section-title title-dark-glow">
+                <h2 style="margin-bottom: 30px;">So what are you waiting for?</h2>
+                <router-link to="/login" class="btn green-btn mt-3">Log in/Sign up</router-link>
             </div>
             
         </div>
@@ -402,11 +407,11 @@ input[type=radio] {
 }
 
 #item-2:checked ~ .player #test {
-    transform: translateY(-90px);
+    transform: translateY(-100px);
 }
 
 #item-3:checked ~ .player #test {
-    transform: translateY(-180px);
+    transform: translateY(-200px);
 }
 
 /* Banner and Animation Styles */

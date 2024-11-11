@@ -1,37 +1,106 @@
 <template>
-  <div class="booth-details-container">
-    <!-- Left Side: Booth Details -->
-    <div v-if="booth" class="booth-details-card">
-      <img :src="booth.booth_image" alt="Booth Image" class="booth-image" />
-      <h1 class="booth-title">{{ booth.booth_title }}</h1>
-      <div class="booth-info">
-        <p><strong>Booth ID:</strong> {{ booth.booth_id }}</p>
-        <p><strong>Event ID:</strong> {{ booth.event_id }}</p>
-        <p><strong>Organizer ID:</strong> {{ booth.organizer_id }}</p>
-        <p><strong>Status:</strong> {{ booth.availability_status }}</p>
-        <p><strong>Duration:</strong> {{ booth.duration }} hours</p>
-        <p><strong>Price:</strong> ${{ booth.price.toFixed(2) }}</p>
-        <p><strong>Size:</strong> {{ booth.size }} sq. ft.</p>
-        <p><strong>Created At:</strong> {{ formatDate(booth.created_at) }}</p>
-        <p><strong>Updated At:</strong> {{ formatDate(booth.updated_at) }}</p>
+   <div class="booth-details-container">
+    <!-- Main Content Area -->
+    <div v-if="booth" class="booth-details-card glass-effect">
+      <!-- Image Section -->
+      <div class="post-img">
+        <img :src="booth.booth_image" alt="Booth Image" class="booth-image" />
       </div>
-      <button @click="openProfileSelection" class="apply-button">Apply</button>
-      <router-link to="/booths">
-        <button class="btn green-btn">Back to Booth Listings</button>
-      </router-link> </div>
+
+      <!-- Title and Main Info -->
+      <div class="booth-header">
+        <h1 class="booth-title heading-montserrat">{{ booth.booth_title }}</h1>
+        <div class="booth-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-dollar-sign"></i>
+            <span>${{ booth.price.toFixed(2) }}</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ booth.duration }} hours</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-expand-arrows-alt"></i>
+            <span>{{ booth.size }} sq. ft.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Information -->
+      <div class="booth-info">
+        <div class="info-grid">
+          <div class="info-item">
+            <i class="fas fa-id-badge"></i>
+            <div class="info-content">
+              <label>Booth ID</label>
+              <p>{{ booth.booth_id }}</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div class="info-content">
+              <label>Event ID</label>
+              <p>{{ booth.event_id }}</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-user-tie"></i>
+            <div class="info-content">
+              <label>Organizer</label>
+              <p>{{ booth.organizer_id }}</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-check-circle"></i>
+            <div class="info-content">
+              <label>Status</label>
+              <p>{{ booth.availability_status }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timestamps">
+          <div class="timestamp-item">
+            <i class="far fa-calendar-plus"></i>
+            <span>Created: {{ formatDate(booth.created_at) }}</span>
+          </div>
+          <div class="timestamp-item">
+            <i class="far fa-calendar-check"></i>
+            <span>Updated: {{ formatDate(booth.updated_at) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button @click="openProfileSelection" class="apply-button">
+          <i class="fas fa-paper-plane"></i>
+          Apply Now
+        </button>
+        <router-link to="/booths" class="back-link">
+          <button class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Listings
+          </button>
+        </router-link>
+      </div>
     </div>
 
-    <!-- Right Side: Google Map -->
-    <div v-if="booth" class="map-container">
+    <!-- Map Section -->
+    <div v-if="booth" class="map-container glass-effect">
       <div id="map" class="map"></div>
     </div>
 
-    <div v-else>
-      <p v-if="error">{{ error }}</p>
-      <p v-else>Loading booth details...</p>
+    <!-- Loading State -->
+    <div v-else class="loading-state">
+      <p v-if="error" class="error-message">{{ error }}</p>
+      <p v-else class="loading-message">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading booth details...
+      </p>
     </div>
 
-    <!-- Profile Selection Modal -->
+    <!-- Reuse existing modal and notification components -->
     <ProfileSelectionModal 
       :isOpen="showProfileModal"
       :profiles="profiles"
@@ -40,12 +109,13 @@
       @selectProfile="handleProfileSelection"
     />
 
-    <!-- Toast Notification -->
     <div v-if="notification" class="notification-toast" :class="notification.type">
+      <i :class="notification.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
       {{ notification.message }}
     </div>
-  <!-- </div> -->
+  </div>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -235,9 +305,8 @@ export default {
   }
 };
 </script>
-<style src="@/styles/review.css" scoped />
-
 <style scoped>
+/* Main Layout */
 .booth-details-container {
   display: flex;
   flex-direction: column;
@@ -245,8 +314,10 @@ export default {
   background-color: #f5f5f5;
   padding: 20px;
   gap: 20px;
+  margin-top: 64px;
 }
 
+/* Card Styling */
 .booth-details-card {
   background-color: white;
   border-radius: 10px;
@@ -255,70 +326,190 @@ export default {
   max-width: 700px;
   width: 100%;
   margin: 0 auto;
-  align-items: center; 
-  text-align: left; 
 }
 
-.booth-info p {
-  margin: 8px 0;
-  font-size: 1.1em;
-  color: #555;
-  text-align: left;
+/* Image Section */
+.post-img {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.booth-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Header Section */
+.booth-header {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .booth-title {
   font-size: 2em;
   margin-bottom: 10px;
   color: #333;
-  text-align: left; 
 }
 
+/* Highlights Section */
+.booth-highlights {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(54, 181, 152, 0.1);
+  border-radius: 10px;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1em;
+  color: #36b598;
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.info-item i {
+  color: #36b598;
+  font-size: 1.2em;
+}
+
+.info-content label {
+  display: block;
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.info-content p {
+  margin: 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+/* Timestamps */
+.timestamps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.timestamp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #666;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.apply-button, .back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apply-button {
+  flex: 2;
+  background: #36b598;
+  color: white;
+}
+
+.apply-button:hover {
+  background: #2d9a82;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(54, 181, 152, 0.3);
+}
+
+.back-button {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.1);
+  color: #666;
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Map Section */
 .map-container {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  height: 600px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .map {
   width: 100%;
-  height: 800px;
+  height: 100%;
   border-radius: 10px;
-  overflow: hidden;
 }
 
-.booth-image {
-  width: 100%;
-  height: auto;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 20px;
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 40px;
 }
 
-.booth-info p strong {
-  color: #36b598;
+.loading-message, .error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.2em;
 }
 
-.apply-button, .back-button {
-  background-color: #36b598;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  margin-top: 10px;
+.error-message {
+  color: #f44336;
 }
 
-.apply-button:hover, .back-button:hover {
-  background-color: #2d9a82;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
+/* Notification Toast */
 .notification-toast {
   position: fixed;
   bottom: 20px;
@@ -355,47 +546,34 @@ export default {
   .booth-details-container {
     flex-direction: row;
     align-items: flex-start;
+    padding: 40px 20px;
   }
 
   .booth-details-card, .map-container {
     flex: 1;
     margin: 0 10px;
-  }
-
-  .booth-details-card {
-    max-width: 767px;
-  }
-
-  .map {
-    height: 780px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .booth-details-container {
-    flex-direction: column;
-  }
-
-  .map {
+  .map-container {
     height: 400px;
   }
 
   .booth-title {
     font-size: 1.5em;
   }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media screen and (max-width: 480px) {
-  .booth-title {
-    font-size: 1.5em;
-  }
-
-  .booth-info p {
-    font-size: 1em;
-  }
-
-  .map {
-    height: 300px;
+  .booth-details-container {
+    padding: 10px;
   }
 
   .notification-toast {
@@ -404,9 +582,12 @@ export default {
     text-align: center;
   }
 
+  .button-group {
+    flex-direction: column;
+  }
+
   .apply-button, .back-button {
-    font-size: 14px;
-    padding: 8px 16px;
+    width: 100%;
   }
 }
 </style>
