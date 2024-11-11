@@ -1,14 +1,13 @@
 <template>
+<div class="img-container">
   <div class="container section-title" data-aos="fade-up">
     <h2>
-      <div class="title-with-lines">
-        <span class="line"></span>
+      <div class="title-with-lines" style="color:white">
         Business Profile
-        <span class="line"></span>
       </div>
     </h2>
   </div>
-  <div class="container pb-5">
+  <div class="container pb-5" >
     <div
       v-if="loading"
       class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
@@ -19,7 +18,7 @@
       </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm " style="background-color:rgb(250,250,250,0.8); opacity:">
       <div class="card-body">
         <div v-if="hasProfile && !isEditing">
           <div class="mb-4">
@@ -148,7 +147,7 @@
             <button
               type="button"
               @click="addService"
-              class="btn btn-primary"
+              class="btn green-btn"
               :disabled="loading"
             >
               + Add Service
@@ -243,7 +242,7 @@
             <button
               type="button"
               @click="addProduct"
-              class="btn btn-primary"
+              class="btn green-btn"
               :disabled="loading"
             >
               + Add Product
@@ -290,6 +289,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -566,7 +566,13 @@ export default {
 };
 </script>
 
+<style src="@/styles/review.css" scoped />
+
 <style scoped>
+.img-container{
+  background-image: url('@/images/img11.jpg');
+  background-size: 1000px auto;
+}
 .section-title {
   text-align: center;
   margin-bottom: 0px;

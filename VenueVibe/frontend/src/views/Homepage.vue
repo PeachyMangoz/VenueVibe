@@ -1,10 +1,9 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet"></
-</link>
+
 <template>
     <div>
         <!-- Splash Screen -->
-        <div id="splash-screen">
-            <div class="animated-text">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
+        <div id="splash-screen" class="heading-montserrat">
+            <div class="animated-text ">Welcome to <span class="fw-bold" style="color:#36b598;">Boothy</span></div>
         </div>
 
         <!-- Banner Section -->
@@ -14,14 +13,14 @@
 
             <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
                 <div class="position-relative">
-                    <img src="../images/img1.png" class="img-fluid w-100" alt="Banner Image">
+                    <img src="../images/img3 - Copy.png" class="img-fluid" alt="Banner Image" style="filter: brightness(0.8);">
                     <div class="centered-text" style="color:white;">
-                        <span class="letter">B</span>
-                        <span class="letter">o</span>
-                        <span class="letter">o</span>
-                        <span class="letter">t</span>
-                        <span class="letter">h</span>
-                        <span class="letter">y</span>
+                        <span class="letter heading-montserrat">B</span>
+                        <span class="letter heading-montserrat">o</span>
+                        <span class="letter heading-montserrat">o</span>
+                        <span class="letter heading-montserrat">t</span>
+                        <span class="letter heading-montserrat">h</span>
+                        <span class="letter heading-montserrat">y</span>
                     </div>
                 </div>
             </div>
@@ -29,7 +28,7 @@
             <!-- Main Content Section -->
             <div class="container mt-5 main-content">
                 <div class="main-banner">
-                    <h2 class="heading-inter text-5xl font-bold tracking-tight">WHERE TO BOOTH FOR CREATORS?</h2>
+                    <h2 class="heading-montserrat text-5xl tracking-tight">WHERE TO BOOTH?</h2>
                     <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
                     <router-link to="/login" class="btn green-btn mt-3">Log in</router-link>
                 </div>
@@ -42,21 +41,21 @@
 
                     <div class="cards">
                         <label class="card" for="item-1" id="song-1">
-                            <img src="../images/img4.png" alt="Event Image">
+                            <img src="../images/img10.jpg" alt="Event Image">
                         </label>
                         <label class="card" for="item-2" id="song-2">
-                            <img src="../images/img2.png" alt="Event Image">
+                            <img src="../images/img9.jpg" alt="Event Image">
                         </label>
                         <label class="card" for="item-3" id="song-3">
-                            <img src="../images/img5.png" alt="Event Image">
+                            <img src="../images/NAO.webp" alt="Event Image">
                         </label>
                     </div>
 
-                    <div class="player glass-effect">
+                    <div class="player glass-effect heading-montserrat">
                         <div class="upper-part">
                             <div class="info-area" id="test">
                                 <div class="song-info" id="song-info-1">
-                                    <div class="title">The Epitome Pushcarts By INVADE</div>
+                                    <div class="title">TGIF Bazaar @Sentosa Boardwalk</div>
                                     <div class="sub-line">
                                         <div class="subtitle">Event</div>
                                         <div class="time">2024</div>
@@ -99,6 +98,7 @@ export default {
         }
     },
     mounted() {
+        window.scrollTo(0, 0);
         // Initially lock scrolling
         document.body.style.overflow = 'hidden';
 
@@ -158,15 +158,24 @@ export default {
                 );
             }
         }, 3000);
+    },
+
+    beforeRouteLeave(to, from, next) {
+        // Ensure that scrolling is unlocked before navigating away
+        document.body.style.overflow = 'auto';
+        next();  // Proceed to the next route
     }
 };
 </script>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap');
+
 .heading-inter { font-family: 'Inter', sans-serif; } 
 .heading-playfair { font-family: 'Playfair Display', serif; } 
 .heading-montserrat { font-family: 'Montserrat', sans-serif; }
+
 
 /* Splash Screen Style */
 #splash-screen {
@@ -187,6 +196,7 @@ export default {
     opacity: 0;
     animation: fadeInOut 3s ease-in-out;
     animation-fill-mode: forwards;
+    
 }
 
 @keyframes fadeInOut {
@@ -270,16 +280,16 @@ input[type=radio] {
 #item-1:checked ~ .cards #song-3,
 #item-2:checked ~ .cards #song-1,
 #item-3:checked ~ .cards #song-2 {
-    transform: translatex(-40%) scale(.8);
-    opacity: .4;
+    transform: translatex(-70%) scale(.8);
+    opacity: .8;
     z-index: 0;
 }
 
 #item-1:checked ~ .cards #song-2,
 #item-2:checked ~ .cards #song-3,
 #item-3:checked ~ .cards #song-1 {
-    transform: translatex(40%) scale(.8);
-    opacity: .4;
+    transform: translatex(70%) scale(.8);
+    opacity: .8;
     z-index: 0;
 }
 
@@ -354,6 +364,7 @@ input[type=radio] {
 .subtitle, .time {
     font-size: 13px;
     line-height: 16px;
+    padding-right: 30px;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -383,13 +394,17 @@ input[type=radio] {
 }
 
 .left {
-    background: #27352e;
+    background-image: url('@/images/img11.jpg');
+    background-size: cover;  
+    filter: brightness(100%) contrast(90%) ;
     left: 0%;
     width: 0%;
 }
 
 .right {
-    background: #191919;
+    background-image: url('@/images/img7.jpg');
+    background-size: cover;  
+    filter: brightness(100%) contrast(90%);
     right: 0%;
     width: 100%;
 }
@@ -413,6 +428,11 @@ input[type=radio] {
 .letter {
     display: inline-block;
     opacity: 0;
+    font-size: 100px;
+    text-shadow: 
+    0 0 10px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Main Content Layout */

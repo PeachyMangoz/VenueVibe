@@ -1,10 +1,9 @@
 <template>
+<div class="img-container">
   <div class="container section-title" data-aos="fade-up">
     <h2>
-      <div class="title-with-lines">
-        <span class="line"></span>
+      <div class="title-with-lines"style="color:white">
         Application Profiles
-        <span class="line"></span>
       </div>
     </h2>
   </div>
@@ -102,7 +101,7 @@
         </div>
       </div>
 
-      <div v-if="profiles.length === 0" class="text-center py-5 text-muted">
+      <div v-if="profiles.length === 0" class="text-center py-5 text-white">
         <p>
           No application profiles created yet. Create your first profile to get
           started!
@@ -118,6 +117,7 @@
       </button>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -284,7 +284,15 @@ export default {
 };
 </script>
 
+
+<style src="@/styles/review.css" scoped />
 <style scoped>
+
+
+.img-container{
+  background-image: url('@/images/marketdark.jpg');
+  background-size: 1000px auto;
+}
 .hover-shadow {
   transition: box-shadow 0.3s ease;
 }
@@ -362,19 +370,6 @@ export default {
   color: #333;
 }
 
-.title-with-lines {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.line {
-  width: 70px;
-  height: 3px;
-  background: #36b598;
-  display: inline-block;
-}
 
 @keyframes fadeIn {
   0% {

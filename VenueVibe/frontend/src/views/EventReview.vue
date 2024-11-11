@@ -1,6 +1,6 @@
 # EventReview.vue
 <template>
-  <div class="event-review-container">
+  <div class="event-review-container heading-montserrat">
     <LoadingOverlay v-if="loading" />
     <!-- Video Background -->
     <video
@@ -37,7 +37,8 @@
       <h2  style="color:white; font-size: 70px;">Event Reviews</h2>
     </div>
 
-    <div class="row mb-4 mx-3">
+    <div class="container">
+    <div class="row mb-4 ">
       <ReviewSearch 
         v-model:searchId="searchEventId"
         :loading="loading"
@@ -51,9 +52,11 @@
         />
       </div>
     </div>
+  </div>
 
     <!-- Charts Section -->
-    <div v-if="searchEventId && filteredReviews.length > 0" class="row mb-4 mx-3">
+     <div class="container">
+    <div v-if="searchEventId && filteredReviews.length > 0" class="row">
       <RatingChart 
         :reviews="filteredReviews"
         :event-id="searchEventId"
@@ -62,19 +65,24 @@
         :reviews="filteredReviews"
         :event-id="searchEventId"
       />
+      <span style="margin:20px"></span>
+      <RevenueAnalysisChart 
+        :reviews="filteredReviews"
+        :event-id="searchEventId"
+      />
     </div>
-
+    </div>
     <!-- Reviews Section -->
     <section id="reviews" class="reviews-section section">
-      <div class="container" v-if="filteredReviews.length === 0">
+      <div class="container"  v-if="filteredReviews.length === 0">
         <div class="alert alert-info text-center">
           <i class="bi bi-info-circle me-2"></i>
           No reviews found for this event.
         </div>
       </div>
 
-      <div class="container" v-else>
-        <div class="row gy-4">
+      <div class="container"  v-else>
+        <div class="row gy-4 gx-2">
           <div 
             v-for="(review, index) in filteredReviews" 
             :key="review.id" 
@@ -107,6 +115,7 @@ import ReviewSearch from '@/components/review/ReviewSearch.vue';
 import ReviewFormButton from '@/components/review/ReviewFormButton.vue';
 import RatingChart from '@/components/review/ReviewCharts/RatingChart.vue';
 import DemographicsChart from '@/components/review/ReviewCharts/DemographicsChart.vue';
+import RevenueAnalysisChart from '@/components/review/ReviewCharts/RevenueAnalysisChart.vue';
 // import LoadingOverlay from '@/components/review/LoadingOverlay.vue';
 
 const reviewFormRef = ref(null);
@@ -181,7 +190,9 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2); /* Adjust opacity as needed */
+  filter: contrast(200%) brightness(100%) saturate(200%) ;
+  /* background-color: rgba(51, 31, 4, 0.5);  */
+  /* Adjust opacity as needed */
   z-index: -1;
 }
 

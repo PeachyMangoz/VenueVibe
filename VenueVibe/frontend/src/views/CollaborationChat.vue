@@ -4,13 +4,13 @@
     <div class="sidebar">
       <!-- Chat List -->
       <div class="chat-list">
-        <div class="row">
-          <div class="col-1">
+        <div class="row align-items-center chat-header">
+          <div class="col auto">
             <router-link :to="{ name: 'Collaborate'}" class="back-btn">
                 <span>&lt;</span>
             </router-link> 
           </div>
-          <div class="col-11">
+          <div class="col">
             <h3>Chats</h3>
           </div>
         </div>
@@ -367,7 +367,7 @@ export default {
         !chat.userInfo
       ) {
         console.warn("Chat data is missing or improperly formatted:", chat);
-        return "/path-to-default-profile-pic.jpg"; // Return a default image if data is missing
+        return "../images/defaultprofileimg.jpg"; // Return a default image if data is missing
       }
 
       // Find the partner ID
@@ -378,7 +378,7 @@ export default {
       // Return the partner's profile picture, or default if missing
       return (
         chat.userInfo[partnerId]?.profile_image ||
-        "/path-to-default-profile-pic.jpg"
+        "../images/defaultprofileimg.jpg"
       );
     },
 
@@ -424,24 +424,29 @@ export default {
 };
 </script>
 
+
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Alkatra:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
   font-family: "Poppins", sans-serif;
 }
+
 .chat-container {
   display: flex;
   height: 93vh;
 }
-
+col{
+    padding: 0;
+}
 /* Sidebar styling */
 .sidebar {
   width: 25%;
-  min-width: 15%;
+  min-width: 25%;
   background-color: white;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  
 }
 
 .search-bar input {
@@ -454,7 +459,6 @@ export default {
 
 .chat-list h3 {
   font-size: 25px;
-  margin-left: 10px;
 }
 
 .back-btn {

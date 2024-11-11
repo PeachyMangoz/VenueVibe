@@ -102,6 +102,97 @@ export function useCharts() {
     });
   };
 
+  const createRevenueAnalysisChart = (canvas, data) => {
+    return new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            label: 'Average Revenue ($)',
+            data: data.avgRevenue,
+            backgroundColor: chartColors.primary,
+            borderColor: chartColors.secondary,
+            borderWidth: 1,
+            yAxisID: 'y'
+          },
+          {
+            label: 'Average Transactions',
+            data: data.avgTransactions,
+            backgroundColor: chartColors.gradient[3],
+            borderColor: chartColors.gradient[4],
+            borderWidth: 1,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  if (label.includes('Revenue')) {
+                    return `${label}: $${context.parsed.y.toLocaleString()}`;
+                  }
+                  return `${label}: ${Math.round(context.parsed.y)}`;
+                }
+                return '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45
+            }
+          },
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Average Revenue ($)'
+            },
+            ticks: {
+              callback: function(value) {
+                return '$' + value.toLocaleString();
+              }
+            }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Average Transactions'
+            },
+            ticks: {
+              stepSize: 1
+            },
+            grid: {
+              drawOnChartArea: false
+            }
+          }
+        }
+      }
+    });
+  };
+
   const destroyChart = (chart) => {
     if (chart) {
       chart.destroy();
@@ -111,6 +202,7 @@ export function useCharts() {
   return {
     createRatingChart,
     createDemographicsChart,
+    createRevenueAnalysisChart,
     destroyChart
   };
 }

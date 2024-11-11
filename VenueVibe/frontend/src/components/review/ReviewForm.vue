@@ -99,6 +99,43 @@
                 required
               ></textarea>
             </div>
+            
+            <!-- Transaction Range -->
+            <div class="mb-3">
+              <label for="transactionRange" class="form-label">Estimated Number of Transactions:</label>
+              <select 
+                id="transactionRange" 
+                v-model="formData.transactionRange" 
+                class="form-select"
+                required
+              >
+                <option value="">Select transaction range</option>
+                <option value="1-10">1-10 transactions</option>
+                <option value="11-30">11-30 transactions</option>
+                <option value="31-50">31-50 transactions</option>
+                <option value="51-100">51-100 transactions</option>
+                <option value="100+">Over 100 transactions</option>
+              </select>
+            </div>
+
+            <!-- Revenue Range -->
+            <div class="mb-3">
+              <label for="revenueRange" class="form-label">Estimated Revenue Range:</label>
+              <select 
+                id="revenueRange" 
+                v-model="formData.revenueRange" 
+                class="form-select"
+                required
+              >
+                <option value="">Select revenue range</option>
+                <option value="0-50">$0-$50</option>
+                <option value="50-100">$50-$100</option>
+                <option value="100-300">$100-$300</option>
+                <option value="300-500">$300-$500</option>
+                <option value="500-1000">$500-$1000</option>
+                <option value="1000+">Over $1000</option>
+              </select>
+            </div>
 
 <!-- Modified Image Upload -->
 <div class="mb-3">
@@ -133,7 +170,7 @@
             <div class="text-end">
               <button 
                 type="submit" 
-                class="btn"
+                class="btn green-btn"
                 :disabled="loading"
               >
                 <i class="bi bi-check-circle me-1"></i>
@@ -182,7 +219,7 @@ const ratingLabels = {
 
 // State
 const modalRef = ref(null);
-const modal = ref(null);
+let modal = null; 
 const imagePreview = ref(null);
 const formData = ref(getInitialFormData());
 
@@ -195,7 +232,9 @@ function getInitialFormData() {
     rating: '',
     description: '',
     imageFile: null,
-    imageFileObject: null
+    imageFileObject: null,
+    transactionRange: '', // Add this
+    revenueRange: ''     // Add this
   };
 }
 
@@ -305,21 +344,27 @@ const handleSubmit = async () => {
 };
 // Modal methods
 const openModal = () => {
-  modal.value?.show();
+  if (modal) {
+    modal.show();
+  }
 };
 
 const closeModal = () => {
-  modal.value?.hide();
-  resetForm();
+  if (modal) {
+    modal.hide();
+    resetForm();
+  }
 };
 
 // Lifecycle hooks
 onMounted(() => {
-  modal.value = new Modal(modalRef.value);
-  
-  modalRef.value.addEventListener('hidden.bs.modal', () => {
-    resetForm();
-  });
+  if (modalRef.value) {
+    modal = new Modal(modalRef.value);
+    
+    modalRef.value.addEventListener('hidden.bs.modal', () => {
+      resetForm();
+    });
+  }
 });
 
 // Expose methods to parent
@@ -333,15 +378,6 @@ defineExpose({
 
 <style scoped>
 
-.green-btn {
-  background-color: #484039;
-  color: white;
-}
-
-.green-btn:hover {
-  background-color:#484039;
-  color: white;
-}
 
 .preview-container {
   max-width: 100%;

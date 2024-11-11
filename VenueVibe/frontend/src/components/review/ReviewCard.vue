@@ -1,5 +1,5 @@
 <template>
-  <article class="card h-100 review-card">
+  <article class="card h-80 w-60 review-card">
     <!-- Image Section -->
     <div class="image-container">
       <img 
@@ -24,7 +24,7 @@
       </div>
 
       <!-- Event ID -->
-      <h3 class="event-id">
+      <h3 class="event-id ">
         {{ review.eventId }}
       </h3>
 
@@ -39,13 +39,13 @@
       <div class="user-section">
         <div class="user-info">
           <!-- User Avatar -->
-          <div class="avatar-wrapper">
+          <!-- <div class="avatar-wrapper">
             <img 
               src="@/images/img2.png" 
               alt="User avatar"
               class="avatar"
             >
-          </div>
+          </div> -->
 
           <!-- User Details -->
           <div class="user-details">
@@ -130,6 +130,8 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style src="@/styles/review.css" scoped />
 
 <style scoped>
 /* Card Container */

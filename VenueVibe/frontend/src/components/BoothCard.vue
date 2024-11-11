@@ -97,13 +97,13 @@ export default {
 }
 
 .view-details-button:hover {
-  background-color: #ff8c00;
+  background-color: #16697a;
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .view-details-button:active {
-  background-color: #e67600;
+  background-color: #16697a;
   transform: translateY(0);
 }
 
