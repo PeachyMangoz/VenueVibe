@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Follow these steps to set up and run the application:
+Follow these steps to set up and run the application locally:
 
 ### 1. Set up a Python Virtual Environment
 

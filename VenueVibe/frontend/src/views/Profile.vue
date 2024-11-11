@@ -1,6 +1,7 @@
 <template>
   <body>
     <div class="container.fluid py-4 mx-3">
+      
       <div class="row">
         <!-- Profile Photo Column -->
         <div class="col-lg-2 text-center mt-4">
@@ -123,6 +124,42 @@
                     placeholder="Enter Link to Your Portfolio"
                   />
                 </div>
+                <div class="mb-4">
+    
+            <label class="form-label fw-semibold"
+              >My Interests</label
+            >
+            <div class="mb-2">
+              <div
+                v-for="(interest, index) in interests"
+                :key="index"
+                class="d-flex gap-2 mb-2"
+              >
+                <input
+                  v-model.trim="interests[index]"
+                  class="form-control"
+                  placeholder="Enter an interest"
+                  :disabled="loading"
+                />
+                <button
+                  type="button"
+                  @click="removeInterest(index)"
+                  class="btn btn-danger"
+                  :disabled="loading"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              @click="addInterest"
+              class="btn green-btn"
+              :disabled="loading"
+            >
+              + Add Interest
+            </button>
+          </div>
 
                 <!-- Business Bio -->
                 <div class="mb-3">
@@ -146,12 +183,12 @@
         <!-- Additional Profile Columns -->
         <div class="col-lg-4 mt-4">
           <div class="row">
-            <!-- Business Profiles Box -->
+            <!-- Business Profile Box -->
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Business Profiles</h5>
+                    <h5 class="card-title mb-0">Business Profile</h5>
                     <button class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-plus"></i> Add
                     </button>
@@ -178,9 +215,6 @@
                   </div>
                   <div class="mb-3">
                     <span>Profiles:</span>
-                  </div>
-                  <div class="mb-3">
-                    <span>Additional Details:</span>
                   </div>
                 </div>
               </div>
@@ -211,6 +245,7 @@ export default {
     const business_name = ref('');
     const website_link = ref('');
     const portfolio_link = ref('');
+    const interests = ref([]);
     const isCreator = ref(true);
     const collab = ref(false);  // New collab field
     const profileImageUrl = ref('');
@@ -228,6 +263,7 @@ export default {
           business_name.value = userData.business_name || '';
           website_link.value = userData.website_link || '';
           portfolio_link.value = userData.portfolio_link || '';
+          interests.value = userData.interests || [];
           isCreator.value = userData.profile_type === 'creator';
           collab.value = userData.collab || false;  // Fetch the collab value
           profileImageUrl.value = userData.profile_image || '';
@@ -244,6 +280,9 @@ export default {
           profile_type: isCreator.value ? 'creator' : 'organiser',
           website_link: website_link.value,
           portfolio_link: portfolio_link.value,
+          interests: interests.value
+              .map((i) => i.trim())
+              .filter(Boolean),
           collab: collab.value,  // Update collab value
         }, { merge: true });
         alert('Profile updated successfully!');
@@ -291,6 +330,14 @@ export default {
       }
     };
 
+    const addInterest = () => {
+      interests.value.push("");
+    };
+
+    const removeInterest = (index) => {
+      interests.value.splice(index, 1);
+    };
+
     onMounted(() => {
       fetchUserData();
     });
@@ -302,6 +349,7 @@ export default {
       business_name,
       website_link,
       portfolio_link,
+      interests,
       isCreator,
       collab,
       profileImageUrl,
@@ -310,7 +358,9 @@ export default {
       uploadProfileImage,
       uploadCollabBackground,
       selectProfileImage,
-      updateProfile
+      updateProfile,
+      addInterest,
+      removeInterest
     };
   },
 };
