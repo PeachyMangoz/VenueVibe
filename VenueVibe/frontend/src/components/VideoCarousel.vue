@@ -130,8 +130,7 @@ const previousCard = () => {
   display: flex;
   flex-direction: column;
   background-color: white;
-  opacity: 0.9;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.3);
   transition: 0.4s ease-out;
   position: relative;

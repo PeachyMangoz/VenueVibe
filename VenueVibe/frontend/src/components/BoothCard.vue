@@ -24,8 +24,8 @@
         </div>
         
         <div class="mb-3 d-flex align-items-center">
-          <i class="fas fa-expand-arrows-alt me-2 text-muted"></i>
-          <span class="booth-space">{{ booth.size }} </span>
+          <i class="fas fa-store me-2 text-muted"></i>
+          <span class="booth-space">{{ booth.size }} slots </span>
         </div>
         
         <div class="mb-3 d-flex align-items-center">

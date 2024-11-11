@@ -31,9 +31,9 @@
         <div class="info-grid">
           <div class="info-item">
             <i class="fas fa-id-badge"></i>
-            <div class="info-content">
+            <div class="info-content"style="overflow:scroll;">
               <label>Booth ID</label>
-              <p>{{ booth.booth_id }}</p>
+              <p >{{ booth.booth_id }}</p>
             </div>
           </div>
           <div class="info-item">
@@ -77,7 +77,7 @@
           <i class="fas fa-paper-plane"></i>
           Apply Now
         </button>
-        <router-link to="/booths" class="back-link">
+        <router-link to="/booths" class="back-link text-decoration-none">
           <button class="back-button">
             <i class="fas fa-arrow-left"></i>
             Back to Listings
@@ -451,6 +451,7 @@ export default {
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .apply-button {

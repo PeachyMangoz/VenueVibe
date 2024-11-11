@@ -173,7 +173,7 @@ export default {
 <template>
   <div class="image-container">
     <div class="container section-title"  data-aos="fade-up">
-      <h2  style="color:#333; ">Event Applications</h2>
+      <h2  style="color: #333; ">Event Applications</h2>
     </div>
 
     <div class="container py-4">
@@ -376,9 +376,9 @@ export default {
 
 
 <style scoped>
-body {
-  background-image: url("@/images/img1.png");
-  background-size: 1000px auto;
+.image-container {
+  background-image: url("@/images/img7.jpg");
+  background-size: cover;
 }
 
 .section-title {

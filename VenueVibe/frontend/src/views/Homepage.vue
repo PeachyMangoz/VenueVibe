@@ -36,13 +36,16 @@
 
                  <!-- Add the Video Carousel here -->
                 <div class="section-title container-fluid glass-effect-video">
-                    <h2 style="margin-bottom: 30px;">Videos from Boothers</h2>
+                    <h2 style="margin-bottom: 60px;">Videos from Boothers</h2>
                  <VideoCarousel />  
                  <!-- <h1> </h1> -->
                  <p style="font-size: 12px; padding-top: 60px"> Tap on the TikTok icon to view the video with sound.</p>
                 </div>
 
                 <!-- 3D Carousel Section -->
+                <div style="margin-bottom: 0px; padding-bottom: 0px;" class="section-title title-dark-glow">
+                    <h2 >2024 Event Highlight</h2>
+                </div>
                 <div class="carousel-container">
                     <input type="radio" name="slider" id="item-1" v-model="selectedItem" value="item-1" checked>
                     <input type="radio" name="slider" id="item-2" v-model="selectedItem" value="item-2">
