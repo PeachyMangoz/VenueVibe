@@ -17,6 +17,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@lordicon/element": "^1.10.0",
+    "@stripe/stripe-js": "^4.9.0",
     "@vue-stripe/vue-stripe": "^4.5.0",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
