@@ -1,6 +1,16 @@
 <template>
+    <div
+    v-if="loading"
+    class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
+    style="z-index: 1000"
+  >
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <body>
     <div class="container.fluid py-4 mx-3">
+      
       <div class="row">
         <!-- Profile Photo Column -->
         <div class="col-lg-2 text-center mt-4">
@@ -123,6 +133,42 @@
                     placeholder="Enter Link to Your Portfolio"
                   />
                 </div>
+                <div class="mb-4">
+    
+            <label class="form-label fw-semibold"
+              >My Interests</label
+            >
+            <div class="mb-2">
+              <div
+                v-for="(interest, index) in interests"
+                :key="index"
+                class="d-flex gap-2 mb-2"
+              >
+                <input
+                  v-model.trim="interests[index]"
+                  class="form-control"
+                  placeholder="Enter an interest"
+                  :disabled="loading"
+                />
+                <button
+                  type="button"
+                  @click="removeInterest(index)"
+                  class="btn btn-danger"
+                  :disabled="loading"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              @click="addInterest"
+              class="btn green-btn"
+              :disabled="loading"
+            >
+              + Add Interest
+            </button>
+          </div>
 
                 <!-- Business Bio -->
                 <div class="mb-3">
@@ -146,12 +192,12 @@
         <!-- Additional Profile Columns -->
         <div class="col-lg-4 mt-4">
           <div class="row">
-            <!-- Business Profiles Box -->
+            <!-- Business Profile Box -->
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Business Profiles</h5>
+                    <h5 class="card-title mb-0">Business Profile</h5>
                     <button class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-plus"></i> Add
                     </button>
@@ -179,9 +225,6 @@
                   <div class="mb-3">
                     <span>Profiles:</span>
                   </div>
-                  <div class="mb-3">
-                    <span>Additional Details:</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -201,6 +244,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'fire
 
 export default {
   setup() {
+    const loading = ref(false); // Loading state
     const auth = getAuth();
     const user = auth.currentUser;
     const storage = getStorage();
@@ -211,6 +255,7 @@ export default {
     const business_name = ref('');
     const website_link = ref('');
     const portfolio_link = ref('');
+    const interests = ref([]);
     const isCreator = ref(true);
     const collab = ref(false);  // New collab field
     const profileImageUrl = ref('');
@@ -218,6 +263,7 @@ export default {
     const collabBackgroundInput = ref(null); // Ref for collab background input
 
     const fetchUserData = async () => {
+      loading.value = true; // Show loading screen
       if (user) {
         const userDoc = await getDoc(doc(db, 'user', user.uid));
         if (userDoc.exists()) {
@@ -228,15 +274,18 @@ export default {
           business_name.value = userData.business_name || '';
           website_link.value = userData.website_link || '';
           portfolio_link.value = userData.portfolio_link || '';
+          interests.value = userData.interests || [];
           isCreator.value = userData.profile_type === 'creator';
           collab.value = userData.collab || false;  // Fetch the collab value
           profileImageUrl.value = userData.profile_image || '';
           collabBackgroundUrl.value = userData.collab_background || '';  // Fetch the collab background URL
         }
       }
+      loading.value = false; // Hide loading screen
     };
 
     const updateProfile = async () => {
+      loading.value = true; // Show loading screen while updating profile
       if (user) {
         await setDoc(doc(db, 'user', user.uid), {
           bio: bio.value,
@@ -244,15 +293,20 @@ export default {
           profile_type: isCreator.value ? 'creator' : 'organiser',
           website_link: website_link.value,
           portfolio_link: portfolio_link.value,
+          interests: interests.value
+              .map((i) => i.trim())
+              .filter(Boolean),
           collab: collab.value,  // Update collab value
         }, { merge: true });
         alert('Profile updated successfully!');
       }
+      loading.value = false; // Hide loading screen after updating
     };
 
     const uploadProfileImage = async (event) => {
       const file = event.target.files[0];
       if (file && user) {
+        loading.value = true; // Show loading during upload
         const storagePath = `profile_images/${user.uid}/${file.name}`;
         const fileRef = storageRef(storage, storagePath);
 
@@ -263,6 +317,8 @@ export default {
           profileImageUrl.value = downloadUrl;
         } catch (error) {
           console.error('Error uploading profile image:', error);
+        } finally {
+          loading.value = false; // Hide loading after upload
         }
       }
     };
@@ -270,6 +326,7 @@ export default {
     const uploadCollabBackground = async (event) => {
       const file = event.target.files[0];
       if (file && user) {
+        loading.value = true; // Show loading during upload
         const storagePath = `collab_backgrounds/${user.uid}/${file.name}`;
         const fileRef = storageRef(storage, storagePath);
 
@@ -280,6 +337,8 @@ export default {
           collabBackgroundUrl.value = downloadUrl;
         } catch (error) {
           console.error('Error uploading collab background:', error);
+        } finally {
+          loading.value = false; // Hide loading after upload
         }
       }
     };
@@ -291,17 +350,27 @@ export default {
       }
     };
 
+    const addInterest = () => {
+      interests.value.push("");
+    };
+
+    const removeInterest = (index) => {
+      interests.value.splice(index, 1);
+    };
+
     onMounted(() => {
-      fetchUserData();
+      fetchUserData(); // Fetch user data on component mount
     });
 
     return {
+      loading, // Return loading state
       username,
       email,
       bio,
       business_name,
       website_link,
       portfolio_link,
+      interests,
       isCreator,
       collab,
       profileImageUrl,
@@ -310,18 +379,20 @@ export default {
       uploadProfileImage,
       uploadCollabBackground,
       selectProfileImage,
-      updateProfile
+      updateProfile,
+      addInterest,
+      removeInterest
     };
   },
 };
 </script>
+
   
   
   <style scoped>
 
   body {
-    background-image: url('@/images/marketdark.jpg');
-    background-size:cover
+    background-color: #36b598;
   }
   
 

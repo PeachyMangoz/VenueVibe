@@ -13,7 +13,7 @@
 
             <div class="container-fluid p-0 d-none d-md-block" id="imgBanner">
                 <div class="position-relative">
-                    <img src="../images/img3 - Copy.png" class="img-fluid" alt="Banner Image" style="filter: brightness(0.8);">
+                    <img src="../images/img3 - Copy.png" class="img-fluid w-100" alt="Banner Image" style="filter: brightness(0.8);">
                     <div class="centered-text" style="color:white;">
                         <span class="letter heading-montserrat">B</span>
                         <span class="letter heading-montserrat">o</span>
@@ -24,16 +24,28 @@
                     </div>
                 </div>
             </div>
+            
 
             <!-- Main Content Section -->
-            <div class="container mt-5 main-content">
+            <div class="container-fluid mt-5 main-content">
                 <div class="main-banner">
                     <h2 class="heading-montserrat text-5xl tracking-tight">WHERE TO BOOTH?</h2>
                     <p>From bustling street markets to upscale fairs, find the right spaces to showcase your work and the right people to do it with. Find the right customers, maximise your space, and ensure a smooth experience at every event. Make each market or fair a success and unlock new opportunities for your business.</p>
-                    <router-link to="/login" class="btn green-btn mt-3">Log in</router-link>
+                    <router-link to="/booths" class="btn green-btn mt-3 heading-montserrat">Find a Booth</router-link>
+                </div>
+
+                 <!-- Add the Video Carousel here -->
+                <div class="section-title container-fluid glass-effect-video">
+                    <h2 style="margin-bottom: 60px;">Videos from Boothers</h2>
+                 <VideoCarousel />  
+                 <!-- <h1> </h1> -->
+                 <p style="font-size: 12px; padding-top: 60px"> Tap on the TikTok icon to view the video with sound.</p>
                 </div>
 
                 <!-- 3D Carousel Section -->
+                <div style="margin-bottom: 0px; padding-bottom: 0px;" class="section-title title-dark-glow">
+                    <h2 >2024 Event Highlight</h2>
+                </div>
                 <div class="carousel-container">
                     <input type="radio" name="slider" id="item-1" v-model="selectedItem" value="item-1" checked>
                     <input type="radio" name="slider" id="item-2" v-model="selectedItem" value="item-2">
@@ -80,6 +92,11 @@
                     </div>
                 </div>
             </div>
+            <div class="section-title title-dark-glow">
+                <h2 style="margin-bottom: 30px;">So what are you waiting for?</h2>
+                <router-link to="/login" class="btn green-btn mt-3 heading-montserrat">Log in/Sign up</router-link>
+            </div>
+            
         </div>
     </div>
 </template>
@@ -87,11 +104,15 @@
 <script>
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import VideoCarousel from '@/components/VideoCarousel.vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default {
     name: 'HomePage',
+    components: {
+        VideoCarousel
+    },
     data() {
         return {
             selectedItem: 'item-1'
@@ -168,6 +189,8 @@ export default {
 };
 </script>
 
+<style src="@/styles/review.css" scoped />
+
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500,700&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Montserrat:wght@600;700&display=swap');
@@ -176,7 +199,11 @@ export default {
 .heading-playfair { font-family: 'Playfair Display', serif; } 
 .heading-montserrat { font-family: 'Montserrat', sans-serif; }
 
-
+body{
+    background-image: url('@/images/img3.png');
+    background-size:cover;
+    
+}
 /* Splash Screen Style */
 #splash-screen {
     position: fixed;
@@ -210,6 +237,8 @@ export default {
     opacity: 0;
 }
 
+
+
 /* Main Content Style */
 .main-banner {
     background-color: rgba(255, 255, 255, 0.89);
@@ -220,6 +249,9 @@ export default {
     border-radius: 15px;
     position: relative;
     overflow: hidden;
+    /* margin-left: 27px;
+    margin-right: 27px; */
+
 }
 
 .main-banner h2 {
@@ -378,11 +410,11 @@ input[type=radio] {
 }
 
 #item-2:checked ~ .player #test {
-    transform: translateY(-90px);
+    transform: translateY(-100px);
 }
 
 #item-3:checked ~ .player #test {
-    transform: translateY(-180px);
+    transform: translateY(-200px);
 }
 
 /* Banner and Animation Styles */
@@ -402,7 +434,7 @@ input[type=radio] {
 }
 
 .right {
-    background-image: url('@/images/img7.jpg');
+    background-image: url('@/images/img12.jpg');
     background-size: cover;  
     filter: brightness(100%) contrast(90%);
     right: 0%;
@@ -448,6 +480,26 @@ input[type=radio] {
     padding-bottom: 80px;
 }
 
+.glass-effect-video {
+    width: 100%;
+    margin: 2rem auto;
+    padding: 2rem;
+    min-height: 600px; /* Base height for larger screens */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
+
+@media (max-width: 768px) {
+    .glass-effect-video {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+}
+
 @keyframes fade-in {
     to {
         scale: 1;
@@ -466,6 +518,7 @@ input[type=radio] {
 }
 
 #imgBanner {
+    width:full ;
     animation: fade-out linear;
     animation-timeline: view();
     animation-range: exit;
@@ -492,4 +545,7 @@ input[type=radio] {
     transform: none;
   }
   
+  .h1{
+  font-size: 2rem
+}
 </style>

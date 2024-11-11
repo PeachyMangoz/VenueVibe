@@ -1,18 +1,44 @@
 <template>
   <div class="booth-card card">
-    <img :src="boothImage" alt="Booth Image" class="booth-image" />
-    <h3 class="booth-title">{{ booth.booth_title }}</h3>
-    <p class="booth-price">Price: {{ booth.price }}</p>
-    <p class="booth-duration">Duration: {{ booth.duration }}</p>
-    <p class="booth-space">Space: {{ booth.size }}</p>
-    <p class="booth-organizer">Organiser: {{ booth.organizer_id }}</p>
-    <p class="booth-description">{{ booth.description }}</p>
-
-    <router-link :to="{ name: 'booth-details', params: { id: booth.booth_id } }">
-      <button class="view-details-button">View Details</button>
-    </router-link>
+    <div class="post-img position-relative overflow-hidden">
+      <img :src="boothImage" alt="Booth Image" class="booth-image w-100 h-100 object-fit-cover" />
+      <div class="booth-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+        <router-link :to="{ name: 'booth-details', params: { id: booth.booth_id } }" class="text-decoration-none">
+          <button class="view-details-button">View Details</button>
+        </router-link>
+      </div>
+    </div>
+    
+    <div class="card-body p-4">
+      <h3 class="booth-title heading-montserrat mb-4">{{ booth.booth_title }}</h3>
+      
+      <div class="booth-info">
+        <div class="mb-3 d-flex align-items-center">
+          <i class="fas fa-tag me-2 "></i>
+          <span class="booth-price">${{ booth.price }}</span>
+        </div>
+        
+        <div class="mb-3 d-flex align-items-center">
+          <i class="far fa-clock me-2 "></i>
+          <span class="booth-duration">{{ booth.duration }} Days</span>
+        </div>
+        
+        <div class="mb-3 d-flex align-items-center">
+          <i class="fas fa-store me-2"></i>
+          <span class="booth-space">{{ booth.size }} slots </span>
+        </div>
+        
+        <div class="mb-3 d-flex align-items-center">
+          <i class="far fa-building me-2"></i>
+          <span class="booth-organizer">{{ booth.organizer_id }}</span>
+        </div>
+      </div>
+      
+      <p class="booth-description mt-4 text-muted">{{ booth.description }}</p>
+    </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -49,62 +75,98 @@ export default {
 </script>
 
 <style scoped>
-
+i{
+  color: #36b598
+}
 .booth-card {
-  padding: 15px;
-  border-radius: 10px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  border: none;
+  background: rgba(255,255,255,0.95);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
 }
 
 .booth-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.post-img {
+  height: 250px;
 }
 
 .booth-image {
-  width: 100%;
-  border-radius: 5px;
+  transition: transform 0.5s ease;
+}
+
+.booth-card:hover .booth-image {
+  transform: scale(1.1);
+}
+
+.booth-overlay {
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.booth-card:hover .booth-overlay {
+  opacity: 1;
 }
 
 .booth-title {
-  margin: 10px 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.booth-info {
+  font-size: 0.95rem;
 }
 
 .booth-price {
-  color: black;
-  font-weight: bold;
+  color: #333;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-.booth-duration, .booth-space {
-  color: #489fb5;
-  font-style: italic;
+.booth-duration, .booth-space, .booth-organizer {
+  color: #333;
 }
 
-.booth-organizer {
-  color: #82c0cc;
-  font-size: 0.9em;
+.booth-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  /* -webkit-line-clamp: 3; */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .view-details-button {
   background-color: #36b598;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 4px;
-  font-size: 16px; 
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease;
+  opacity: 0.9;
 }
 
 .view-details-button:hover {
-  background-color: #16697a;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #2d9b82;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(54, 181, 152, 0.3);
+  opacity: 1;
 }
 
-.view-details-button:active {
-  background-color: #16697a;
-  transform: translateY(0);
-}
-
+/* Add this at the end to ensure proper loading of Font Awesome icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 </style>
+
+<style src="@/styles/review.css" scoped />

@@ -69,9 +69,9 @@
               <div class="profile-info flex-grow-1">
                 <div class="d-flex justify-content-between">
                   <h4 class="h5 mb-3">{{ profile.name }}</h4>
-                  <span class="text-muted small">
+                  <!-- <span class="text-muted small">
                     Created: {{ formatDate(profile.createdAt) }}
-                  </span>
+                  </span> -->
                 </div>
                 <p class="text-muted mb-2">{{ profile.description }}</p>
                 <div class="d-flex align-items-center gap-2">
@@ -345,6 +345,7 @@ export default {
 
 .card {
   height: 100%;
+  background-color: rgba(254, 254, 254, 0.784);
 }
 
 .profile-info {

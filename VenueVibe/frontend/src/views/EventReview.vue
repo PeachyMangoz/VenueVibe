@@ -33,8 +33,8 @@
     </div>
 
     <!-- Page Title -->
-    <div class="container section-title"  data-aos="fade-up">
-      <h2  style="color:white; font-size: 70px;">Event Reviews</h2>
+    <div class="container section-title title-dark-glow"  data-aos="fade-up">
+      <h2  style="color:white; ">Event Reviews</h2>
     </div>
 
     <div class="container">
@@ -160,11 +160,15 @@ onBeforeUnmount(() => {
     unsubscribe();
   }
 });
+
+
 </script>
 
 <style src="@/styles/review.css" scoped />
 
 <style scoped>
+
+
 .event-review-container {
   position: relative;
   min-height: 100vh;
