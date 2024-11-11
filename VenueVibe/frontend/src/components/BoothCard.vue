@@ -14,22 +14,22 @@
       
       <div class="booth-info">
         <div class="mb-3 d-flex align-items-center">
-          <i class="fas fa-tag me-2 text-muted"></i>
+          <i class="fas fa-tag me-2 "></i>
           <span class="booth-price">${{ booth.price }}</span>
         </div>
         
         <div class="mb-3 d-flex align-items-center">
-          <i class="far fa-clock me-2 text-muted"></i>
+          <i class="far fa-clock me-2 "></i>
           <span class="booth-duration">{{ booth.duration }} Days</span>
         </div>
         
         <div class="mb-3 d-flex align-items-center">
-          <i class="fas fa-store me-2 text-muted"></i>
+          <i class="fas fa-store me-2"></i>
           <span class="booth-space">{{ booth.size }} slots </span>
         </div>
         
         <div class="mb-3 d-flex align-items-center">
-          <i class="far fa-building me-2 text-muted"></i>
+          <i class="far fa-building me-2"></i>
           <span class="booth-organizer">{{ booth.organizer_id }}</span>
         </div>
       </div>
@@ -75,9 +75,12 @@ export default {
 </script>
 
 <style scoped>
+i{
+  color: #36b598
+}
 .booth-card {
   border: none;
-  background: white;
+  background: rgba(255,255,255,0.95);
   border-radius: 15px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -123,13 +126,13 @@ export default {
 }
 
 .booth-price {
-  color: #36b598;
+  color: #333;
   font-weight: 600;
   font-size: 1.1rem;
 }
 
 .booth-duration, .booth-space, .booth-organizer {
-  color: #666;
+  color: #333;
 }
 
 .booth-description {

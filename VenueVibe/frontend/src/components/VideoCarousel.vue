@@ -40,14 +40,14 @@
     <!-- Navigation Buttons for MD/LG -->
     <div class="navigation-buttons d-md-flex d-xl-none">
       <button 
-        class="btn btn-primary me-2" 
+        class="btn green-btn me-2" 
         @click="previousCard" 
         :disabled="currentCardIndex === 0"
       >
         Previous
       </button>
       <button 
-        class="btn btn-primary" 
+        class="btn green-btn" 
         @click="nextCard" 
         :disabled="currentCardIndex === cards.length - 1"
       >

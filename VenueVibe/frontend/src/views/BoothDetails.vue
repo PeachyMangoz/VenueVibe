@@ -1,5 +1,6 @@
 <template>
-   <div class="booth-details-container">
+  
+   <div class="booth-details-container image-container">
     <!-- Main Content Area -->
     <div v-if="booth" class="booth-details-card glass-effect">
       <!-- Image Section -->
@@ -17,10 +18,10 @@
           </div>
           <div class="highlight-item">
             <i class="fas fa-clock"></i>
-            <span>{{ booth.duration }} hours</span>
+            <span>{{ booth.duration }} Days</span>
           </div>
           <div class="highlight-item">
-            <i class="fas fa-expand-arrows-alt"></i>
+            <i class="fas fa-store"></i>
             <span>{{ booth.size }} sq. ft.</span>
           </div>
         </div>
@@ -59,7 +60,15 @@
           </div>
         </div>
 
-        <div class="timestamps">
+        <div class="booth-description">
+          <h3 class="description-title">
+            <i class="fas fa-info-circle"></i>
+            Description
+          </h3>
+          <p class="description-content">{{ booth.description }}</p>
+        </div>
+
+        <!-- <div class="timestamps">
           <div class="timestamp-item">
             <i class="far fa-calendar-plus"></i>
             <span>Created: {{ formatDate(booth.created_at) }}</span>
@@ -68,7 +77,7 @@
             <i class="far fa-calendar-check"></i>
             <span>Updated: {{ formatDate(booth.updated_at) }}</span>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- Action Buttons -->
@@ -114,6 +123,7 @@
       {{ notification.message }}
     </div>
   </div>
+
 </template>
 
 
@@ -306,6 +316,13 @@ export default {
 };
 </script>
 <style scoped>
+
+  
+
+.image-container {
+  background-image: url("@/images/img7.jpg");
+  background-size: cover;
+}
 /* Main Layout */
 .booth-details-container {
   display: flex;
@@ -319,7 +336,7 @@ export default {
 
 /* Card Styling */
 .booth-details-card {
-  background-color: white;
+  background-color: rgba(255,255,255,0.95);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -591,4 +608,33 @@ export default {
     width: 100%;
   }
 }
+
+.booth-description {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(54, 181, 152, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #36b598;
+}
+
+.description-title {
+  font-size: 1.2em;
+  color: #333;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.description-title i {
+  color: #36b598;
+}
+
+.description-content {
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin: 0;
+}
 </style>
+
