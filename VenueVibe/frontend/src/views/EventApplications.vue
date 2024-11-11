@@ -1,7 +1,15 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { db } from "../firebase";
-import { collection, getDocs, query, where, orderBy, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 
@@ -75,8 +83,11 @@ export default {
     };
 
     const withdrawApplication = async (application) => {
-      if (!['DRAFT', 'PENDING'].includes(application.status?.toUpperCase())) {
-        showNotification("Only draft or pending applications can be withdrawn", "error");
+      if (!["DRAFT", "PENDING"].includes(application.status?.toUpperCase())) {
+        showNotification(
+          "Only draft or pending applications can be withdrawn",
+          "error"
+        );
         return;
       }
 
@@ -106,6 +117,14 @@ export default {
 
     const isWithdrawable = (application) => {
       return ["DRAFT", "PENDING"].includes(application.status?.toUpperCase());
+    };
+
+    const viewBoothDetails = (boothId) => {
+      if (boothId) {
+        router.push(`/booths/${boothId}`);
+      } else {
+        showNotification("Booth details not available", "error");
+      }
     };
 
     const viewApplication = (application) => {
@@ -145,6 +164,7 @@ export default {
       isWithdrawable,
       getBadgeClass,
       withdrawApplication,
+      viewBoothDetails,
     };
   },
 };
@@ -310,6 +330,13 @@ export default {
             </div>
             <div class="modal-footer">
               <button
+                @click="viewBoothDetails(selectedApplication.boothId)"
+                class="btn btn-info"
+                :disabled="loading"
+              >
+                View Booth Details
+              </button>
+              <button
                 v-if="isWithdrawable(selectedApplication)"
                 @click="withdrawApplication(selectedApplication)"
                 class="btn btn-outline-danger"
@@ -392,6 +419,19 @@ export default {
 }
 
 .btn-primary:hover {
+  background-color: #2d9a82 !important;
+  border-color: #2d9a82 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-info {
+  background-color: #36b598 !important;
+  border-color: #36b598 !important;
+  color: white !important;
+}
+
+.btn-info:hover {
   background-color: #2d9a82 !important;
   border-color: #2d9a82 !important;
   transform: translateY(-2px);
