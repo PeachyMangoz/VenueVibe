@@ -14,11 +14,13 @@
         <p><strong>Size:</strong> {{ booth.size }} sq. ft.</p>
         <p><strong>Created At:</strong> {{ formatDate(booth.created_at) }}</p>
         <p><strong>Updated At:</strong> {{ formatDate(booth.updated_at) }}</p>
-      </div>
-      <button @click="applyForBooth" class="apply-button">Apply</button>
+      </div >
+      <div class="row">
+      <button @click="applyForBooth" class="btn green-btn">Apply</button>
+      
       <router-link to="/booths">
-        <button class="back-button">Back to Booth Listings</button>
-      </router-link>
+        <button class="btn green-btn">Back to Booth Listings</button>
+      </router-link> </div>
     </div>
 
     <!-- Right Side: Google Map -->
@@ -103,6 +105,7 @@ export default {
   },
 };
 </script>
+<style src="@/styles/review.css" scoped />
 
 <style scoped>
 .apply-button {

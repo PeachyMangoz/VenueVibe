@@ -165,6 +165,8 @@ onBeforeUnmount(() => {
 <style src="@/styles/review.css" scoped />
 
 <style scoped>
+
+
 .event-review-container {
   position: relative;
   min-height: 100vh;

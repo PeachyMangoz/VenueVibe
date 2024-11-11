@@ -1,7 +1,8 @@
 <template>
+<div class="image-container">
   <div class="container section-title" data-aos="fade-up">
     <h2>
-      <div class="title-with-lines heading-montserrat">
+      <div class="heading-montserrat">
         Booth Listings
       </div>
     </h2>
@@ -26,6 +27,7 @@
     ref="AddBoothFormRef"
     @submit="handleBoothSubmit"
   />
+</div>
 </template>
 
 <script>
@@ -110,18 +112,10 @@ export default {
 <style src="@/styles/review.css" scoped />
 
 <style scoped>
-.section-title {
-  text-align: center;
-  margin-bottom: 50px;
-  padding: 30px 0;
-  position: relative; /* Make the container relative to position the button */
-}
 
-.section-title h2 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #333;
+.image-container{
+  background-image: url('@/images/marketdark.jpg');
+  background-size: cover;
 }
 
 .btn.custom-btn {

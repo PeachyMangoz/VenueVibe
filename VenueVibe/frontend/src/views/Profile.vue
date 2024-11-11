@@ -320,8 +320,7 @@ export default {
   <style scoped>
 
   body {
-    background-image: url('@/images/marketdark.jpg');
-    background-size:cover
+    background-color: #36b598;
   }
   
 
