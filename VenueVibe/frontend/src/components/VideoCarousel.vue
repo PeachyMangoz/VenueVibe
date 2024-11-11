@@ -26,6 +26,9 @@
         <div class="carousel-description">
           {{ card.description }}
         </div>
+        <div class="video-source">
+          {{ card.source }}
+        </div>
       </div>
     </div>
 
@@ -56,22 +59,26 @@ const cards = [
   {
     title: 'Public Garden',
     videoSrc: '/videos/Tiktok1.mp4',
-    description: 'Explore our vibrant marketplace'
+    description: 'Recurring artisan trade show | Suntec Singapore Convention Centre',
+    source:' Creds: @halfacoffee. '
   },
   {
     title: 'Resurrack Vintage Market',
     videoSrc: '/videos/Tiktok2.mp4',
-    description: 'Discover culinary delights'
+    description: 'EVERY WEEKEND | Bugis Street Art Lane',
+    source:' Creds: @hiddenjemmm. '
   },
   {
     title: 'Entertainment',
-    videoSrc: '/videos/entertainment.mp4',
-    description: 'Experience the fun'
+    videoSrc: '/videos/Tiktok3.mp4',
+    description: 'Monthly night market | Orchard Road',
+    source:' Creds: @kai.icloud. '
   },
   {
     title: 'Shopping',
     videoSrc: '/videos/shopping.mp4',
-    description: 'Find amazing deals'
+    description: 'Find amazing deals',
+    source:' Creds: @halfacoffee. '
   }
 ];
 
@@ -109,7 +116,7 @@ const previousCard = () => {
   background-color: white;
   opacity: 0.9;
   border-radius: 10px;
-  box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.5);
+  box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.3);
   transition: 0.4s ease-out;
   position: relative;
   padding: 20px;
@@ -123,7 +130,7 @@ const previousCard = () => {
 /* XL screens and up - Show overlapping cards */
 @media (min-width: 1200px) {
   .carousel-card {
-    margin-left: -50px;
+    margin-left: -45px;
   }
 
   .carousel-card:first-child {
@@ -151,7 +158,7 @@ const previousCard = () => {
     margin-left: 0;
     width: 100%;
     max-width: 500px;
-    max-height: 300px;
+    max-height: 500px;
   }
 }
 
@@ -202,4 +209,11 @@ const previousCard = () => {
   justify-content: center;
   margin-top: 20px;
 }
+
+.video-source{
+  font-size:0.7rem;
+  color:#333;
+}
+
+
 </style>

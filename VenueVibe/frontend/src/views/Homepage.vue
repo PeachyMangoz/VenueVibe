@@ -38,7 +38,7 @@
                 <div class="section-title container-fluid glass-effect-video">
                     <h2 style="margin-bottom: 30px;">Videos from Boothers</h2>
                  <VideoCarousel />  
-                 
+                 <h1> </h1>
                 </div>
 
                 <!-- 3D Carousel Section -->
@@ -241,8 +241,8 @@ body{
     border-radius: 15px;
     position: relative;
     overflow: hidden;
-    margin-left: 27px;
-    margin-right: 27px;
+    /* margin-left: 27px;
+    margin-right: 27px; */
 
 }
 
@@ -426,7 +426,7 @@ input[type=radio] {
 }
 
 .right {
-    background-image: url('@/images/img7.jpg');
+    background-image: url('@/images/img12.jpg');
     background-size: cover;  
     filter: brightness(100%) contrast(90%);
     right: 0%;
@@ -537,4 +537,7 @@ input[type=radio] {
     transform: none;
   }
   
+  .h1{
+  font-size: 2rem
+}
 </style>

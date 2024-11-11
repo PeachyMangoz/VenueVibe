@@ -24,7 +24,7 @@
             </button>
           </div>
           <p class="button-info text-muted">
-            Click search button or press enter to view data charts
+            Copy and paste Event ID 
           </p>
         </form>
       </div>

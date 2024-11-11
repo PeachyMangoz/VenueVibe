@@ -27,8 +27,7 @@
               <h1 class="display-4 fw-bold">About Us</h1>
               <p class="lead">Boothy was founded by a group of students from Singapore Management University 
                 with the goal of creating a platform that allows event organizers to seamlessly discover and partner
-                 with small businesses. Our platform brings unique products, services, and local character to events, 
-                 enhancing the experience for organizers and attendees alike.</p>
+                 with small businesses. </p>
             </div>
             <!-- Image Column -->
             <div class="col-md-6" data-aos="fade-left">
@@ -52,8 +51,8 @@
             <div class="card-body text-center">
               <h2 class="fw-bold mb-4">Our Mission</h2>
               <p class="lead">
-                We're dedicated to creating meaningful connections between event organizers 
-                and small businesses, fostering growth and success in the events industry.
+                We're dedicated to creating meaningful connections between organizers 
+                , small businesses, creators, artists from around the world to Singapore. Fostering growth and success in the events industry.
               </p>
             </div>
           </div>

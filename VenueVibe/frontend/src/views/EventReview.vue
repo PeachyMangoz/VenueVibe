@@ -34,7 +34,7 @@
 
     <!-- Page Title -->
     <div class="container section-title"  data-aos="fade-up">
-      <h2  style="color:white; font-size: 70px;">Event Reviews</h2>
+      <h2  style="color:white; ">Event Reviews</h2>
     </div>
 
     <div class="container">

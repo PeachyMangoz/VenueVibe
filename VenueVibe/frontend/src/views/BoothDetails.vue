@@ -44,7 +44,7 @@
     <div v-if="notification" class="notification-toast" :class="notification.type">
       {{ notification.message }}
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
