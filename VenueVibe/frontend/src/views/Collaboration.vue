@@ -20,6 +20,9 @@ defineElement(lottie.loadAnimation);
         class="row banner mx-0"
         :style="{ background: `url(${currentSlide.collab_background})` }"
       >
+        <router-link :to="{ name: 'CollaborateChat' }" class="btn mychatbtn">
+          <span>My chats</span>
+        </router-link>
         <!-- Left Column: Content -->
         <div class="col-lg-6 content-wrapper">
           <div class="content active">
@@ -42,10 +45,14 @@ defineElement(lottie.loadAnimation);
             </ul>
             <h4>
               <span>{{ currentSlide.profile_type }}</span>
-              <span>{{ currentSlide.interests }}</span>
+              <span>{{
+                currentSlide.interests
+                  ? currentSlide.interests.join(", ")
+                  : "interest not available"
+              }}</span>
             </h4>
             <h1 class="business-name">{{ currentSlide.business_name }}</h1>
-            <p>{{ currentSlide.bio }}</p>
+            <p>{{ currentSlide.bio || "No bio yet" }}</p>
             <div class="buttons">
               <router-link
                 :to="{
@@ -62,19 +69,22 @@ defineElement(lottie.loadAnimation);
                 ></lord-icon>
                 Connect & Chat
               </router-link>
-              <a href="#" class="btn btn-outline-secondary">
+              <a
+                @click.prevent="bookmarkUser"
+                class="btn btn-outline-secondary"
+                :disabled="isBookmarked"
+              >
                 <lord-icon
                   src="https://cdn.lordicon.com/jkzgajyr.json"
                   trigger="hover"
                   colors="primary:#e4e4e4"
                   style="width: 18px; height: 18px"
                 ></lord-icon>
-                Bookmark
+                {{ isBookmarked ? "Bookmarked" : "Bookmark" }}
               </a>
             </div>
           </div>
         </div>
-
         <!-- Right Column: Carousel Box -->
         <div class="col-lg-6 col-md-12 carousel-box">
           <div
@@ -101,73 +111,115 @@ defineElement(lottie.loadAnimation);
     </div>
     <div v-else>
       <!-- <div class="container-content"> -->
-        <section class="header-section d-flex align-items-center">
-      <div class="container text-center">
-        <div class="row justify-content-center">
-          <div class="col-md-6">
-            <img src="https://i.pinimg.com/originals/ac/e9/14/ace9144fefcf5b9bafd87b7b66e2b627.gif" class="header-image" />
-          </div>
-          <div class="col-md-6 text-left" style="margin-top: auto; margin-bottom: auto;">
-            <h1>Find Your Next</h1>
-            <h1><span>BOOTHY </span>partner !</h1>
-            <p>And take your boothing experience to the next level</p>
-            <div class="mt-4">
-              <button @click="updatecollab" class="btn btn-dark">Get started today</button>
+      <section class="header-section d-flex align-items-center">
+        <div class="container text-center">
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <img
+                src="https://i.pinimg.com/originals/ac/e9/14/ace9144fefcf5b9bafd87b7b66e2b627.gif"
+                class="header-image"
+              />
+            </div>
+            <div
+              class="col-md-6 text-left"
+              style="margin-top: auto; margin-bottom: auto"
+            >
+              <h1>Find Your Next</h1>
+              <h1><span>BOOTHY </span>partner !</h1>
+              <p>And take your boothing experience to the next level</p>
+              <div class="mt-4">
+                <button @click="updatecollab" class="btn btn-dark">
+                  Get started today
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-    <section class="timeline-section py-5">
-    <div class="container">
-      <div class="row position-relative justify-content-center">
-        <p>How does it work?</p>
-        <!-- Background Line (full-width) -->
-        <div class="timeline-background-line"></div>
+      </section>
+      <section class="timeline-section py-5">
+        <div class="container">
+          <div class="row position-relative justify-content-center">
+            <p>How does it work?</p>
+            <!-- Background Line (full-width) -->
+            <div class="timeline-background-line"></div>
 
-        <!-- Step 1 -->
-        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
-          <div class="img-wrapper">
-            <img src="https://i.pinimg.com/originals/75/97/90/7597905e7bdd5703d4f694d8518fee08.gif" alt="Step 1" class="step-image mb-3" />
-          </div>
-          <div class="timeline-dot"></div> <!-- Dot on the line for Step 1 -->
-          <h5 class="mt-3">01</h5>
-          <p class="step-description">Look through our curated list of creators to find your perfect partner</p>
-        </div>
+            <!-- Step 1 -->
+            <div
+              class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4"
+            >
+              <div class="img-wrapper">
+                <img
+                  src="https://i.pinimg.com/originals/75/97/90/7597905e7bdd5703d4f694d8518fee08.gif"
+                  alt="Step 1"
+                  class="step-image mb-3"
+                />
+              </div>
+              <div class="timeline-dot"></div>
+              <!-- Dot on the line for Step 1 -->
+              <h5 class="mt-3">01</h5>
+              <p class="step-description">
+                Look through our curated list of creators to find your perfect
+                partner
+              </p>
+            </div>
 
-        <!-- Step 2 -->
-        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
-          <div class="img-wrapper">
-            <img src="../images/step2.gif" alt="Step 2" class="step-image mb-3" style="transform:scale(1.2)"  />
-          </div>
-          <div class="timeline-dot"></div> <!-- Dot on the line for Step 2 -->
-          <h5 class="mt-3">02</h5>
-          <p class="step-description">Connect & Chat with the creator you want!</p>
-        </div>
+            <!-- Step 2 -->
+            <div
+              class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4"
+            >
+              <div class="img-wrapper">
+                <img
+                  src="../images/step2.gif"
+                  alt="Step 2"
+                  class="step-image mb-3"
+                  style="transform: scale(1.2)"
+                />
+              </div>
+              <div class="timeline-dot"></div>
+              <!-- Dot on the line for Step 2 -->
+              <h5 class="mt-3">02</h5>
+              <p class="step-description">
+                Connect & Chat with the creator you want!
+              </p>
+            </div>
 
-        <!-- Step 3 -->
-        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
-          <div class="img-wrapper">
-            <img src="https://i.pinimg.com/originals/ae/54/e4/ae54e4030cb392129805bc968f57792b.gif" alt="Step 3" class="step-image mb-3" />
-          </div>
-          <div class="timeline-dot"></div> <!-- Dot on the line for Step 3 -->
-          <h5 class="mt-3">03</h5>
-          <p class="step-description">Plan your next booth together!</p>
-        </div>
+            <!-- Step 3 -->
+            <div
+              class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4"
+            >
+              <div class="img-wrapper">
+                <img
+                  src="https://i.pinimg.com/originals/ae/54/e4/ae54e4030cb392129805bc968f57792b.gif"
+                  alt="Step 3"
+                  class="step-image mb-3"
+                />
+              </div>
+              <div class="timeline-dot"></div>
+              <!-- Dot on the line for Step 3 -->
+              <h5 class="mt-3">03</h5>
+              <p class="step-description">Plan your next booth together!</p>
+            </div>
 
-        <!-- Step 4 -->
-        <div class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4">
-          <div class="img-wrapper">
-            <img src="../images/step4.gif" alt="Step 4" class="step-image mb-3" style="transform:scale(1.2); margin-bottom:0" />
+            <!-- Step 4 -->
+            <div
+              class="col-12 col-md-6 col-lg-3 text-center timeline-step mb-4"
+            >
+              <div class="img-wrapper">
+                <img
+                  src="../images/step4.gif"
+                  alt="Step 4"
+                  class="step-image mb-3"
+                  style="transform: scale(1.2); margin-bottom: 0"
+                />
+              </div>
+              <div class="timeline-dot"></div>
+              <!-- Dot on the line for Step 4 -->
+              <h5 class="mt-3">04</h5>
+              <p class="step-description">Set up your booth</p>
+            </div>
           </div>
-          <div class="timeline-dot"></div> <!-- Dot on the line for Step 4 -->
-          <h5 class="mt-3">04</h5>
-          <p class="step-description">Set up your booth</p>
         </div>
-      </div>
-    </div>
-  </section>
- 
+      </section>
     </div>
   </main>
 </template>
@@ -181,6 +233,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  addDoc,
 } from "firebase/firestore";
 export default {
   data() {
@@ -192,6 +245,7 @@ export default {
       isSliding: false,
       slideDirection: "",
       collab: false,
+      isBookmarked: false,
     };
   },
   computed: {
@@ -210,6 +264,7 @@ export default {
         ...this.users.slice(0, this.currentIndex),
       ];
     },
+    
   },
   methods: {
     async fetchUserCollabStatus() {
@@ -256,63 +311,6 @@ export default {
         this.loading = false; // Stop loading once all operations are complete
       }
     },
-
-    // // Fetch the business profile and portfolio items for each user
-    // async retrieveProfile(userId) {
-    //   try {
-    //     // Query the 'business_profiles' collection where 'user_id' matches the userId
-    //     const q = query(
-    //       collection(db, "business_profiles"),
-    //       where("user_id", "==", userId)
-    //     );
-    //     const profileDocs = await getDocs(q);
-
-    //     // Find the corresponding user in the users array
-    //     const user = this.users.find((u) => u.id === userId);
-    //     if (user && profileDocs.docs.length > 0) {
-    //       // Assuming one business profile per user, take the first profile
-    //       const profileData = profileDocs.docs[0].data();
-
-    //       // Retrieve portfolio items nested within the business profile
-    //       const portfolio = await this.retrieveNestedPortfolio(
-    //         profileDocs.docs[0].id
-    //       );
-
-    //       // Add portfolio items to the business profile
-    //       profileData.portfolio_items = portfolio;
-
-    //       // Merge the business profile data (with portfolio) into the user object
-    //       Object.assign(user, profileData);
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       `Error fetching business profile for user ${userId}:`,
-    //       error
-    //     );
-    //   }
-    // },
-
-    // // Fetch the portfolio items for a given business profile
-    // async retrieveNestedPortfolio(businessProfileId) {
-    //   try {
-    //     const portfolioQuery = collection(
-    //       db,
-    //       "business_profiles",
-    //       businessProfileId,
-    //       "portfolio_items"
-    //     );
-    //     const portfolioDocs = await getDocs(portfolioQuery);
-
-    //     // Return the array of portfolio items with IDs
-    //     return portfolioDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    //   } catch (error) {
-    //     console.error(
-    //       `Error fetching portfolio items for business profile ${businessProfileId}:`,
-    //       error
-    //     );
-    //     return []; // Return an empty array on error
-    //   }
-    // },
 
     // Navigate to the next user
     nextUser() {
@@ -361,7 +359,7 @@ export default {
       this.isSliding = false;
       this.slideDirection = "";
     },
-    async updatecollab(){
+    async updatecollab() {
       try {
         if (this.isLoggedIn) {
           const userRef = doc(db, "user", this.userId);
@@ -381,7 +379,50 @@ export default {
       } catch (error) {
         console.error("Error updating collab field:", error);
       }
-    }
+    },
+    async bookmarkUser() {
+      if (this.isBookmarked) return;
+      if (!this.userId || !this.users[this.currentIndex].id) {
+        console.error("User ID or slide ID is missing");
+        return;
+      }
+
+      try {
+        // Create a new document in the "bookmarks" collection
+        await addDoc(collection(db, "bookmark"), {
+          userId: this.userId,
+          bookmarkedUserId: this.users[this.currentIndex].id,
+          timestamp: new Date(),
+        });
+        this.isBookmarked = true;
+        alert("User bookmarked successfully!");
+      } catch (error) {
+        console.error("Error bookmarking user:", error);
+      }
+    },
+    async checkIfBookmarked() {
+      try {
+        // Reset isBookmarked to false when checking a new slide
+        this.isBookmarked = false;
+
+        // Query Firestore to see if the current user has already bookmarked the current slide
+        const bookmarkQuery = query(
+          collection(db, "bookmark"),
+          where("userId", "==", this.userId),
+          where("bookmarkedUserId", "==", this.users[this.currentIndex].id)
+        );
+
+        const querySnapshot = await getDocs(bookmarkQuery);
+
+        // If a document exists, set isBookmarked to true
+        if (!querySnapshot.empty) {
+          this.isBookmarked = true;
+          console.log(this.isBookmarked);
+        }
+      } catch (error) {
+        console.error("Error checking bookmark status:", error);
+      }
+    },
   },
 
   mounted() {
@@ -391,6 +432,16 @@ export default {
       // Fetch users and their business profiles when the component is mounted
       this.fetchUsers();
     }
+  },
+  watch: {
+    currentSlide: {
+      immediate: true, // Run the watcher immediately on component load
+      handler(newSlide) {
+        if (newSlide && newSlide.id) {
+          this.checkIfBookmarked(); // Check if bookmarked when currentSlide changes
+        }
+      },
+    },
   },
 };
 </script>
@@ -453,6 +504,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-width: 100%;
 }
 
 .banner .content h1 {
@@ -522,6 +574,33 @@ export default {
 .banner .content ul#links li a {
   color: white;
   transition: 0.3s;
+}
+
+.banner .content .buttons .btn[disabled] {
+  background: rgba(0, 0, 0, 0.5); /* Default background for disabled */
+  color: white;
+}
+.banner .content .buttons .btn[disabled]:hover {
+  background: rgba(0, 0, 0, 0.5); /* Darker background on hover when disabled */
+  color: #ddd; /* Optional: lightened text color */
+}
+
+
+.mychatbtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  width: fit-content;
+  padding: 10px 30px;
+  color: white;
+  text-transform: uppercase;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.mychatbtn:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .carousel-buttons {
@@ -626,10 +705,13 @@ export default {
   }
 
   .banner .content p {
-    max-height: 100px; /* Set a fixed height for the paragraph */
-    overflow-y: auto;
-    text-overflow: ellipsis; /* Optional: show "..." at the end if there's more text */
-    white-space: normal; /* Allows the text to wrap onto multiple lines */
+    max-height: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
   }
 
   .carousel-box .carousel-item img {
@@ -650,14 +732,14 @@ export default {
   }
 }
 
-.container-content{
+.container-content {
   width: 100vw;
   min-height: 95vh;
 }
 
 /* Hero section styling */
 .header-section {
-  background-color: #E9E9E0;
+  background-color: #e9e9e0;
   min-height: 55vh;
 }
 
@@ -673,7 +755,7 @@ export default {
 }
 
 .header-section span {
-  color: rgb(54, 181, 152);;
+  color: rgb(54, 181, 152);
 }
 
 .header-section p {
@@ -720,11 +802,10 @@ export default {
   object-fit: contain;
 }
 
-.img-wrapper{
+.img-wrapper {
   width: 150px;
   height: 150px;
   display: inline-block;
-
 }
 
 .timeline-step h5 {
@@ -744,7 +825,8 @@ export default {
   position: relative;
 }
 
-@media (min-width: 992px) and (max-width: 1400px) { /* Show line only on lg and up */
+@media (min-width: 992px) and (max-width: 1400px) {
+  /* Show line only on lg and up */
   .timeline-dot {
     top: 8px; /* Adjust to position dot on the line */
   }
@@ -755,14 +837,14 @@ export default {
     font-size: 1rem;
   }
 }
-@media (min-width: 768px) and (max-width: 992px){
+@media (min-width: 768px) and (max-width: 992px) {
   .header-section h1 {
     font-size: 2rem;
   }
   .header-section p {
     font-size: 1rem;
   }
-  .timeline-dot{
+  .timeline-dot {
     width: 10px;
     height: 10px;
   }
@@ -795,6 +877,16 @@ export default {
   .header-section p {
     font-size: 1rem;
   }
+  .banner {
+    padding: 10px; /* Reduce padding on smaller screens */
+  }
+  .banner .content p {
+    max-width: 400px;
+  }
+  .content {
+    overflow-wrap: break-word; /* Break long words if needed */
+    word-wrap: break-word;
+    hyphens: auto; /* Automatically hyphenate if a word is too long */
+  }
 }
 </style>
-
