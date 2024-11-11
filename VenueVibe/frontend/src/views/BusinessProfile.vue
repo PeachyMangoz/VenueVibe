@@ -21,7 +21,6 @@
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <!-- View Mode -->
         <div v-if="hasProfile && !isEditing">
           <div class="mb-4">
             <h3 class="h5 fw-bold">Business Name</h3>
@@ -36,8 +35,8 @@
           <div class="mb-4">
             <h3 class="h5 fw-bold">Business Services Offered</h3>
             <div class="d-flex flex-wrap gap-2">
-              <span 
-                v-for="(service, index) in services_offered" 
+              <span
+                v-for="(service, index) in services_offered"
                 :key="index"
                 class="badge service-badge"
               >
@@ -57,12 +56,20 @@
               <table class="table">
                 <thead>
                   <tr>
+                    <th>Image</th>
                     <th>Name</th>
                     <th>Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="product in products" :key="product.id">
+                    <td>
+                      <img
+                        :src="product.imageUrl || '/default-product.png'"
+                        alt="Product image"
+                        class="product-thumbnail"
+                      />
+                    </td>
                     <td>{{ product.name }}</td>
                     <td>${{ product.price.toFixed(2) }}</td>
                   </tr>
@@ -72,7 +79,7 @@
           </div>
 
           <div class="d-flex justify-content-end mt-4">
-            <button 
+            <button
               @click="toggleEdit"
               class="btn custom-btn"
               :disabled="loading"
@@ -82,7 +89,6 @@
           </div>
         </div>
 
-        <!-- Edit Mode -->
         <form v-else @submit.prevent="saveBusinessProfile">
           <div class="mb-4">
             <label for="business_name" class="form-label fw-semibold"
@@ -169,25 +175,61 @@
               <div
                 v-for="product in products"
                 :key="product.id"
-                class="d-flex gap-2 mb-2"
+                class="d-flex gap-3 mb-3 align-items-start product-row"
               >
-                <input
-                  v-model.trim="product.name"
-                  class="form-control"
-                  placeholder="Product name"
-                  :disabled="loading"
-                  required
-                />
-                <input
-                  v-model.number="product.price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  class="form-control"
-                  placeholder="Price"
-                  :disabled="loading"
-                  required
-                />
+                <div class="product-image-container">
+                  <img
+                    :src="
+                      product.imageUrl ||
+                      product.tempImageUrl ||
+                      '/default-product.png'
+                    "
+                    alt="Product image"
+                    class="product-thumbnail mb-2"
+                  />
+                  <input
+                    type="file"
+                    :id="'product-image-' + product.id"
+                    class="d-none"
+                    accept="image/*"
+                    @change="(e) => handleImageUpload(e, product.id)"
+                    :disabled="loading"
+                  />
+                  <label
+                    :for="'product-image-' + product.id"
+                    class="btn btn-sm btn-outline-primary w-100"
+                    :disabled="loading"
+                  >
+                    {{ product.imageUrl ? "Change Image" : "Add Image" }}
+                  </label>
+                </div>
+
+                <div class="flex-grow-1">
+                  <div class="mb-2">
+                    <label class="form-label small">Product Name</label>
+                    <input
+                      v-model.trim="product.name"
+                      class="form-control"
+                      placeholder="Product name"
+                      :disabled="loading"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label class="form-label small">Price</label>
+                    <input
+                      v-model.number="product.price"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      class="form-control"
+                      placeholder="Price"
+                      :disabled="loading"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="button"
                   @click="removeProduct(product.id)"
@@ -252,7 +294,7 @@
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { db } from "../firebase"; // Ensure you have your Firebase config in this file
+import { db } from "../firebase"; 
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import {
@@ -260,12 +302,13 @@ import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
+  deleteObject
 } from "firebase/storage";
 
 export default {
   name: "BusinessProfile",
   setup() {
-    const auth = getAuth(); // Get the auth instance
+    const auth = getAuth();
     const user = auth.currentUser;
     const storage = getStorage();
     const business_name = ref("");
@@ -297,7 +340,7 @@ export default {
     const fetchBusinessProfile = async () => {
       loading.value = true;
       try {
-        const userDocRef = doc(db, "user", user.uid);
+        const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
         if (userDocSnap.exists()) {
@@ -324,6 +367,111 @@ export default {
       }
     };
 
+    const handleImageUpload = async (event, productId) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const acceptedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+      if (!acceptedImageTypes.includes(file.type)) {
+        showNotification(`Please upload a valid image file (JPEG, PNG, GIF, WebP, or BMP). Received type: ${file.type}`, "error");
+        return;
+      }
+
+      const maxSize = 5 * 1024 * 1024; 
+      if (file.size > maxSize) {
+        showNotification(`Image size should be less than 5MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`, "error");
+        return;
+      }
+
+      loading.value = true;
+
+      try {
+        console.log('Starting image upload for file:', {
+          name: file.name,
+          type: file.type,
+          size: `${(file.size / 1024 / 1024).toFixed(2)}MB`
+        });
+
+        const timestamp = new Date().getTime();
+        const filename = `${timestamp}_${file.name}`;
+
+        const imageRef = storageRef(
+          storage, 
+          `product-images/${user.uid}/${productId}/${filename}`
+        );
+
+        console.log('Uploading to path:', imageRef.fullPath);
+
+        const uploadResult = await uploadBytes(imageRef, file);
+        console.log('Upload completed:', uploadResult);
+
+        const downloadURL = await getDownloadURL(imageRef);
+        console.log('Download URL obtained:', downloadURL);
+
+        const productIndex = products.value.findIndex(p => p.id === productId);
+        if (productIndex !== -1) {
+          products.value[productIndex].tempImageUrl = URL.createObjectURL(file);
+          products.value[productIndex].imageUrl = downloadURL;
+          products.value[productIndex].imagePath = imageRef.fullPath;
+        }
+
+        showNotification("Image uploaded successfully");
+      } catch (error) {
+        console.error("Error uploading image:", {
+          code: error.code,
+          message: error.message,
+          fullError: error
+        });
+        
+        let errorMessage = "Failed to upload image";
+        if (error.code === 'storage/unauthorized') {
+          errorMessage = "Permission denied: Please check if you're logged in";
+        } else if (error.code === 'storage/canceled') {
+          errorMessage = "Upload was cancelled";
+        } else if (error.code === 'storage/unknown') {
+          errorMessage = "An unknown error occurred during upload";
+        }
+        
+        showNotification(errorMessage, "error");
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const addProduct = () => {
+      products.value.push({
+        id: Date.now(),
+        name: "",
+        price: 0,
+        imageUrl: "",
+        tempImageUrl: null,
+        imagePath: null
+      });
+    };
+
+    const removeProduct = async (id) => {
+      const product = products.value.find(p => p.id === id);
+      
+      if (product && product.imagePath) {
+        try {
+          const imageRef = storageRef(storage, product.imagePath);
+          await deleteObject(imageRef);
+        } catch (error) {
+          console.error("Error deleting product image:", error);
+        }
+      }
+      
+      products.value = products.value.filter(product => product.id !== id);
+    };
+
+    const addService = () => {
+      services_offered.value.push("");
+    };
+
+    const removeService = (index) => {
+      services_offered.value.splice(index, 1);
+    };
+
     const saveBusinessProfile = async () => {
       if (!isFormValid.value) return;
 
@@ -345,10 +493,12 @@ export default {
               .map((i) => i.trim())
               .filter(Boolean),
             experience: experience.value.trim(),
-            products: products.value.map((p) => ({
-              ...p,
+            products: products.value.map(p => ({
+              id: p.id,
               name: p.name.trim(),
               price: Number(p.price),
+              imageUrl: p.imageUrl || "",
+              imagePath: p.imagePath || ""
             })),
           },
           { merge: true }
@@ -357,8 +507,15 @@ export default {
         hasProfile.value = true;
         isEditing.value = false;
         showNotification("Business profile saved successfully");
+
+        products.value.forEach(product => {
+          if (product.tempImageUrl) {
+            URL.revokeObjectURL(product.tempImageUrl);
+            delete product.tempImageUrl;
+          }
+        });
       } catch (error) {
-        console.error("Error saving business profile: ", error);
+        console.error("Error saving business profile:", error);
         showNotification("Failed to save business profile", "error");
       } finally {
         loading.value = false;
@@ -367,26 +524,19 @@ export default {
 
     const toggleEdit = () => {
       isEditing.value = !isEditing.value;
-    };
-
-    const addService = () => {
-      services_offered.value.push("");
-    };
-
-    const removeService = (index) => {
-      services_offered.value.splice(index, 1);
-    };
-
-    const addProduct = () => {
-      products.value.push({ id: Date.now(), name: "", price: 0 });
-    };
-
-    const removeProduct = (id) => {
-      products.value = products.value.filter((product) => product.id !== id);
+      
+      if (!isEditing.value) {
+        products.value.forEach(product => {
+          if (product.tempImageUrl) {
+            URL.revokeObjectURL(product.tempImageUrl);
+            delete product.tempImageUrl;
+          }
+        });
+      }
     };
 
     onMounted(() => {
-      const user = auth.currentUser; // Get current user from Firebase Auth
+      const user = auth.currentUser;
       if (user) {
         userId.value = user.uid;
         fetchBusinessProfile();
@@ -410,6 +560,7 @@ export default {
       removeService,
       addProduct,
       removeProduct,
+      handleImageUpload,
     };
   },
 };
@@ -481,5 +632,17 @@ export default {
 
 .section-title {
   animation: fadeIn 1.5s;
+}
+
+.product-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.product-image-container {
+  width: 100px;
 }
 </style>
