@@ -355,7 +355,7 @@ defineExpose({
   closeModal
 });
 </script>
-
+<style src="@/styles/review.css" scoped />
 <style scoped>
 .preview-container {
   max-width: 100%;

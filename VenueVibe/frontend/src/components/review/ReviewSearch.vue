@@ -10,7 +10,7 @@
               type="text" 
               v-model="searchInput" 
               class="form-control" 
-              placeholder="Enter Event ID (case sensitive)" 
+              placeholder="Enter Event code (case sensitive)" 
               required 
               :disabled="loading"
             />
@@ -24,7 +24,7 @@
             </button>
           </div>
           <p class="button-info text-muted">
-            Copy and paste Event ID 
+            Copy and paste Event Code eg. NAONOV'24 , XMASMART2022
           </p>
         </form>
       </div>

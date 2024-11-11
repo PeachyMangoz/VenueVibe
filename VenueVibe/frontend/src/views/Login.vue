@@ -79,7 +79,7 @@
           <p></p>
           <button class="btn transparent" @click="toggleMode">Sign in</button>
         </div>
-        <img src="../images/booth2.png" class="image" alt="Register image" />
+        <img src="../images/booth3.webp" class="image" alt="Register image" />
       </div>
     </div>
   </div>
@@ -193,6 +193,9 @@ const signIn = async () => {
 
 <script>
 export default {
+  mounted() {
+    window.scrollTo(0, 0);
+  },
   data() {
     return {
       isSignUpMode: false,

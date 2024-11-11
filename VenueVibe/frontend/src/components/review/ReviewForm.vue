@@ -207,6 +207,7 @@ const categories = [
   'Fashion, Apparel & Clothing',
   'Family & Pets',
   'Services',
+  'Stationary & supplies',
   'Others'
 ];
 

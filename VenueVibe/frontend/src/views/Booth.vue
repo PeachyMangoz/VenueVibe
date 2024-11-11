@@ -1,6 +1,6 @@
 <template>
 <div class="image-container">
-  <div class="container section-title" data-aos="fade-up">
+  <div class="container section-title" style= 'margin-bottom:0px' data-aos="fade-up">
     <h2>
       <div class="heading-montserrat">
         Booth Listings
