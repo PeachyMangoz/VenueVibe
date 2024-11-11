@@ -34,6 +34,18 @@
                 required 
               />
             </div>
+            <!-- Event ID -->
+            <div class="mb-3">
+              <label for="event_id" class="form-label">Event ID:</label>
+              <input 
+                type="text" 
+                id="event_id" 
+                v-model="formData.event_id" 
+                class="form-control" 
+                required
+                readonly
+              />
+            </div>
 
             <!-- Price -->
             <div class="mb-3">
@@ -75,6 +87,18 @@
                 required 
                 min="0" 
                 placeholder="Enter number of available booths"
+              />
+            </div>
+
+            <!-- Postal Code -->
+            <div class="mb-3">
+              <label for="postal_code" class="form-label">Postal Code:</label>
+              <input 
+                type="text" 
+                id="postal_code" 
+                v-model="formData.postal_code" 
+                class="form-control" 
+                required 
               />
             </div>
 
@@ -139,7 +163,7 @@
 
 <script setup>
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, collection, setDoc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase'; // Ensure correct import path to your Firebase config
 import { getAuth } from 'firebase/auth';
 import { ref, onMounted } from 'vue';
@@ -166,9 +190,11 @@ const loading = ref(false);  // To manage the loading state
 function getInitialFormData() {
   return {
     boothTitle: '',
+    event_id: '',
     price: '',
     duration: '',
     space: '',
+    postal_code: '',
     description: '',
     imageFile: null,
     imageFileObject: null,
@@ -238,6 +264,13 @@ const handleSubmit = async () => {
 
     const businessName = userDoc.data().business_name; // Get the business name
 
+    // Fetch the number of documents in the booths collection
+    const boothsSnapshot = await getDocs(collection(db, 'booths'));
+    const docCount = boothsSnapshot.size;
+
+    // Dynamically generate event_id as 'event_' + document count
+    const eventId = `event_${docCount}`;
+
     let imageUrl = null;
     const imageFile = formData.value.imageFileObject;
 
@@ -254,13 +287,16 @@ const handleSubmit = async () => {
     // Save booth data to Firestore
     const boothData = {
       booth_title: formData.value.boothTitle,
+      event_id: eventId,
       price: parseFloat(formData.value.price),
       duration: parseInt(formData.value.duration, 10),
       size: parseInt(formData.value.space, 10),
+      postal_code: formData.value.postal_code,
       description: formData.value.description,
       booth_image: imageUrl, // The URL of the uploaded image
       organizer_id: businessName, // The business name from the user profile
       created_at: new Date(), // Timestamp for when the booth was added
+      updated_at: new Date()
     };
 
     // Create a new booth document under the 'booths' collection
@@ -278,9 +314,20 @@ const handleSubmit = async () => {
 };
 
 // Modal methods
-const openModal = () => {
-  if (modal) {
-    modal.show();
+const openModal = async () => {
+  try {
+    // Fetch the number of documents in the booths collection
+    const boothsSnapshot = await getDocs(collection(db, 'booths'));
+    const docCount = boothsSnapshot.size;
+
+    // Dynamically generate event_id as 'event_' + document count
+    formData.value.event_id = `event_${docCount}`;
+    
+    if (modal) {
+      modal.show();
+    }
+  } catch (error) {
+    console.error('Error fetching booth count:', error);
   }
 };
 
