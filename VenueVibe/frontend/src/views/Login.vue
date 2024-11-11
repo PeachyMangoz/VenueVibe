@@ -13,7 +13,7 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="signInPassword" placeholder="Password" />
           </div>
-          <button type="button" @click="signIn" value="Login" class="btn solid">Log In</button>
+          <button type="button" @click="signIn" value="Login" class="btn solid green-btn">Log In</button>
         </form>
 
         <!-- Sign-Up Form -->
@@ -454,7 +454,7 @@ border-color: #4481eb;
 
 .btn {
 width: 150px;
-background-color: #5995fd;
+background-color: #36b598;
 border: none;
 outline: none;
 height: 49px;
@@ -466,10 +466,24 @@ margin: 10px 0;
 cursor: pointer;
 transition: 0.5s;
 }
+/* .btn{
+  width: 150px;
+  background-color: #36b598;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+} */
 
-.btn:hover {
-background-color: #4d84e2;
+.btn:hover{
+  background-color: #16697a;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 .panels-container {
 position: absolute;
 height: 100%;
