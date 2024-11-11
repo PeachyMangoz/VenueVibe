@@ -9,7 +9,7 @@
 
     <!-- Conditionally show the button if the user is an organiser -->
     <AddBoothFormButton 
-      v-if="isOrganiser"
+      v-if="isLoggedIn && isOrganiser"
       :loading="loading"
       @click="openReviewModal"
     />
@@ -38,6 +38,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { boothAPI } from '../services/api';
+import { mapGetters } from "vuex";
 
 export default {
   name: 'Booth',
@@ -45,6 +46,12 @@ export default {
     BoothCard,
     AddBoothForm, // Register the form component
     AddBoothFormButton, // Register the button component
+  },
+  computed: {
+    ...mapGetters(['user']), // Access the user getter
+    isLoggedIn() {
+      return this.user.loggedIn; // Determine if the user is logged in
+    }
   },
   data() {
     return {
@@ -66,31 +73,32 @@ export default {
         this.loading = false;
       }
     },
-    async checkUserProfile() {
-      const auth = getAuth();
+async checkUserProfile() {
+  const auth = getAuth();
 
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          try {
-            const userDoc = await getDoc(doc(db, 'user', user.uid));
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const userDoc = await getDoc(doc(db, 'user', user.uid));
 
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-
-              if (userData.profile_type === 'organiser') {
-                this.isOrganiser = true;
-              }
-            } else {
-              console.error('User document not found!');
-            }
-          } catch (error) {
-            console.error('Error fetching user profile:', error);
-          }
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          this.isOrganiser = userData.profile_type === 'organiser';
         } else {
-          console.error('No authenticated user found');
+          console.error('User document not found!');
+          this.isOrganiser = false;
         }
-      });
-    },
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        this.isOrganiser = false;
+      }
+    } else {
+      // User is logged out - make sure to reset isOrganiser
+      this.isOrganiser = false;
+      console.log('No authenticated user found');
+    }
+  });
+},
     openReviewModal() {
       // Open the modal by triggering the review form's `openModal` method
       this.$refs.AddBoothFormRef.openModal();

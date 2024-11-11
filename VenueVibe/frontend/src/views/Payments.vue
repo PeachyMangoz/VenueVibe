@@ -1,13 +1,27 @@
 <template>
   <div class="payment-page">
-    <div class="payment-grid">
+    <div class="container section-title" data-aos="fade-up">
+      <h2>
+        <div class="title-with-lines heading-montserrat">
+          Payment
+        </div>
+      </h2>
+    </div>
+
+    <div class="payment-container">
       <div class="payment-section">
-        <h2 class="section-title">Payment</h2>
         <StripePayment @token-created="handleToken" />
       </div>
 
       <div class="history-section">
-        <h2 class="section-title">Transaction History</h2>
+        <div class="container section-title" data-aos="fade-up">
+          <h2>
+            <div class="title-with-lines heading-montserrat">
+              Transaction History
+            </div>
+          </h2>
+        </div>
+
         <div class="transaction-list">
           <div class="filter-section">
             <select v-model="filterStatus" class="filter-select">
@@ -148,16 +162,50 @@ export default {
   margin: 0 auto;
 }
 
-.payment-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+.payment-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
+/* Section Title Styles (matching Booth.vue) */
 .section-title {
-  color: #32325d;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 30px 0;
+  position: relative;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Title with lines style (matching Booth.vue) */
+.title-with-lines {
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+.title-with-lines::before,
+.title-with-lines::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 60px;
+  height: 2px;
+  background-color: #36b598;
+}
+
+.title-with-lines::before {
+  right: 100%;
+}
+
+.title-with-lines::after {
+  left: 100%;
 }
 
 /* Transaction History Styles */
@@ -252,13 +300,6 @@ export default {
 
 .page-info {
   color: #6c757d;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .payment-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
