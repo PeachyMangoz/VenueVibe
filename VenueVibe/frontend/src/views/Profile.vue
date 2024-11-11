@@ -1,4 +1,13 @@
 <template>
+    <div
+    v-if="loading"
+    class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
+    style="z-index: 1000"
+  >
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <body>
     <div class="container.fluid py-4 mx-3">
       
@@ -235,6 +244,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'fire
 
 export default {
   setup() {
+    const loading = ref(false); // Loading state
     const auth = getAuth();
     const user = auth.currentUser;
     const storage = getStorage();
@@ -253,6 +263,7 @@ export default {
     const collabBackgroundInput = ref(null); // Ref for collab background input
 
     const fetchUserData = async () => {
+      loading.value = true; // Show loading screen
       if (user) {
         const userDoc = await getDoc(doc(db, 'user', user.uid));
         if (userDoc.exists()) {
@@ -270,9 +281,11 @@ export default {
           collabBackgroundUrl.value = userData.collab_background || '';  // Fetch the collab background URL
         }
       }
+      loading.value = false; // Hide loading screen
     };
 
     const updateProfile = async () => {
+      loading.value = true; // Show loading screen while updating profile
       if (user) {
         await setDoc(doc(db, 'user', user.uid), {
           bio: bio.value,
@@ -287,11 +300,13 @@ export default {
         }, { merge: true });
         alert('Profile updated successfully!');
       }
+      loading.value = false; // Hide loading screen after updating
     };
 
     const uploadProfileImage = async (event) => {
       const file = event.target.files[0];
       if (file && user) {
+        loading.value = true; // Show loading during upload
         const storagePath = `profile_images/${user.uid}/${file.name}`;
         const fileRef = storageRef(storage, storagePath);
 
@@ -302,6 +317,8 @@ export default {
           profileImageUrl.value = downloadUrl;
         } catch (error) {
           console.error('Error uploading profile image:', error);
+        } finally {
+          loading.value = false; // Hide loading after upload
         }
       }
     };
@@ -309,6 +326,7 @@ export default {
     const uploadCollabBackground = async (event) => {
       const file = event.target.files[0];
       if (file && user) {
+        loading.value = true; // Show loading during upload
         const storagePath = `collab_backgrounds/${user.uid}/${file.name}`;
         const fileRef = storageRef(storage, storagePath);
 
@@ -319,6 +337,8 @@ export default {
           collabBackgroundUrl.value = downloadUrl;
         } catch (error) {
           console.error('Error uploading collab background:', error);
+        } finally {
+          loading.value = false; // Hide loading after upload
         }
       }
     };
@@ -339,10 +359,11 @@ export default {
     };
 
     onMounted(() => {
-      fetchUserData();
+      fetchUserData(); // Fetch user data on component mount
     });
 
     return {
+      loading, // Return loading state
       username,
       email,
       bio,
@@ -365,6 +386,7 @@ export default {
   },
 };
 </script>
+
   
   
   <style scoped>
