@@ -14,18 +14,6 @@
             <input type="password" v-model="signInPassword" placeholder="Password" />
           </div>
           <button type="button" @click="signIn" value="Login" class="btn solid">Log In</button>
-          <p class="social-text">Or Sign in with social platforms</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </div>
         </form>
 
         <!-- Sign-Up Form -->
@@ -45,18 +33,6 @@
             <input type="password" v-model="password" placeholder="Password" />
           </div>
           <button type="button" @click="register" class="btn">Sign Up</button>
-          <p class="social-text">Or Sign up with social platforms</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </div>
         </form>
       </div>
     </div>
