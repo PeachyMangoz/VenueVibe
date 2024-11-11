@@ -5,7 +5,7 @@
     <p class="booth-price">Price: {{ booth.price }}</p>
     <p class="booth-duration">Duration: {{ booth.duration }}</p>
     <p class="booth-space">Space: {{ booth.size }}</p>
-    <p class="booth-organizer">Organizer: {{ booth.organizer_id }}</p>
+    <p class="booth-organizer">Organiser: {{ booth.organizer_id }}</p>
     <p class="booth-description">{{ booth.description }}</p>
 
     <router-link :to="{ name: 'booth-details', params: { id: booth.booth_id } }">
