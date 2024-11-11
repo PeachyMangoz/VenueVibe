@@ -1,7 +1,7 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { db } from "../firebase";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 
@@ -74,6 +74,27 @@ export default {
       }
     };
 
+    const withdrawApplication = async (application) => {
+      if (!['DRAFT', 'PENDING'].includes(application.status?.toUpperCase())) {
+        showNotification("Only draft or pending applications can be withdrawn", "error");
+        return;
+      }
+
+      if (confirm("Are you sure you want to withdraw this application?")) {
+        loading.value = true;
+        try {
+          await deleteDoc(doc(db, "eventApplications", application.id));
+          showNotification("Application successfully withdrawn");
+          await fetchApplications();
+        } catch (error) {
+          console.error("Error withdrawing application:", error);
+          showNotification("Failed to withdraw application", "error");
+        } finally {
+          loading.value = false;
+        }
+      }
+    };
+
     const formatDate = (date) => {
       if (!date) return "N/A";
       return new Date(date).toLocaleDateString("en-US", {
@@ -83,20 +104,12 @@ export default {
       });
     };
 
-    const isEditable = (application) => {
+    const isWithdrawable = (application) => {
       return ["DRAFT", "PENDING"].includes(application.status?.toUpperCase());
     };
 
     const viewApplication = (application) => {
       selectedApplication.value = application;
-    };
-
-    const editApplication = (application) => {
-      if (!isEditable(application)) {
-        showNotification("This application cannot be edited", "error");
-        return;
-      }
-      router.push(`/applications/${application.id}/edit`);
     };
 
     const createNewApplication = () => {
@@ -127,11 +140,11 @@ export default {
       notification,
       formatDate,
       viewApplication,
-      editApplication,
       createNewApplication,
       closeModal,
-      isEditable,
+      isWithdrawable,
       getBadgeClass,
+      withdrawApplication,
     };
   },
 };
@@ -210,12 +223,14 @@ export default {
                       >
                         View
                       </button>
+
                       <button
-                        @click="editApplication(application)"
-                        class="btn btn-warning"
-                        :disabled="loading || !isEditable(application)"
+                        v-if="isWithdrawable(application)"
+                        @click="withdrawApplication(application)"
+                        class="btn btn-outline-danger"
+                        :disabled="loading"
                       >
-                        Edit
+                        Withdraw
                       </button>
                     </div>
                   </td>
@@ -295,11 +310,12 @@ export default {
             </div>
             <div class="modal-footer">
               <button
-                v-if="isEditable(selectedApplication)"
-                @click="editApplication(selectedApplication)"
-                class="btn btn-warning"
+                v-if="isWithdrawable(selectedApplication)"
+                @click="withdrawApplication(selectedApplication)"
+                class="btn btn-outline-danger"
+                :disabled="loading"
               >
-                Edit Application
+                Withdraw
               </button>
               <button @click="closeModal" class="btn btn-secondary">
                 Close
@@ -382,15 +398,15 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn-warning {
-  background-color: #36b598 !important;
-  border-color: #36b598 !important;
-  color: white !important;
+.btn-outline-danger {
+  color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  background-color: transparent !important;
 }
 
-.btn-warning:hover {
-  background-color: #2d9a82 !important;
-  border-color: #2d9a82 !important;
+.btn-outline-danger:hover {
+  color: white !important;
+  background-color: #dc3545 !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -407,8 +423,19 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.btn:disabled {
+  opacity: 0.65;
+  transform: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
 .table {
   margin-top: 20px;
+}
+
+.table td {
+  vertical-align: middle;
 }
 
 .badge {
@@ -448,6 +475,10 @@ export default {
   background-color: #36b598 !important;
 }
 
+.toast.bg-danger {
+  background-color: #dc3545 !important;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -474,5 +505,22 @@ export default {
   .modal-dialog {
     margin: 10px;
   }
+
+  .table td {
+    white-space: nowrap;
+  }
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 </style>
