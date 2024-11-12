@@ -13,6 +13,7 @@ import Login from './views/Login.vue';
 import BusinessProfile from './views/BusinessProfile.vue';
 import ApplicationProfiles from './views/ApplicationProfiles.vue';
 import EventApplications from './views/EventApplications.vue';
+import ApplicationReview from './views/ApplicationsApproval.vue';
 import Payments from './views/Payments.vue';
 import Chat from './views/CollaborationChat.vue';
 import Profile from './views/Profile.vue';
@@ -31,6 +32,7 @@ const routes = [
   { path: '/applicationprofiles', name: 'ApplicationProfiles', component: ApplicationProfiles },
   // { path: '/applicationprofiles/:boothId', name: 'ApplicationProfiles', component: ApplicationProfiles },
   { path: '/eventapplications', name:'EventApplications', component: EventApplications},
+  { path: '/applicationreview', name:'ApplicationReview', component: ApplicationReview},
   { path: '/payments', name:'Payments', component: Payments },
   { path: '/profile', name:'Profile', component: Profile },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
