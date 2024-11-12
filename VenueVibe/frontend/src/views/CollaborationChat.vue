@@ -5,10 +5,10 @@
       <!-- Chat List -->
       <div class="chat-list">
         <div class="row align-items-center chat-header">
-          <div class="col auto">
-            <router-link :to="{ name: 'Collaborate'}" class="back-btn">
-                <span>&lt;</span>
-            </router-link> 
+          <div class="col-5">
+            <router-link :to="{ name: 'Collaborate' }" class="back-btn">
+              <span>&lt;</span>
+            </router-link>
           </div>
           <div class="col">
             <h3>Chats</h3>
@@ -18,11 +18,16 @@
 
         <!-- Search Bar -->
         <div class="search-bar">
-          <input type="text" placeholder="Search" />
+          <input
+            type="text"
+            placeholder="Search"
+            v-model="searchQuery"
+            @keyup="filterChats"
+          />
         </div>
         <ul>
           <li
-            v-for="chat in userChats"
+            v-for="chat in filteredChats"
             :key="chat.id"
             :class="{ active: chat.id === chatId }"
             @click="selectChat(chat.id)"
@@ -35,13 +40,18 @@
             />
             <div class="chat-info">
               <p class="chat-name">{{ getChatPartnerName(chat) }}</p>
-              <p class="chat-preview">{{ chat.lastMessage || "No message yet" }}</p>
+              <p class="chat-preview">
+                {{ chat.lastMessage || "No message yet" }}
+              </p>
             </div>
             <span class="chat-time">{{
               formatDate(chat.lastMessageTimeStamp) || " "
             }}</span>
           </li>
         </ul>
+        <p v-if="filteredChats.length === 0" class="no-results-message">
+          No Chats found
+        </p>
       </div>
     </div>
 
@@ -63,9 +73,13 @@
           }}</small>
         </div>
       </div>
+      <div v-if="!chatId" class="no-chat-selected">
+        <img src="../images//chat.png" />
+        <p>Please select a chat to start messaging</p>
+      </div>
 
       <!-- Message Input -->
-      <footer class="message-input">
+      <footer v-else class="message-input">
         <div class="input-wrapper">
           <input
             type="text"
@@ -110,10 +124,11 @@ export default {
       messages: [],
       newMessage: "",
       chatId: null,
-      currentUserId: "", // Replace with actual user ID from auth
+      currentUserId: "",
       selectedUserId: this.id,
       userChats: [], // Stores all chats for the current user
       unsubscribeMessagesListener: null,
+      searchQuery: "",
     };
   },
   created() {
@@ -125,8 +140,16 @@ export default {
     //     console.error("Error initializing chat data:", error);
     //   });
   },
-  computed:{
+  computed: {
     ...mapGetters(["user", "isLoggedIn", "userId"]),
+    filteredChats() {
+      // Filter userChats based on searchQuery
+      return this.userChats.filter((chat) =>
+        this.getChatPartnerName(chat)
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase())
+      );
+    },
   },
   methods: {
     scrollToBottom() {
@@ -150,7 +173,7 @@ export default {
             // Initialize userInfo for real-time updates
             const userInfo = {};
             for (const userId of chatData.users) {
-              const userDocRef = doc(db, "user", userId); // Correct usage of `doc()` with db and collection name
+              const userDocRef = doc(db, "user", userId); // Correct usage of doc() with db and collection name
               const userDocSnapshot = await getDoc(userDocRef);
 
               if (userDocSnapshot.exists()) {
@@ -170,16 +193,17 @@ export default {
           })
         );
 
-        // Update the `userChats` data with the latest real-time updates
+        // Update the userChats data with the latest real-time updates
         this.userChats = updatedChats;
         console.log("Updated User Chats with Real-Time Data:", this.userChats);
+        console.log(this.chatId);
       });
     },
 
     async fetchUserChats() {
       try {
         // Step 1: Fetch all chats where the current user is a participant
-        const chatsRef = collection(db, "chat"); // Use `collection` for chats
+        const chatsRef = collection(db, "chat"); // Use collection for chats
         const q = query(
           chatsRef,
           where("users", "array-contains", this.currentUserId)
@@ -194,7 +218,7 @@ export default {
             // Step 3: Retrieve only displayName and profilePic for each user in the chat
             const userInfo = {};
             for (const userId of chatData.users) {
-              const userDocRef = doc(db, "user", userId); // Correct usage of `doc()` with db and collection name
+              const userDocRef = doc(db, "user", userId); // Correct usage of doc() with db and collection name
               const userDocSnapshot = await getDoc(userDocRef);
 
               if (userDocSnapshot.exists()) {
@@ -212,7 +236,9 @@ export default {
         this.userChats = chatsWithUserInfo;
 
         // Step 4: Open existing chat or create a new one with the selected user
-        await this.openOrCreateChatWithSelectedUser();
+        if (this.$route.params.id) {
+          await this.openOrCreateChatWithSelectedUser();
+        }
       } catch (error) {
         console.error("Error fetching chats:", error);
       }
@@ -224,7 +250,6 @@ export default {
         const existingChat = this.userChats.find((chat) =>
           chat.users.includes(this.selectedUserId)
         );
-
         if (existingChat) {
           this.selectChat(existingChat.id);
         } else {
@@ -359,7 +384,7 @@ export default {
     },
 
     getChatPartnerProfileImage(chat) {
-      // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
+      // Check if chat, chat.users, and chat.userInfo are defined
       if (
         !chat ||
         !chat.users ||
@@ -383,7 +408,7 @@ export default {
     },
 
     getChatPartnerName(chat) {
-      // Check if `chat`, `chat.users`, and `chat.userInfo` are defined
+      // Check if chat, chat.users, and chat.userInfo are defined
       if (
         !chat ||
         !chat.users ||
@@ -410,20 +435,19 @@ export default {
   mounted() {
     this.scrollToBottom();
     if (this.isLoggedIn) {
-        console.log("Logged-in User ID:", this.userId);
-        this.currentUserId = this.userId;
-        this.fetchUserChats()
-      .then(() => {
-        this.listenForChatUpdates(); // Start listening for updates after data retrieval
-      })
-      .catch((error) => {
-        console.error("Error initializing chat data:", error);
-      });
+      console.log("Logged-in User ID:", this.userId);
+      this.currentUserId = this.userId;
+      this.fetchUserChats()
+        .then(() => {
+          this.listenForChatUpdates(); // Start listening for updates after data retrieval
+        })
+        .catch((error) => {
+          console.error("Error initializing chat data:", error);
+        });
     }
   },
 };
 </script>
-
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Alkatra:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
@@ -433,20 +457,24 @@ export default {
 
 .chat-container {
   display: flex;
-  height: 93vh;
+  height: 92vh;
 }
-col{
-    padding: 0;
+.col {
+  flex: 1 0 0%;
+  padding: 0;
 }
 /* Sidebar styling */
 .sidebar {
-  width: 25%;
-  min-width: 25%;
+  width: 450px; /* Fixed width for the sidebar */
+  min-width: 250px; /* Minimum width for better responsiveness */
+  max-width: 450px;
   background-color: white;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
-  
+  overflow-y: auto;
+}
+.chat-list {
+  padding: 1rem;
 }
 
 .search-bar input {
@@ -462,7 +490,7 @@ col{
 }
 
 .back-btn {
-display: inline-flex; 
+  display: inline-flex;
   border: none;
   color: rgba(0, 0, 0, 0.6);
   background-color: rgba(0, 0, 0, 0.05);
@@ -481,7 +509,7 @@ ol {
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem;
   cursor: pointer;
 }
 
@@ -493,6 +521,7 @@ ol {
 }
 .chat-info {
   flex-grow: 1;
+  margin-left: 10px;
 }
 .chat-name {
   font-weight: bold;
@@ -501,7 +530,12 @@ ol {
 .chat-preview {
   font-size: 0.9rem;
   color: #888;
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
+
 .chat-time {
   font-size: 0.8rem;
   color: #aaa;
@@ -512,9 +546,25 @@ ol {
 }
 /* Main chat area styling */
 .chat-area {
-  width: 75%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: #f2f5f9;
+  overflow: hidden;
+}
+
+.no-chat-selected {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: center;
+  height: 100%;
+}
+
+.chat-area img {
+  width: 170px;
+  height: auto;
+  object-fit: contain;
 }
 
 .chat-header {
@@ -525,11 +575,39 @@ ol {
   border-bottom: 1px solid #ddd;
 }
 
+.chat-header h3 {
+  margin-right: 0.5rem;
+}
+
 .messages {
-  flex-grow: 1;
+  flex: 1;
   padding: 1rem;
-  background-color: #f2f5f9;
   overflow-y: auto;
+}
+
+/* Message input */
+.message-input {
+  padding: 1.2rem;
+  border-top: 1px solid #ddd;
+}
+
+.input-wrapper {
+  display: flex;
+}
+.message-input-field {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}
+
+.send-button {
+  background-color: transparent;
+  border: none;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: rgb(54, 181, 152);
 }
 
 .message {
@@ -583,41 +661,39 @@ ol {
   margin-top: 0.25rem;
 }
 
-.message-input {
-  padding: 1rem;
-  border-top: 1px solid #ddd;
+.no-results-message {
+  text-align: center;
+  color: #888;
+  margin-top: 1rem;
+  font-size: 1rem;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Reduce sidebar width for smaller screens */
+  }
+  .chat-time {
+    display: none;
+  }
 }
 
-.message-input-field {
-  width: 100%;
-  flex-grow: 1;
-  padding: 10px 40px 10px 15px; /* Extra padding on the right for the button */
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  outline: none;
-  box-sizing: border-box;
-  margin-bottom: 5px
-}
-
-.send-button {
-  position: absolute;
-  right: 15px; /* Adjust to position button inside input */
-  background-color: rgb(54, 181, 152);
-  height: 70%;
-  width: 4%;
-  border-radius: 20%;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 5px;
-  color: #fff;
+@media (max-width: 576px) {
+  .chat-container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    max-width: none; /* Sidebar takes full width on small screens */
+    max-height: 50%; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+  .chat-area {
+    flex: 1;
+    overflow: auto;
+  }
+  .chat-time {
+    display: block;
+  }
 }
 </style>
