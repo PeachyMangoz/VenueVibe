@@ -466,17 +466,6 @@ margin: 10px 0;
 cursor: pointer;
 transition: 0.5s;
 }
-/* .btn{
-  width: 150px;
-  background-color: #36b598;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-} */
 
 .btn:hover{
   background-color: #16697a;
