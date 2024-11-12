@@ -1,6 +1,6 @@
 <template>
-  
-   <div class="booth-details-container image-container">
+
+  <div class="booth-details-container image-container">
     <!-- Main Content Area -->
     <div v-if="booth" class="booth-details-card glass-effect">
       <!-- Image Section -->
@@ -32,9 +32,9 @@
         <div class="info-grid">
           <div class="info-item">
             <i class="fas fa-id-badge"></i>
-            <div class="info-content"style="overflow:scroll;">
+            <div class="info-content" style="overflow:scroll;">
               <label>Booth ID</label>
-              <p >{{ booth.booth_id }}</p>
+              <p>{{ booth.booth_id }}</p>
             </div>
           </div>
           <div class="info-item">
@@ -58,7 +58,22 @@
               <p>{{ booth.availability_status }}</p>
             </div>
           </div>
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div class="info-content">
+              <label>Starts</label>
+              <p>{{ formatDate(booth.date_from) }}</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <div class="info-content">
+              <label>Ends</label>
+              <p>{{ formatDate(booth.date_to) }}</p>
+            </div>
+          </div>
         </div>
+
 
         <div class="booth-description">
           <h3 class="description-title">
@@ -67,17 +82,6 @@
           </h3>
           <p class="description-content">{{ booth.description }}</p>
         </div>
-
-        <!-- <div class="timestamps">
-          <div class="timestamp-item">
-            <i class="far fa-calendar-plus"></i>
-            <span>Created: {{ formatDate(booth.created_at) }}</span>
-          </div>
-          <div class="timestamp-item">
-            <i class="far fa-calendar-check"></i>
-            <span>Updated: {{ formatDate(booth.updated_at) }}</span>
-          </div>
-        </div> -->
       </div>
 
       <!-- Action Buttons -->
@@ -110,13 +114,8 @@
     </div>
 
     <!-- Reuse existing modal and notification components -->
-    <ProfileSelectionModal 
-      :isOpen="showProfileModal"
-      :profiles="profiles"
-      :boothDetails="booth"
-      @close="closeProfileModal"
-      @selectProfile="handleProfileSelection"
-    />
+    <ProfileSelectionModal :isOpen="showProfileModal" :profiles="profiles" :boothDetails="booth"
+      @close="closeProfileModal" @selectProfile="handleProfileSelection" />
 
     <div v-if="notification" class="notification-toast" :class="notification.type">
       <i :class="notification.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
@@ -136,6 +135,7 @@ import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore
 import { db } from '../firebase';
 import { useRouter } from 'vue-router';
 import ProfileSelectionModal from '../components/ProfileSelectionModal.vue';
+import dayjs from 'dayjs';
 
 export default {
   name: 'BoothDetails',
@@ -171,7 +171,7 @@ export default {
         const querySnapshot = await getDocs(
           collection(db, 'application_profiles', user.uid, 'profiles')
         );
-        
+
         profiles.value = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
@@ -229,7 +229,7 @@ export default {
         });
 
         showNotification('Application submitted successfully!', 'success');
-        
+
         // Redirect to applications page
         setTimeout(() => {
           router.push('/eventapplications');
@@ -259,14 +259,13 @@ export default {
       closeProfileModal();
     };
 
-    const formatDate = (timestamp) => {
-      const date = new Date(timestamp);
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-    };
+    const formatDate = (date) => {
+      return dayjs(date).format('DD MMMM YYYY');
+    }
 
     const loadGoogleMaps = () => {
       const loader = new Loader({
-        apiKey: 'AIzaSyAeSyt0WZgXPM3dw-fB_ryg1Vs0Yq6OFl4', // Your API key
+        apiKey: 'AIzaSyAeSyt0WZgXPM3dw-fB_ryg1Vs0Yq6OFl4',
         version: 'weekly',
       });
 
@@ -316,13 +315,11 @@ export default {
 };
 </script>
 <style scoped>
-
-  
-
 .image-container {
   background-image: url("@/images/img7.jpg");
   background-size: cover;
 }
+
 /* Main Layout */
 .booth-details-container {
   display: flex;
@@ -336,7 +333,7 @@ export default {
 
 /* Card Styling */
 .booth-details-card {
-  background-color: rgba(255,255,255,0.95);
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -457,7 +454,8 @@ export default {
   margin-top: 30px;
 }
 
-.apply-button, .back-button {
+.apply-button,
+.back-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -515,7 +513,8 @@ export default {
   padding: 40px;
 }
 
-.loading-message, .error-message {
+.loading-message,
+.error-message {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -553,6 +552,7 @@ export default {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -567,7 +567,8 @@ export default {
     padding: 40px 20px;
   }
 
-  .booth-details-card, .map-container {
+  .booth-details-card,
+  .map-container {
     flex: 1;
     margin: 0 10px;
     max-height: 90vh;
@@ -604,7 +605,8 @@ export default {
     flex-direction: column;
   }
 
-  .apply-button, .back-button {
+  .apply-button,
+  .back-button {
     width: 100%;
   }
 }
@@ -637,4 +639,3 @@ export default {
   margin: 0;
 }
 </style>
-
