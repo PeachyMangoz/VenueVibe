@@ -1,7 +1,7 @@
 # models/booth.py
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field  # Add Field for validation
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 
 class AvailabilityStatus(str, Enum):
@@ -14,6 +14,7 @@ class BoothBase(BaseModel):
     organizer_id: str
     booth_title: str
     booth_image: Optional[str] = None
+    description: Optional[str] = None
     price: float
     size: int  # in square meters
     duration: int  # in hours
@@ -28,6 +29,7 @@ class BoothCreate(BoothBase):
 class BoothUpdate(BaseModel):
     booth_title: Optional[str] = None
     booth_image: Optional[str] = None
+    description: Optional[str] = None
     price: Optional[float] = None
     size: Optional[int] = None
     duration: Optional[int] = None
