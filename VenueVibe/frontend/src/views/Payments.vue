@@ -137,12 +137,55 @@ export default {
       return filtered.slice(start, end)
     },
     totalPages() {
-      return Math.ceil(this.transactions.length / this.itemsPerPage)
+      const filtered = this.filterStatus === 'all' 
+        ? this.transactions 
+        : this.transactions.filter(t => t.status === this.filterStatus)
+      return Math.ceil(filtered.length / this.itemsPerPage)
     }
   },
   methods: {
-    handleToken(token) {
-      console.log('Token received in parent:', token)
+    async handleToken(token) {
+      try {
+        console.log('Payment token received:', token)
+        
+        // Add the transaction to the list
+        const newTransaction = {
+          id: this.transactions.length + 1,
+          date: new Date(),
+          amount: 100.00, // Replace with actual amount from your payment process
+          status: 'pending',
+          description: 'Payment Processing'
+        }
+        
+        this.transactions.unshift(newTransaction)
+        
+        // Here you would typically make an API call to your backend
+        // to process the payment with the token
+        
+        // Show success message
+        this.$nextTick(() => {
+          alert('Payment is being processed')
+        })
+        
+        // Optional: Update the transaction status after backend confirms
+        setTimeout(() => {
+          newTransaction.status = 'completed'
+        }, 2000)
+
+      } catch (error) {
+        console.error('Payment processing error:', error)
+        
+        // Add failed transaction to the list
+        this.transactions.unshift({
+          id: this.transactions.length + 1,
+          date: new Date(),
+          amount: 100.00,
+          status: 'failed',
+          description: 'Payment Failed'
+        })
+        
+        alert('Payment processing failed: ' + error.message)
+      }
     },
     formatDate(date) {
       return new Intl.DateTimeFormat('en-US', {
@@ -150,6 +193,12 @@ export default {
         month: 'short',
         day: 'numeric'
       }).format(date)
+    }
+  },
+  watch: {
+    filterStatus() {
+      // Reset to first page when filter changes
+      this.currentPage = 1
     }
   }
 }
@@ -168,7 +217,7 @@ export default {
   gap: 3rem;
 }
 
-/* Section Title Styles (matching Booth.vue) */
+/* Section Title Styles */
 .section-title {
   text-align: center;
   margin-bottom: 50px;
@@ -183,7 +232,7 @@ export default {
   color: #333;
 }
 
-/* Title with lines style (matching Booth.vue) */
+/* Title with lines style */
 .title-with-lines {
   position: relative;
   display: inline-block;
@@ -225,10 +274,14 @@ export default {
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   width: 200px;
+  background-color: white;
 }
 
 .table-container {
   overflow-x: auto;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .transaction-table {
@@ -247,6 +300,11 @@ export default {
 .transaction-table th {
   background-color: #f8f9fa;
   font-weight: 600;
+  color: #495057;
+}
+
+.transaction-table tr:hover {
+  background-color: #f8f9fa;
 }
 
 .status-badge {
@@ -254,6 +312,7 @@ export default {
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 500;
+  display: inline-block;
 }
 
 .status-badge.completed {
@@ -275,6 +334,8 @@ export default {
   text-align: center;
   padding: 2rem;
   color: #6c757d;
+  background-color: #f8f9fa;
+  border-radius: 4px;
 }
 
 .pagination {
@@ -283,6 +344,7 @@ export default {
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
+  padding: 1rem 0;
 }
 
 .pagination-button {
@@ -291,20 +353,34 @@ export default {
   border-radius: 4px;
   background: white;
   cursor: pointer;
+  transition: all 0.2s ease;
+  color: #495057;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #ddd;
 }
 
 .pagination-button:disabled {
   background-color: #f8f9fa;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .page-info {
   color: #6c757d;
+  font-size: 0.875rem;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
   .payment-page {
     padding: 1rem;
+  }
+  
+  .section-title h2 {
+    font-size: 24px;
   }
   
   .transaction-table {
@@ -313,6 +389,53 @@ export default {
   
   .status-badge {
     font-size: 0.75rem;
+  }
+  
+  .title-with-lines::before,
+  .title-with-lines::after {
+    width: 30px;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .payment-page {
+    background-color: #1a1a1a;
+    color: #fff;
+  }
+
+  .section-title h2 {
+    color: #fff;
+  }
+
+  .history-section,
+  .table-container,
+  .transaction-table th {
+    background-color: #2d2d2d;
+  }
+
+  .transaction-table td {
+    border-bottom-color: #404040;
+  }
+
+  .filter-select,
+  .pagination-button {
+    background-color: #2d2d2d;
+    color: #fff;
+    border-color: #404040;
+  }
+
+  .empty-state {
+    background-color: #2d2d2d;
+    color: #fff;
+  }
+
+  .status-badge {
+    opacity: 0.9;
   }
 }
 </style>

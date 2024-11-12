@@ -2,107 +2,124 @@
   <div class="payment-container">
     <div class="payment-form">
       <h2 class="payment-title">Payment Details</h2>
-      <div v-if="isLoading" class="loading-message">
-        Loading payment system...
+      
+      <!-- Card element container -->
+      <div class="stripe-card-container">
+        <div ref="cardElement" class="card-element"></div>
       </div>
-      <div v-else>
-        <div class="card-element" v-if="publishableKey">
-          <stripe-element-card
-            ref="elementRef"
-            :pk="publishableKey"
-            @token="tokenCreated"
-            :options="stripeOptions"
-          />
-        </div>
-        <button 
-          class="payment-button"
-          @click="submit"
-          :disabled="!publishableKey || isSubmitting"
-        >
-          {{ isSubmitting ? 'Processing...' : 'Generate token' }}
-        </button>
-        <div v-if="error" class="error-message">
-          {{ error }}
-          <div class="error-details" v-if="isDevelopment">
-            Please ensure your .env file contains VUE_APP_STRIPE_PUBLISHABLE_KEY
-          </div>
-        </div>
+
+      <!-- Error display -->
+      <div v-if="error" class="error-message">
+        {{ error }}
       </div>
+
+      <!-- Submit button -->
+      <button 
+        class="payment-button"
+        @click="handleSubmit"
+        :disabled="!isReady || isProcessing"
+      >
+        {{ isProcessing ? 'Processing...' : 'Pay Now' }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { StripeElementCard } from '@vue-stripe/vue-stripe'
+import { loadStripe } from '@stripe/stripe-js'
 
-export default defineComponent({
+export default {
   name: 'StripePayment',
-  components: {
-    StripeElementCard,
-  },
+  
   data() {
     return {
-      publishableKey: '',
-      token: null,
+      stripe: null,
+      card: null,
       error: null,
-      isLoading: true,
-      isSubmitting: false,
-      isDevelopment: process.env.NODE_ENV === 'development',
-      stripeOptions: {
+      isProcessing: false,
+      isReady: false
+    }
+  },
+
+  async mounted() {
+    try {
+      // Initialize Stripe
+      const stripeKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY
+      this.stripe = await loadStripe(stripeKey)
+
+      // Create the card element
+      const elements = this.stripe.elements()
+      this.card = elements.create('card', {
         style: {
           base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
             fontSize: '16px',
-            color: '#424770',
             '::placeholder': {
-              color: '#aab7c4',
-            },
+              color: '#aab7c4'
+            }
           },
           invalid: {
-            color: '#9e2146',
-          },
-        },
-      },
-    }
-  },
-  async created() {
-    try {
-      this.publishableKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY
-      if (!this.publishableKey) {
-        throw new Error('Stripe publishable key is not configured')
-      }
-    } catch (err) {
-      this.error = 'Payment system configuration error. Please try again later.'
-      console.error('Stripe initialization error:', err)
-    } finally {
-      this.isLoading = false
-    }
-  },
-  methods: {
-    async submit() {
-      try {
-        this.error = null
-        this.isSubmitting = true
-        
-        if (!this.$refs.elementRef) {
-          throw new Error('Payment form not loaded properly')
+            color: '#fa755a',
+            iconColor: '#fa755a'
+          }
         }
-        
-        await this.$refs.elementRef.submit()
-      } catch (err) {
-        this.error = err.message || 'Payment processing failed. Please try again.'
-        console.error('Payment submission error:', err)
-      } finally {
-        this.isSubmitting = false
-      }
-    },
-    tokenCreated(token) {
-      console.log('Token created:', token)
-      this.token = token
-      this.$emit('token-created', token)
-    },
+      })
+
+      // Mount the card element
+      this.card.mount(this.$refs.cardElement)
+
+      // Handle real-time validation errors
+      this.card.on('change', (event) => {
+        this.error = event.error ? event.error.message : ''
+        this.isReady = event.complete
+      })
+
+    } catch (err) {
+      console.error('Stripe setup error:', err)
+      this.error = 'Failed to load payment system'
+    }
   },
-})
+
+  methods: {
+    async handleSubmit() {
+      if (!this.stripe || !this.card) {
+        this.error = 'Payment system is not initialized'
+        return
+      }
+
+      try {
+        this.isProcessing = true
+        this.error = null
+
+        // Create payment method
+        const { token, error } = await this.stripe.createToken(this.card)
+
+        if (error) {
+          throw error
+        }
+
+        // Emit the token
+        this.$emit('token-created', token)
+        
+        // Clear form
+        this.card.clear()
+
+      } catch (err) {
+        this.error = err.message || 'Payment processing failed'
+      } finally {
+        this.isProcessing = false
+      }
+    }
+  },
+
+  beforeUnmount() {
+    if (this.card) {
+      this.card.unmount()
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -110,7 +127,7 @@ export default defineComponent({
   width: 100%;
   max-width: 500px;
   margin: 2rem auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .payment-form {
@@ -123,67 +140,52 @@ export default defineComponent({
 .payment-title {
   color: #32325d;
   font-size: 24px;
-  margin-bottom: 1.5rem;
+  font-weight: 600;
   text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stripe-card-container {
+  margin-bottom: 1.5rem;
 }
 
 .card-element {
   padding: 1rem;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
-  background: #f8f9fa;
-  margin-bottom: 1.5rem;
+  background: white;
+  min-height: 40px;
+}
+
+.error-message {
+  color: #fa755a;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #fff8f6;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.875rem;
 }
 
 .payment-button {
   width: 100%;
-  padding: 12px;
-  background-color: #635BFF;
+  padding: 0.75rem;
+  background: #5469d4;
   color: white;
-  border: none;
+  border: 0;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.15s ease;
 }
 
-.payment-button:hover:not(:disabled) {
-  background-color: #5851DB;
+.payment-button:hover {
+  background: #4a5ec4;
 }
 
 .payment-button:disabled {
-  background-color: #cccccc;
+  background: #a3acca;
   cursor: not-allowed;
-}
-
-.error-message {
-  color: #dc3545;
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 14px;
-}
-
-.error-details {
-  margin-top: 0.5rem;
-  font-size: 12px;
-  color: #666;
-}
-
-.loading-message {
-  text-align: center;
-  color: #666;
-  padding: 2rem;
-}
-
-@media (max-width: 600px) {
-  .payment-container {
-    padding: 1rem;
-    margin: 1rem auto;
-  }
-
-  .payment-form {
-    padding: 1rem;
-  }
 }
 </style>
