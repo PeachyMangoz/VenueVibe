@@ -1,18 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const admin = require('firebase-admin');
+const stripeClient = require('../boothmanagement/src/config/stripe');
 
 const app = express();
-
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: process.env.FIREBASE_DATABASE_URL
-});
 
 app.use(cors());
 app.use(express.json());
 
+// Setup Intents endpoint
 app.post('/api/create-setup-intent', async (req, res) => {
   try {
     const { userId } = req.body;
@@ -25,7 +21,7 @@ app.post('/api/create-setup-intent', async (req, res) => {
     
     let stripeCustomerId;
     if (!customerDoc.exists) {
-      const customer = await stripe.customers.create({
+      const customer = await stripeClient.customers.create({
         metadata: {
           firebaseUserId: userId
         }
@@ -38,7 +34,7 @@ app.post('/api/create-setup-intent', async (req, res) => {
       stripeCustomerId = customerDoc.data().stripeCustomerId;
     }
 
-    const setupIntent = await stripe.setupIntents.create({
+    const setupIntent = await stripeClient.setupIntents.create({
       customer: stripeCustomerId,
       payment_method_types: ['card']
     });
@@ -50,6 +46,7 @@ app.post('/api/create-setup-intent', async (req, res) => {
   }
 });
 
+// Set default payment method endpoint 
 app.post('/api/set-default-payment-method', async (req, res) => {
   try {
     const { userId, paymentMethodId } = req.body;
@@ -68,7 +65,7 @@ app.post('/api/set-default-payment-method', async (req, res) => {
 
     const { stripeCustomerId } = customerDoc.data();
 
-    await stripe.customers.update(stripeCustomerId, {
+    await stripeClient.customers.update(stripeCustomerId, {
       invoice_settings: {
         default_payment_method: paymentMethodId
       }
@@ -81,6 +78,7 @@ app.post('/api/set-default-payment-method', async (req, res) => {
   }
 });
 
+// Delete payment method endpoint
 app.delete('/api/payment-methods/:paymentMethodId', async (req, res) => {
   try {
     const { paymentMethodId } = req.params;
@@ -89,7 +87,7 @@ app.delete('/api/payment-methods/:paymentMethodId', async (req, res) => {
     const token = req.headers.authorization?.split('Bearer ')[1];
     await admin.auth().verifyIdToken(token);
 
-    await stripe.paymentMethods.detach(paymentMethodId);
+    await stripeClient.paymentMethods.detach(paymentMethodId);
 
     await admin.firestore()
       .collection('paymentMethods')
@@ -103,5 +101,4 @@ app.delete('/api/payment-methods/:paymentMethodId', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
