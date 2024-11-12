@@ -190,15 +190,15 @@
         </div>
 
         <!-- Additional Profile Columns -->
-        <div class="col-lg-4 mt-4">
+        <!-- <div class="col-lg-4 mt-4">
           <div class="row">
-            <!-- Business Profile Box -->
+            Bookmarks Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Business Profile</h5>
-                    <button class="btn green-btn-outlined">
+                    <button class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -212,13 +212,13 @@
               </div>
             </div>
 
-            <!-- Application Profiles Box -->
+            Application Profiles Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Application Profiles</h5>
-                    <button class="btn green-btn-outlined">
+                    <button class="btn btn-sm btn-outline-primary">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -229,7 +229,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </body>
@@ -403,6 +403,26 @@ export default {
   display: inline-block; /* Allow the container to size around the image */
 }
 
+.green-btn {
+    background-color: #36b598;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .green-btn:hover {
+    background-color: #2d9b82;
+    transform: translateY(-1px);
+  }
+
+  
+  .green-btn:disabled {
+    background-color: #a8d5c9;
+    cursor: not-allowed;
+    transform: none;
+  }
 img {
   width: 150px;
   height: 150px;

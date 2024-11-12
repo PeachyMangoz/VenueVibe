@@ -46,6 +46,31 @@
                 readonly
               />
             </div>
+            <!-- Start and End Date -->
+            <div class="mb-3 row">
+              <!-- Start Date -->
+              <div class="col-md-6">
+                <label for="startDate" class="form-label">Start Date:</label>
+                <input 
+                  type="date" 
+                  id="startDate" 
+                  v-model="formData.dateFrom" 
+                  class="form-control" 
+                  required 
+                />
+              </div>
+              <!-- End Date -->
+              <div class="col-md-6">
+                <label for="endDate" class="form-label">End Date:</label>
+                <input 
+                  type="date" 
+                  id="endDate" 
+                  v-model="formData.dateTo" 
+                  class="form-control" 
+                  required 
+                />
+              </div>
+            </div>
 
             <!-- Price -->
             <div class="mb-3">
@@ -78,7 +103,7 @@
 
             <!-- Space -->
             <div class="mb-3">
-              <label for="space" class="form-label">Space:</label>
+              <label for="space" class="form-label">Slots Available:</label>
               <input 
                 type="number" 
                 id="space" 
@@ -198,6 +223,8 @@ function getInitialFormData() {
     description: '',
     imageFile: null,
     imageFileObject: null,
+    dateFrom: '', // Start date field
+    dateTo: '',   // End date field
   };
 }
 
@@ -296,7 +323,9 @@ const handleSubmit = async () => {
       booth_image: imageUrl, // The URL of the uploaded image
       organizer_id: businessName, // The business name from the user profile
       created_at: new Date(), // Timestamp for when the booth was added
-      updated_at: new Date()
+      updated_at: new Date(),
+      date_from: new Date(formData.value.dateFrom),  // Start date converted to Date object
+      date_to: new Date(formData.value.dateTo),      // End date converted to Date object
     };
 
     // Create a new booth document under the 'booths' collection

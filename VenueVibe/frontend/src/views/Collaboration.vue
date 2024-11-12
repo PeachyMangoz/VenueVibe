@@ -20,9 +20,9 @@ defineElement(lottie.loadAnimation);
         class="row banner mx-0"
         :style="{ background: `url(${currentSlide.collab_background})` }"
       >
-        <router-link :to="{ name: 'CollaborateChat' }" class="btn mychatbtn">
+        <!-- <router-link :to="{ name: 'CollaborateChat' }" class="btn mychatbtn">
           <span>My chats</span>
-        </router-link>
+        </router-link> -->
         <!-- Left Column: Content -->
         <div class="col-lg-6 content-wrapper">
           <div class="content active">
