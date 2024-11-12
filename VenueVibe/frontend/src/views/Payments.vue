@@ -400,42 +400,4 @@ export default {
     width: 100%;
   }
 }
-
-/* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-  .payment-page {
-    background-color: #1a1a1a;
-    color: #fff;
-  }
-
-  .section-title h2 {
-    color: #fff;
-  }
-
-  .history-section,
-  .table-container,
-  .transaction-table th {
-    background-color: #2d2d2d;
-  }
-
-  .transaction-table td {
-    border-bottom-color: #404040;
-  }
-
-  .filter-select,
-  .pagination-button {
-    background-color: #2d2d2d;
-    color: #fff;
-    border-color: #404040;
-  }
-
-  .empty-state {
-    background-color: #2d2d2d;
-    color: #fff;
-  }
-
-  .status-badge {
-    opacity: 0.9;
-  }
-}
 </style>
