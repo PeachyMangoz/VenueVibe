@@ -2,38 +2,49 @@
   <div class="booth-card card">
     <div class="post-img position-relative overflow-hidden">
       <img :src="boothImage" alt="Booth Image" class="booth-image w-100 h-100 object-fit-cover" />
-      <div class="booth-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+      <div
+        class="booth-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
         <router-link :to="{ name: 'booth-details', params: { id: booth.booth_id } }" class="text-decoration-none">
           <button class="view-details-button">View Details</button>
         </router-link>
       </div>
     </div>
-    
+
     <div class="card-body p-4">
       <h3 class="booth-title heading-montserrat mb-4">{{ booth.booth_title }}</h3>
-      
+
       <div class="booth-info">
         <div class="mb-3 d-flex align-items-center">
           <i class="fas fa-tag me-2 "></i>
           <span class="booth-price">${{ booth.price }}</span>
         </div>
-        
+
+        <div class="mb-3 d-flex align-items-start">
+          <i class="far fa-calendar-alt me-2" style="margin-top: 4px;"></i>
+          <div>
+            <span class="booth-startdate d-block">{{ formatDateRange(booth.date_from, booth.date_to) }}</span>
+            <span class="booth-timerange d-block">{{ formatTimeRange(booth.date_from, booth.date_to) }}</span>
+          </div>
+        </div>
+
+
+
         <div class="mb-3 d-flex align-items-center">
           <i class="far fa-clock me-2 "></i>
           <span class="booth-duration">{{ booth.duration }} Days</span>
         </div>
-        
+
         <div class="mb-3 d-flex align-items-center">
           <i class="fas fa-store me-2"></i>
           <span class="booth-space">{{ booth.size }} slots </span>
         </div>
-        
+
         <div class="mb-3 d-flex align-items-center">
           <i class="far fa-building me-2"></i>
           <span class="booth-organizer">{{ booth.organizer_id }}</span>
         </div>
       </div>
-      
+
       <!-- <p class="booth-description mt-4 text-muted">{{ booth.description }}</p> -->
     </div>
   </div>
@@ -41,6 +52,9 @@
 
 
 <script>
+
+import dayjs from 'dayjs';
+
 export default {
   name: 'BoothCard',
   props: ['booth'],
@@ -56,7 +70,7 @@ export default {
     async fetchImage() {
       try {
         const response = await fetch(this.booth.booth_image, {
-          mode: 'cors', // Ensure CORS is handled correctly
+          mode: 'cors',
         });
 
         if (!response.ok) {
@@ -69,18 +83,25 @@ export default {
       } catch (error) {
         console.error('Error fetching the image:', error);
       }
+    },
+    formatDateRange(dateFrom, dateTo) {
+      return `${dayjs(dateFrom).format('DD/MM/YYYY')} - ${dayjs(dateTo).format('DD/MM/YYYY')}`;
+    },
+    formatTimeRange(dateFrom, dateTo) {
+      return `${dayjs(dateFrom).format('h:mm A')} - ${dayjs(dateTo).format('h:mm A')}`;
     }
   }
 };
 </script>
 
 <style scoped>
-i{
+i {
   color: #36b598
 }
+
 .booth-card {
   border: none;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 15px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -131,7 +152,9 @@ i{
   font-size: 1.1rem;
 }
 
-.booth-duration, .booth-space, .booth-organizer {
+.booth-startdate .booth-duration,
+.booth-space,
+.booth-organizer {
   color: #333;
 }
 
