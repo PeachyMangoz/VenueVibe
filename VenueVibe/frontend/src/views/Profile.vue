@@ -173,7 +173,7 @@
                 </div>
 
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Save Profile</button>
+                  <button type="submit" class="btn green-btn-outlined">Save Profile</button>
                 </div>
               </form>
             </div>
@@ -189,7 +189,7 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Business Profile</h5>
-                    <button class="btn btn-sm btn-outline-primary">
+                    <button class="btn green-btn-outlined">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -209,7 +209,7 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Application Profiles</h5>
-                    <button class="btn btn-sm btn-outline-primary">
+                    <button class="btn green-btn-outlined">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -365,12 +365,14 @@ export default {
   },
 };
 </script>
-  
+
+<style src="@/styles/review.css" scoped />
   
   <style scoped>
 
   body {
-    background-color: #36b598;
+    background-color:#36b598;
+    
   }
   
 
@@ -439,8 +441,8 @@ img:hover {
     position: absolute;
     width: 50%;
     height: 100%;
-    background-color: #007bff;
-    opacity: 50%;
+    background-color: rgb(87, 147, 196);
+
     border-radius: 20px;
     transition: 0.3s;
   }
@@ -456,7 +458,7 @@ img:hover {
   
   .toggle-text.left {
     left: 0;
-    color: black;
+    color: #ffffff;
   }
   
   .toggle-text.right {
@@ -466,8 +468,7 @@ img:hover {
   
   .toggle-input:checked + .toggle-label .toggle-slider {
     left: 50%;
-    background-color: #28a745;
-    opacity: 50%;
+    background-color: #36b598;
   }
   
   .toggle-input:checked + .toggle-label .toggle-text.left {
@@ -475,7 +476,7 @@ img:hover {
   }
   
   .toggle-input:checked + .toggle-label .toggle-text.right {
-    color: black;
+    color:white;
   }
   </style>
   

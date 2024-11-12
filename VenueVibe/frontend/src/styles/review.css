@@ -175,16 +175,25 @@
     transition: all 0.3s ease;
   }
   
-  .green-btn:hover {
+  .green-btn:hover, .green-btn-outlined:hover {
     background-color: #2d9b82;
     transform: translateY(-1px);
   }
 
   
-  .green-btn:disabled {
+  .green-btn:disabled, .green-btn-outlined:disabled {
     background-color: #a8d5c9;
     cursor: not-allowed;
     transform: none;
+  }
+
+  .green-btn-outlined{
+    background-color: white;
+    color: #36b598;
+    padding: 0.5rem 1rem;
+    border: #36b598 solid 1px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
   }
   
   /* Search Section */
