@@ -11,7 +11,7 @@ app = FastAPI(title="Booth Listing Microservice")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:80"],  # Frontend URL
+    allow_origins=["http://localhost:80", "http://localhost:8080"],  # Frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

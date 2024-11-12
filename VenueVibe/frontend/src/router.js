@@ -24,7 +24,7 @@ const routes = [
   { path: '/eventreviews', name: 'Events', component: EventReview },
   { path: '/forum', name: 'Forum', component: NotFound },
   { path: '/collaborate', name: 'Collaborate', component: Collaboration},
-  { path: '/CollaborateChat/:id', name: 'CollaborateChat', component: Chat, props: true,},
+  { path: '/CollaborateChat/:id?', name: 'CollaborateChat', component: Chat, props: true,},
   { path: '/about', name:'About', component: About },
   { path: '/login', name: 'Login', component: Login },
   { path: '/businessprofile', name: 'BusinessProfile', component: BusinessProfile },

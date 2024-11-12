@@ -34,7 +34,7 @@
         </div>
       </div>
       
-      <p class="booth-description mt-4 text-muted">{{ booth.description }}</p>
+      <!-- <p class="booth-description mt-4 text-muted">{{ booth.description }}</p> -->
     </div>
   </div>
 </template>
