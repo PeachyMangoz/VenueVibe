@@ -103,7 +103,11 @@
 
             <!-- Space -->
             <div class="mb-3">
+<<<<<<< Updated upstream
               <label for="space" class="form-label">Slots Available:</label>
+=======
+              <label for="space" class="form-label">Available Slots:</label>
+>>>>>>> Stashed changes
               <input 
                 type="number" 
                 id="space" 
