@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <!-- Splash Screen -->
@@ -94,7 +93,7 @@
             </div>
             <div class="section-title title-dark-glow">
                 <h2 style="margin-bottom: 30px;">So what are you waiting for?</h2>
-                <router-link to="/login" class="btn green-btn mt-3 heading-montserrat">Log in/Sign up</router-link>
+                <router-link to="/login" class="btn green-btn mt-3 heading-montserrat">Log in / Sign up</router-link>
             </div>
             
         </div>

@@ -25,9 +25,23 @@
             @keyup="filterChats"
           />
         </div>
+        <div class="tabs-container">
+          <div class="tabs">
+            <span
+              v-for="(category, index) in categories"
+              :key="category"
+              :class="['tab', { active: selectedCategory === category }]"
+              @click="selectCategory(category, index)"
+            >
+              {{ category }}
+            </span>
+          </div>
+          <!-- Slider Indicator -->
+          <div class="slider" :style="sliderStyle"></div>
+        </div>
         <ul>
           <li
-            v-for="chat in filteredChats"
+            v-for="chat in filteredUserChats"
             :key="chat.id"
             :class="{ active: chat.id === chatId }"
             @click="selectChat(chat.id)"
@@ -49,7 +63,7 @@
             }}</span>
           </li>
         </ul>
-        <p v-if="filteredChats.length === 0" class="no-results-message">
+        <p v-if="filteredUserChats.length === 0" class="no-results-message">
           No Chats found
         </p>
       </div>
@@ -129,6 +143,9 @@ export default {
       userChats: [], // Stores all chats for the current user
       unsubscribeMessagesListener: null,
       searchQuery: "",
+      selectedCategory: "All Chats",
+      categories: ["All Chats", "Bookmark"],
+      activeIndex: 0,
     };
   },
   created() {
@@ -142,13 +159,29 @@ export default {
   },
   computed: {
     ...mapGetters(["user", "isLoggedIn", "userId"]),
-    filteredChats() {
-      // Filter userChats based on searchQuery
-      return this.userChats.filter((chat) =>
-        this.getChatPartnerName(chat)
+    filteredUserChats() {
+      return this.userChats.filter((chat) => {
+        // Check if chat matches the selected category
+        const matchesCategory =
+          (this.selectedCategory === "All Chats" &&
+            chat.category === "All Chats") ||
+          (this.selectedCategory === "Bookmark" &&
+            chat.category === "Bookmark");
+
+        // Check if chat matches the search query
+        const matchesSearchQuery = this.getChatPartnerName(chat)
           .toLowerCase()
-          .includes(this.searchQuery.toLowerCase())
-      );
+          .includes(this.searchQuery.toLowerCase());
+
+        // Return true only if both conditions are met
+        return matchesCategory && matchesSearchQuery;
+      });
+    },
+    sliderStyle() {
+      return {
+        width: `${100 / this.categories.length}%`, // Width is based on the number of categories
+        transform: `translateX(${this.activeIndex * 100}%)`, // Move to the selected tab
+      };
     },
   },
   methods: {
@@ -173,31 +206,50 @@ export default {
             // Initialize userInfo for real-time updates
             const userInfo = {};
             for (const userId of chatData.users) {
-              const userDocRef = doc(db, "user", userId); // Correct usage of doc() with db and collection name
+              const userDocRef = doc(db, "user", userId);
               const userDocSnapshot = await getDoc(userDocRef);
 
               if (userDocSnapshot.exists()) {
-                const { username, profile_image } = userDocSnapshot.data(); // Destructure only the fields we need
+                const { username, profile_image } = userDocSnapshot.data();
                 userInfo[userId] = { username, profile_image };
               }
             }
 
-            // Return the chat data including userInfo
+            // Determine if this chat is a bookmarked chat
+            const existingChat = this.userChats.find(
+              (chat) => chat.id === chatDoc.id
+            );
+            const isBookmarkedChat = existingChat
+              ? existingChat.category === "Bookmark"
+              : false;
+
+            // Return the chat data including userInfo and category
             return {
               id: chatDoc.id,
               lastMessage: chatData.lastMessage || "",
               lastMessageTimeStamp: chatData.lastMessageTimeStamp || null,
               users: chatData.users || [],
               userInfo,
+              category: isBookmarkedChat ? "Bookmark" : "All Chats", // Preserve category if it's a bookmarked chat
             };
           })
         );
 
-        // Update the userChats data with the latest real-time updates
-        this.userChats = updatedChats;
-        console.log("Updated User Chats with Real-Time Data:", this.userChats);
-        console.log(this.chatId);
+        // Update userChats with the latest real-time updates, keeping categories intact
+        updatedChats.forEach((chat) => this.updateOrAddChat(chat));
       });
+    },
+
+    updateOrAddChat(newChat) {
+      const index = this.userChats.findIndex((chat) => chat.id === newChat.id);
+
+      if (index !== -1) {
+        // Update existing chat if it's already in userChats
+        this.userChats.splice(index, 1, newChat);
+      } else {
+        // Add new chat if it doesn't exist in userChats
+        this.userChats.push(newChat);
+      }
     },
 
     async fetchUserChats() {
@@ -213,7 +265,11 @@ export default {
         // Step 2: For each chat, populate userInfo with display names and profile pictures
         const chatsWithUserInfo = await Promise.all(
           querySnapshot.docs.map(async (chatDoc) => {
-            const chatData = { id: chatDoc.id, ...chatDoc.data() };
+            const chatData = {
+              id: chatDoc.id,
+              category: "All Chats",
+              ...chatDoc.data(),
+            };
 
             // Step 3: Retrieve only displayName and profilePic for each user in the chat
             const userInfo = {};
@@ -314,6 +370,138 @@ export default {
       } catch (error) {
         console.error("Error creating new chat:", error);
       }
+    },
+    async fetchBookmarkedUsers() {
+      try {
+        // Step 1: Query the `bookmark` collection to get all bookmarks by the current user
+        const bookmarksRef = collection(db, "bookmark");
+        const q = query(bookmarksRef, where("userId", "==", this.userId));
+        const bookmarkDocs = await getDocs(q);
+
+        // Step 2: For each bookmarked user, retrieve chat and user data
+        const chatPromises = bookmarkDocs.docs.map(async (bookmarkDoc) => {
+          const { bookmarkedUserId } = bookmarkDoc.data();
+
+          // Step 2.1: Check if a chat already exists between the current user and the bookmarked user
+          let chatData = await this.findExistingChat(
+            this.userId,
+            bookmarkedUserId
+          );
+
+          if (chatData) {
+            // Step 2.2: If the chat exists, add the category property
+            chatData.category = "Bookmark";
+          } else {
+            // Step 2.3: If no chat exists, create a new chat and set category
+            chatData = await this.createChatWithBookmarkedUser(
+              bookmarkedUserId
+            );
+            chatData.category = "Bookmark"; // Set category for new chat
+          }
+
+          // Step 3: Retrieve user data from the `user` collection for the bookmarked user
+          const userDocRef = doc(db, "user", bookmarkedUserId);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = {
+              username: userDoc.data().username,
+              profile_image: userDoc.data().profile_image,
+            };
+
+            // Add the bookmarked user's data to `userInfo` in the chat data
+            chatData.userInfo[bookmarkedUserId] = userData;
+            return chatData;
+          }
+        });
+
+        // Step 4: Resolve all promises and update `userChats` with the combined data
+        const chatsWithBookmarkedUsers = (
+          await Promise.all(chatPromises)
+        ).filter(Boolean);
+        this.userChats = [...this.userChats, ...chatsWithBookmarkedUsers];
+        console.log("Updated userChats with bookmarked users:", this.userChats);
+      } catch (error) {
+        console.error("Error fetching bookmarked users:", error);
+      }
+    },
+
+    // Helper method to find an existing chat between two users
+    async findExistingChat(userId, bookmarkedUserId) {
+      const chatsRef = collection(db, "chat");
+      const chatQuery = query(
+        chatsRef,
+        where("users", "array-contains", userId)
+      );
+      const chatSnapshot = await getDocs(chatQuery);
+
+      // Check each chat document to see if it includes both the current user and bookmarked user
+      for (const doc of chatSnapshot.docs) {
+        const chatData = doc.data();
+        if (
+          chatData.users.includes(userId) &&
+          chatData.users.includes(bookmarkedUserId)
+        ) {
+          return { id: doc.id, ...chatData }; // Return the existing chat data
+        }
+      }
+      return null; // Return null if no chat exists
+    },
+
+    // Helper method to create a new chat with a bookmarked user if no existing chat is found
+    async createChatWithBookmarkedUser(bookmarkedUserId) {
+      try {
+        // Step 1: Fetch current user info and bookmarked user info
+        const currentUserDocRef = doc(db, "user", this.userId);
+        const bookmarkedUserDocRef = doc(db, "user", bookmarkedUserId);
+
+        const [currentUserSnapshot, bookmarkedUserSnapshot] = await Promise.all(
+          [getDoc(currentUserDocRef), getDoc(bookmarkedUserDocRef)]
+        );
+
+        if (!currentUserSnapshot.exists() || !bookmarkedUserSnapshot.exists()) {
+          throw new Error("User profile data missing for one of the users.");
+        }
+
+        const currentUserData = currentUserSnapshot.data();
+        const bookmarkedUserData = bookmarkedUserSnapshot.data();
+
+        // Step 2: Create userInfo object with required fields for both users
+        const userInfo = {
+          [this.userId]: {
+            username: currentUserData.username,
+            profile_image: currentUserData.profile_image,
+          },
+          [bookmarkedUserId]: {
+            username: bookmarkedUserData.username,
+            profile_image: bookmarkedUserData.profile_image,
+          },
+        };
+
+        // Step 3: Create a new chat document with user IDs and userInfo
+        const newChatDoc = await addDoc(collection(db, "chat"), {
+          users: [this.userId, bookmarkedUserId],
+          userInfo,
+          createdAt: serverTimestamp(),
+        });
+
+        // Step 4: Return the newly created chat data
+        return {
+          id: newChatDoc.id,
+          users: [this.userId, bookmarkedUserId],
+          userInfo,
+          lastMessage: "",
+          lastMessageTime: null,
+          category: "Bookmark", // Label it as a bookmarked chat
+        };
+      } catch (error) {
+        console.error("Error creating new chat with bookmarked user:", error);
+      }
+    },
+
+    selectCategory(category, index) {
+      this.selectedCategory = category;
+      this.activeIndex = index;
     },
 
     listenForMessages() {
@@ -432,18 +620,27 @@ export default {
       return timestamp?.toDate().toLocaleTimeString() || "";
     },
   },
-  mounted() {
+  mounted: async function () {
+    // Scroll to the bottom of the chat window (if applicable)
     this.scrollToBottom();
+
+    // Check if the user is logged in
     if (this.isLoggedIn) {
       console.log("Logged-in User ID:", this.userId);
       this.currentUserId = this.userId;
-      this.fetchUserChats()
-        .then(() => {
-          this.listenForChatUpdates(); // Start listening for updates after data retrieval
-        })
-        .catch((error) => {
-          console.error("Error initializing chat data:", error);
-        });
+
+      try {
+        // Fetch user chats
+        await this.fetchUserChats();
+
+        // Fetch bookmarked users and add them to userChats
+        await this.fetchBookmarkedUsers();
+
+        // Start listening for chat updates after initial data retrieval
+        this.listenForChatUpdates();
+      } catch (error) {
+        console.error("Error initializing chat data:", error);
+      }
     }
   },
 };
@@ -666,6 +863,43 @@ ol {
   color: #888;
   margin-top: 1rem;
   font-size: 1rem;
+}
+
+.tabs-container {
+  position: relative;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 10px;
+}
+
+/* Tabs styling */
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.tab.active {
+  color: black;
+  background-color: transparent;
+}
+
+.tab:hover {
+  color: black;
+}
+
+.slider {
+  position: absolute;
+  bottom: -1;
+  height: 2px;
+  background-color: rgb(54, 181, 152);
+  transition: transform 0.3s ease, width 0.3s ease;
 }
 
 /* Responsive adjustments */
