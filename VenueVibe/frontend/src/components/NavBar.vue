@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-transparent fixed-top">
-    <div class="container-fluid">
+    <div class="container-fluid px-4 mx-auto max-w-full">
       <router-link class="navbar-brand" to="/">Boothy</router-link>
       <button
         class="navbar-toggler"
@@ -14,7 +14,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto pe-3">
           <li class="nav-item" v-for="link in loggedOutLinks" :key="link.name" v-if="!isLoggedIn">
             <router-link class="nav-link" :to="link.path">{{ link.name }}</router-link>
           </li>
@@ -22,8 +22,6 @@
             <router-link class="nav-link" :to="link.path">{{ link.name }}</router-link>
           </li>
           
-          <!-- Profile Dropdown -->
-          <!-- Profile Dropdown for logged-in users -->
           <li class="nav-item dropdown" v-if="isLoggedIn">
             <a class="nav-link dropdown-toggle" 
                href="#" 
@@ -31,9 +29,9 @@
                role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">
-              {{ user.data.displayName || 'Profile' }} <!-- Display user's name or 'Profile' -->
+              {{ user.data.displayName || 'Profile' }}
             </a>
-            <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilesDropdown">
               <li>
                 <router-link class="dropdown-item" to="/profile">
                   User Profile
@@ -70,9 +68,9 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'NavBar',
   computed: {
-    ...mapGetters(['user']), // Access the user getter
+    ...mapGetters(['user']),
     isLoggedIn() {
-      return this.user.loggedIn; // Determine if the user is logged in
+      return this.user.loggedIn;
     }
   },
   data() {
@@ -96,12 +94,9 @@ export default {
   },
   methods: {
     logout() {
-      // Here you would typically commit a Vuex action to log out the user
-      // For example:
       this.$store.commit('SET_LOGGED_IN', false);
       this.$store.commit('SET_USER', null);
-      // Optionally redirect to the login page or home
-      this.$router.push('/'); // Redirect to the login page
+      this.$router.push('/');
     }
   },
 };
@@ -111,6 +106,7 @@ export default {
 .navbar {
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
 }
 
 .navbar-brand {
@@ -132,6 +128,8 @@ export default {
 .dropdown-menu {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  right: 0;
+  left: auto;
 }
 
 .dropdown-item {
@@ -149,6 +147,10 @@ export default {
     border: none;
     box-shadow: none;
     padding-left: 20px;
+  }
+
+  .navbar-collapse {
+    max-width: 100%;
   }
 }
 </style>
