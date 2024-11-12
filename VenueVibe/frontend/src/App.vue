@@ -7,7 +7,7 @@
   <div id="app">
     <header></header>
 
-    <NavBar />
+    <NavBar :key="navbarKey" />
 
     <main class="main-content">
       <router-view />
@@ -135,6 +135,17 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "App",
+  data() {
+    return {
+      navbarKey: 0,  // Initial key value
+    };
+  },
+  watch: {
+    $route(to, from) {
+      // Whenever the route changes, change the key to force re-mounting the NavBar
+      this.navbarKey += 1;
+    }
+  },
   components: {
     NavBar,
   },

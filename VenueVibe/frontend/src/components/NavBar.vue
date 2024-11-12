@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-transparent fixed-top">
-    <div class="container-fluid px-4 mx-auto max-w-full">
+    <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Boothy</router-link>
       <button
         class="navbar-toggler"
@@ -14,7 +14,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto pe-3">
+        <ul class="navbar-nav ms-auto">
           <li class="nav-item" v-for="link in loggedOutLinks" :key="link.name" v-if="!isLoggedIn">
             <router-link class="nav-link" :to="link.path">{{ link.name }}</router-link>
           </li>
@@ -22,6 +22,8 @@
             <router-link class="nav-link" :to="link.path">{{ link.name }}</router-link>
           </li>
           
+          <!-- Profile Dropdown -->
+          <!-- Profile Dropdown for logged-in users -->
           <li class="nav-item dropdown" v-if="isLoggedIn">
             <a class="nav-link dropdown-toggle" 
                href="#" 
@@ -29,9 +31,9 @@
                role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">
-              {{ user.data.displayName || 'Profile' }}
+              {{ user.data.displayName || 'Profile' }} <!-- Display user's name or 'Profile' -->
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilesDropdown">
+            <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
               <li>
                 <router-link class="dropdown-item" to="/profile">
                   User Profile
@@ -63,18 +65,22 @@
 </template>
 
 <script>
+import { getAuth } from "firebase/auth";
 import { mapGetters } from 'vuex';
+import { db } from '../firebase'; // Assuming Firebase is set up correctly with modular imports
+import { doc, getDoc } from 'firebase/firestore'; // Import specific Firestore methods
 
 export default {
   name: 'NavBar',
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user']), // Access the user getter
     isLoggedIn() {
-      return this.user.loggedIn;
+      return this.user.loggedIn; // Check if the user is logged in
     }
   },
   data() {
     return {
+      profileType: null, // Store the profile type here
       loggedOutLinks: [
         { name: 'Home', path: '/' },
         { name: 'Booths', path: '/booths' },
@@ -92,21 +98,62 @@ export default {
       ]
     };
   },
+  async mounted() {
+    const auth = getAuth();
+    const currentUser = auth.currentUser; // Get current user from Firebase Auth
+
+    if (currentUser) {
+      console.log('User UID:', currentUser.uid); // Log UID before querying Firestore
+      await this.fetchProfileType(currentUser.uid); // Fetch profile type using the UID
+      this.updateLinksBasedOnProfileType(); // Adjust links after profile is fetched
+    } else {
+      console.error('No user is logged in');
+    }
+  },
   methods: {
+    async fetchProfileType(uid) {
+      try {
+        // Fetch the user document from Firestore using the user's UID
+        const userDocRef = doc(db, 'user', uid); // Use doc() for fetching user document
+        const userDoc = await getDoc(userDocRef); // Fetch the document using getDoc
+
+        if (userDoc.exists()) {
+          // Store the profile type in the component's state
+          this.profileType = userDoc.data().profile_type;
+          console.log('Profile Type:', this.profileType); // Log for debugging
+        } else {
+          console.error('User not found in Firestore');
+        }
+      } catch (error) {
+        console.error('Error fetching profile type:', error);
+      }
+    },
+    updateLinksBasedOnProfileType() {
+      if (this.profileType === 'organiser') {
+        // Change 'Apply' to 'Applications' and update the path
+        const applyLink = this.loggedInLinks.find(link => link.name === 'Apply');
+        if (applyLink) {
+          applyLink.name = 'Applications';
+          applyLink.path = '/applicationreview';
+        }
+      }
+    },
     logout() {
+      // Commit Vuex actions to log out the user
       this.$store.commit('SET_LOGGED_IN', false);
       this.$store.commit('SET_USER', null);
-      this.$router.push('/');
+      this.$router.push('/'); // Redirect to the home page or login page
     }
   },
 };
 </script>
 
+
+
 <style scoped>
 .navbar {
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.9);
-  width: 100%;
 }
 
 .navbar-brand {
@@ -128,8 +175,6 @@ export default {
 .dropdown-menu {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  right: 0;
-  left: auto;
 }
 
 .dropdown-item {
@@ -147,10 +192,6 @@ export default {
     border: none;
     box-shadow: none;
     padding-left: 20px;
-  }
-
-  .navbar-collapse {
-    max-width: 100%;
   }
 }
 </style>
