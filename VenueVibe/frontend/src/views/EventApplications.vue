@@ -172,8 +172,12 @@ export default {
 
 <template>
   <div class="image-container">
-    <div class="container section-title mb-0"  data-aos="fade-up">
-      <h2  style="color: #333; ">Event Applications</h2>
+    <div class="container section-title" data-aos="fade-up" style="margin-bottom:0px; padding-bottom:0px">
+      <h2>
+        <div class="title-with-lines heading-montserrat">
+          Event Applications 
+        </div>
+      </h2>
     </div>
 
     <div class="container py-4">
@@ -374,45 +378,21 @@ export default {
   </div>
 </template>
 
-
+<style src="@/styles/review.css" scoped />
 <style scoped>
-
 @media (max-width: 768px) {
   
-  .section-title h2 {
+   .section-title h2 {
     font-size: 36px;
   }
 }
+
 
 .image-container {
   background-image: url("@/images/img7.jpg");
   background-size: cover;
 }
 
-.section-title {
-    text-align: center;
-    padding: 30px 0;
-    color:white
-  }
-  
-  .section-title h2 {
-    font-size: 50px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    color: white;
-  }
-  
-  .section-title h2::before,
-  .section-title h2::after {
-    content: '';
-    flex: 0 0 70px;
-    height: 3px;
-    background: #36b598;
-    display: inline-block;
-  }
 
 .green-btn {
   background-color: #36b598;
