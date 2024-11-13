@@ -1,7 +1,7 @@
 <template>
   <div class="img-container">
   <div class="payment-page">
-    <div class="container section-title" data-aos="fade-up">
+    <div class="container section-title" data-aos="fade-up" style="margin-bottom:0px; padding-bottom:0px">
       <h2>
         <div class="title-with-lines heading-montserrat">
           Payment
@@ -15,7 +15,7 @@
       </div>
 
       <div class="history-section">
-        <div class="container section-title" data-aos="fade-up">
+        <div class="container section-title" data-aos="fade-up" style="margin-bottom:0px">
           <h2>
             <div class="title-with-lines heading-montserrat">
               Transaction History
