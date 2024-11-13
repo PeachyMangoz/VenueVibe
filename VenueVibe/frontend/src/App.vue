@@ -75,9 +75,9 @@
               </li>
               <li>
                 <router-link
-                  to="/collaborate"
+                  to="/about"
                   class="text-decoration-none text-white"
-                  >Collaborate</router-link
+                  >About</router-link
                 >
               </li>
             </ul>
