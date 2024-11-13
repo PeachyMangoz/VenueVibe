@@ -12,8 +12,8 @@
         <h3 class="section-subtitle">Payment Method</h3>
         <div class="payment-methods">
           <div class="payment-method-item selected">
-            <i class="fas fa-credit-card"></i>
-            <span>Credit / Debit Card</span>
+            <div><i class="fas fa-credit-card"></i></div>
+            <div><span>Credit / Debit Card</span></div>
           </div>
         </div>
       </div>
