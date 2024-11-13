@@ -34,6 +34,7 @@ const routes = [
   { path: '/eventapplications', name:'EventApplications', component: EventApplications},
   { path: '/applicationreview', name:'ApplicationReview', component: ApplicationReview},
   { path: '/payments', name:'Payments', component: Payments },
+  { path: '/payments/:boothId', name: 'Payments', component: Payments, props: true },
   { path: '/profile', name:'Profile', component: Profile },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ];

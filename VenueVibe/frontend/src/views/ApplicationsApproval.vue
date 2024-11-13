@@ -208,7 +208,9 @@ const approveApplication = async (application) => {
 <template>
   <div class="image-container">
     <div class="container section-title mb-0"  data-aos="fade-up">
-      <h2  style="color: #333; ">Event Applications</h2>
+      <div>
+      <h2 class="title-with-lines heading-montserrat">Event Applications</h2>
+    </div>
     </div>
 
     <div class="container py-4">
@@ -576,6 +578,12 @@ const approveApplication = async (application) => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+@media (max-width: 768px) {
+  
+  .section-title h2 {
+   font-size: 36px;
+ }
 }
 
 @media screen and (max-width: 768px) {

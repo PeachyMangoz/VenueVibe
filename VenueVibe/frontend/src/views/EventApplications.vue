@@ -135,6 +135,14 @@ export default {
       router.push("/booths");
     };
 
+    const payForBooth = (application) => {
+      if (application.status.toLowerCase() === 'approved') {
+        router.push(`/payments/${application.boothId}`);  // assuming boothId exists in the application data
+      } else {
+        showNotification("Event is not approved yet", "error");
+      }
+    };
+
     const closeModal = () => {
       selectedApplication.value = null;
     };
@@ -165,6 +173,7 @@ export default {
       getBadgeClass,
       withdrawApplication,
       viewBoothDetails,
+      payForBooth,  // method to handle payment redirection
     };
   },
 };
@@ -253,6 +262,15 @@ export default {
                         :disabled="loading"
                       >
                         Withdraw
+                      </button>
+
+                      <button
+                        v-if="application.status.toLowerCase() === 'approved'"
+                        @click="payForBooth(application)"
+                        class="btn btn-success"
+                        :disabled="loading"
+                      >
+                        Pay
                       </button>
                     </div>
                   </td>

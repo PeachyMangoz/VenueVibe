@@ -52,7 +52,7 @@
         </div>
 
         <div class="history-section glass-effect">
-          <div class="container section-title" data-aos="fade-up">
+          <div class="container section-title2" data-aos="fade-up">
             <h2>
               <div class="title-with-lines heading-montserrat">
                 Transaction History
@@ -338,10 +338,16 @@ export default {
   position: relative;
 }
 
+.section-title2 {
+  text-align: center;
+  padding: 30px 0;
+  position: relative;
+}
+
 .section-title h2 {
   font-size: 50px;
   font-weight: 700;
-  color: #333;
+  color: white;
 }
 
 .title-with-lines {
