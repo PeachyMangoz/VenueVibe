@@ -55,6 +55,13 @@
     display: inline-block;
   }
   
+  @media (max-width: 768px) {
+  
+    .section-title h2 {
+     font-size: 36px;
+   }
+ }
+ 
   /* Card Styling */
   .card {
     border: none;
