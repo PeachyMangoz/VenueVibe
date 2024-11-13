@@ -105,10 +105,14 @@
               method="post"
               class="php-email-form"
             >
-              <div class="newsletter-form">
-                <input type="email" name="email" /><input
+              <div class="input-group">
+                <input class='form-control'type="email" name="email" 
+                style="height:50px;"/>
+              
+                <input
                   type="submit"
                   value="Subscribe"
+                  class="btn green-btn fw-bold"
                 />
               </div>
               <!-- <div class="loading">Loading</div>
@@ -161,6 +165,8 @@ export default {
 
 };
 </script>
+<style src="@/styles/review.css" scoped />
+
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Alkatra:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
@@ -240,6 +246,8 @@ export default {
   z-index: 1000; /* Ensure it appears on top of other elements */
   font-size: 25px;
 }
+
+
 
 /* .footer .social-media {
   display: flex;

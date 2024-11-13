@@ -33,7 +33,7 @@
     </div>
 
     <!-- Page Title -->
-    <div class="container section-title title-dark-glow"  style="margin-bottom:0px; " data-aos="fade-up">
+    <div class="container section-title "  style="margin-bottom:0px; " data-aos="fade-up">
       <h2  style="color:white; ">Event Reviews</h2>
     </div>
 

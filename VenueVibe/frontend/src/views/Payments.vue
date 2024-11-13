@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="payment-section glass-effect">
+        <div class="payment-section ">
           <StripePayment 
             @token-created="handleToken" 
             :amount="boothDetails?.price || 0"
