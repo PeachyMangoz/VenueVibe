@@ -190,9 +190,9 @@
         </div>
 
         <!-- Additional Profile Columns -->
-        <div class="col-lg-4 mt-4">
+        <!-- <div class="col-lg-4 mt-4">
           <div class="row">
-            <!-- Business Profile Box -->
+            Business Profile Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
@@ -212,7 +212,7 @@
               </div>
             </div>
 
-            <!-- Application Profiles Box -->
+            Application Profiles Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
@@ -229,7 +229,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </body>
