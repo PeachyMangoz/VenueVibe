@@ -328,5 +328,5 @@ Temporary Items
 *.pyd
 __pycache__/
 
-# Deployment file
-frontend/dist/
+# Deployment files
+dist/
