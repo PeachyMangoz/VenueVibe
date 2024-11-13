@@ -576,4 +576,18 @@ export default {
   align-items: center;
   z-index: 9999;
 }
+
+/* Hide Date, Status, and Last Updated columns on smaller screens */
+@media screen and (max-width: 768px) {
+  /* Hide the columns by targeting the th and td for Date, Status, and Last Updated */
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table th:nth-child(4),
+  .table td:nth-child(2),
+  .table td:nth-child(3),
+  .table td:nth-child(4) {
+    display: none;
+  }
+}
+
 </style>
