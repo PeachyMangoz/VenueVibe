@@ -1,8 +1,8 @@
 # ReviewSearch.vue
 <template>
   <div class="col-md-6" >
-    <div class="card h-100 shadow-sm" >
-      <div class="card-body">
+    <div class="card h-100 shadow-sm" style="background-color:rgba(255,255,255,0.9)">
+      <div class="card-body" >
         <h2>Search For Event Data & Reviews</h2>
         <form @submit.prevent="handleSearch">
           <div class="input-group mb-3">
@@ -10,7 +10,7 @@
               type="text" 
               v-model="searchInput" 
               class="form-control" 
-              placeholder="Enter Event code (case sensitive)" 
+              placeholder="Copy & paste event code (case sensitive)" 
               required 
               :disabled="loading"
             />
@@ -24,7 +24,7 @@
             </button>
           </div>
           <p class="button-info text-muted">
-            Copy and paste Event Code eg. NAONOV'24 , XMASMART2022
+            (eg. NAONOV'24 , XMASMART2022)
           </p>
         </form>
       </div>

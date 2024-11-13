@@ -15,12 +15,14 @@
     </div>
   
     <div class="search-container">
+      
       <input 
         type="text"
         v-model="searchQuery"
         placeholder="Search booths by name..."
         class="search-input"
       />
+      <i class="bi bi-search my-auto mx-2" style="font-size: 20px; color:#36b598"></i>
     </div>
   
     <div>

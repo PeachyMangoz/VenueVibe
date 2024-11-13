@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 shadow-sm">
+  <div class="card h-100 shadow-sm"style="background-color:rgba(255,255,255,0.9)">
     <div class="card-body">
       <h2>Submit Your Review</h2>
       <button 

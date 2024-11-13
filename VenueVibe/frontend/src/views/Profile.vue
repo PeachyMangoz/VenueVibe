@@ -182,7 +182,7 @@
                 </div>
 
                 <div class="text-center">
-                  <button type="submit" class="btn green-btn">Save Profile</button>
+                  <button type="submit" class="btn green-btn-outlined">Save Profile</button>
                 </div>
               </form>
             </div>
@@ -190,15 +190,15 @@
         </div>
 
         <!-- Additional Profile Columns -->
-        <div class="col-lg-4 mt-4">
+        <!-- <div class="col-lg-4 mt-4">
           <div class="row">
-            <!-- Bookmarks Box -->
+            Business Profile Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Bookmarked Users</h5>
-                    <button class="btn btn-sm green-btn btn-outline-primary">
+                    <h5 class="card-title mb-0">Business Profile</h5>
+                    <button class="btn green-btn-outlined">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -212,13 +212,13 @@
               </div>
             </div>
 
-            <!-- Application Profiles Box -->
+            Application Profiles Box
             <div class="col-6 col-lg-12 mb-4">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Application Profiles</h5>
-                    <button class="btn btn-sm green-btn  btn-outline-primary">
+                    <button class="btn green-btn-outlined">
                       <i class="fa fa-plus"></i> Add
                     </button>
                   </div>
@@ -229,7 +229,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </body>
@@ -387,12 +387,14 @@ export default {
 };
 </script>
 
-  
+
+<style src="@/styles/review.css" scoped />
   
   <style scoped>
 
   body {
-    background-color: #36b598;
+    background-color:#36b598;
+    
   }
   
 
@@ -401,26 +403,6 @@ export default {
   display: inline-block; /* Allow the container to size around the image */
 }
 
-.green-btn {
-    background-color: #36b598;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
-
-  .green-btn:hover {
-    background-color: #2d9b82;
-    transform: translateY(-1px);
-  }
-
-  
-  .green-btn:disabled {
-    background-color: #a8d5c9;
-    cursor: not-allowed;
-    transform: none;
-  }
 img {
   width: 150px;
   height: 150px;
@@ -481,8 +463,8 @@ img:hover {
     position: absolute;
     width: 50%;
     height: 100%;
-    background-color: #007bff;
-    opacity: 50%;
+    background-color: rgb(87, 147, 196);
+
     border-radius: 20px;
     transition: 0.3s;
   }
@@ -498,7 +480,7 @@ img:hover {
   
   .toggle-text.left {
     left: 0;
-    color: black;
+    color: #ffffff;
   }
   
   .toggle-text.right {
@@ -508,8 +490,7 @@ img:hover {
   
   .toggle-input:checked + .toggle-label .toggle-slider {
     left: 50%;
-    background-color: #28a745;
-    opacity: 50%;
+    background-color: #36b598;
   }
   
   .toggle-input:checked + .toggle-label .toggle-text.left {
@@ -517,7 +498,7 @@ img:hover {
   }
   
   .toggle-input:checked + .toggle-label .toggle-text.right {
-    color: black;
+    color:white;
   }
   </style>
   
