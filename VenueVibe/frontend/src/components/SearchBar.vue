@@ -1,9 +1,27 @@
-<template>
-  <div class="search-bar">
-    <input type="text" placeholder="Search for booths..." v-model="searchQuery" />
-    <button @click="searchBooths">Search</button>
+<template> 
+  <div class="input-group mb-3">
+    <input type="text" placeholder="Search for booths..." v-model="searchQuery"class="form-control"  />
+    <button @click="searchBooths" class="btn green-btn"><i class="bi bi-search me-1"></i>Search</button>
   </div>
 </template>
+
+<!-- <div class="input-group mb-3">
+  <input 
+    type="text" 
+    v-model="searchInput" 
+    class="form-control" 
+    placeholder="Copy & paste event code (case sensitive)" 
+    required 
+    :disabled="loading"
+  />
+  <button 
+    class="btn green-btn" 
+    type="submit"
+    :disabled="loading"
+  >
+    <i class="bi bi-search me-1"></i>
+    Search
+  </button> -->
 
 <script>
 export default {
@@ -21,9 +39,9 @@ export default {
   }
 };
 </script>
-
+<style src="@/styles/review.css" scoped />
 <style scoped>
-.search-bar {
+/* .search-bar {
   background-color: #82c0cc;
   padding: 15px;
   display: flex;
@@ -45,7 +63,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
+} */
 
 button:hover {
   background-color: #e68a19;
