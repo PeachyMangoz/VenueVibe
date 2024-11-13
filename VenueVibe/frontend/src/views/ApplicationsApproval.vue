@@ -239,7 +239,7 @@ const approveApplication = async (application) => {
             class="text-center py-5 text-muted"
           >
             <p class="mb-0">
-              No applications found. Start by applying for an event!
+              No applications found.
             </p>
           </div>
 
