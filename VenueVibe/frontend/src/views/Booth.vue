@@ -14,15 +14,16 @@
       />
     </div>
   
-    <div class="search-container">
+    <div class="search-container input-group mb-3">
       
       <input 
         type="text"
         v-model="searchQuery"
         placeholder="Search booths by name..."
-        class="search-input"
+        class="search-input form-control"
+        style="max-width: 500px;"
       />
-      <i class="bi bi-search my-auto mx-2" style="font-size: 20px; color:#36b598"></i>
+      <button @click="searchBooths" class="btn green-btn"><i class="bi bi-search me-1"></i></button>
     </div>
   
     <div>
@@ -188,7 +189,7 @@
     justify-content: center;
   }
   
-  .search-input {
+  /* .search-input {
     width: 100%;
     max-width: 500px;
     padding: 12px 20px;
@@ -198,7 +199,7 @@
     font-size: 16px;
     background-color: rgba(255, 255, 255, 0.9);
     transition: all 0.3s ease;
-  }
+  } */
   
   .search-input:focus {
     outline: none;
