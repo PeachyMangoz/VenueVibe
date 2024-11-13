@@ -12,7 +12,7 @@
     <main class="main-content">
       <router-view />
       <!-- Chat Icon Button -->
-      <div v-if="isLoggedIn" class="chat-icon">
+      <div v-if="isLoggedIn && showChatIcon" class="chat-icon">
       <router-link to="/CollaborateChat">
         <fa :icon="['fas', 'comment-dots']" style="color: #ffffff;"></fa>
       </router-link>
@@ -140,7 +140,14 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn']),
+    showChatIcon() {
+      // Specify routes where the chat icon should be hidden
+      const hideOnRoutes = ['CollaborateChat']; 
+      return !hideOnRoutes.includes(this.$route.name);
+
+    }
   },
+
 };
 </script>
 
