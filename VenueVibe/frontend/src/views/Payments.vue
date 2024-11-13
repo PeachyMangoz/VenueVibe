@@ -1,4 +1,5 @@
 <template>
+  <div class="img-container">
   <div class="payment-page">
     <div class="container section-title" data-aos="fade-up">
       <h2>
@@ -85,6 +86,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
@@ -205,6 +207,10 @@ export default {
 </script>
 
 <style scoped>
+.img-container{
+  background-image: url('@/images/img12.jpg');
+  background-size: cover
+}
 .payment-page {
   padding: 2rem;
   max-width: 1200px;

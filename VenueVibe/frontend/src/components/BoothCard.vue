@@ -35,7 +35,7 @@
         
         <div class="mb-3 d-flex align-items-center">
           <i class="far fa-clock me-2 "></i>
-          <span class="booth-duration">{{ booth.duration }} Hours Per Day</span>
+          <span class="booth-duration">{{ booth.duration }} Hours/Day</span>
         </div>
         
         <div class="mb-3 d-flex align-items-center">

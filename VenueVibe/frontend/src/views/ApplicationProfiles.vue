@@ -34,7 +34,7 @@
             >
             </textarea>
 
-            <label class="form-label">Profile Focus</label>
+            <label class="form-label">Profile Focus:(e.g. Sustainability, Charity, Crafts)</label>
             <input
               v-model="newProfile.focus"
               placeholder="Enter profile focus"
