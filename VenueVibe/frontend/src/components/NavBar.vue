@@ -33,7 +33,7 @@
                aria-expanded="false">
               {{ user.data.displayName || 'Profile' }} <!-- Display user's name or 'Profile' -->
             </a>
-            <ul class="dropdown-menu" aria-labelledby="profilesDropdown">
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilesDropdown">
               <li>
                 <router-link class="dropdown-item" to="/profile">
                   User Profile
@@ -154,6 +154,7 @@ export default {
 .navbar {
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.9);
+  position: fixed;
 }
 
 .navbar-brand {
@@ -193,5 +194,6 @@ export default {
     box-shadow: none;
     padding-left: 20px;
   }
+
 }
 </style>

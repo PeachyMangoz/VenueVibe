@@ -853,7 +853,7 @@ export default {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .timeline-background-line {
-    left: 96.8%;
+    left: 96%;
     top: 0;
     bottom: 20;
     width: 2px;
@@ -887,6 +887,11 @@ export default {
     overflow-wrap: break-word; /* Break long words if needed */
     word-wrap: break-word;
     hyphens: auto; /* Automatically hyphenate if a word is too long */
+  }
+  .banner .content .buttons a {
+    padding: 5px 15px; /* Smaller padding */
+    font-size: 14px;   /* Smaller font size */
+    margin-right: 5px; /* Less margin between buttons */
   }
 }
 </style>

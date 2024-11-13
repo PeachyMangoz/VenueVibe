@@ -38,7 +38,7 @@
         </div>
 
         <!-- Main Form Column -->
-        <div class="col-lg-6 mt-4">
+        <div class="col-lg-8 mt-4">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title mb-4">Profile Settings</h5>
