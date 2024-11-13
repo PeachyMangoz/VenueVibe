@@ -125,27 +125,38 @@
           </div>
         </div>
       </div>
+
+      <!-- Display notification if present -->
+      <Notification
+        v-if="notification"
+        :type="notification.type"
+        :title="notification.title"
+        :message="notification.message"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import StripePayment from '@/components/StripePayment.vue'
+import Notification from '@/components/Notification.vue'
 import { boothAPI } from '../services/api'
 import { getAuth } from 'firebase/auth'
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import dayjs from 'dayjs'
 
 export default {
   name: 'PaymentPage',
   components: {
-    StripePayment
+    StripePayment,
+    Notification
   },
   data() {
     return {
       boothDetails: null,
       transactions: [],
+      notification: null, // To handle notifications
       filterStatus: 'all',
       currentPage: 1,
       itemsPerPage: 5,
@@ -195,7 +206,7 @@ export default {
   methods: {
     async handleToken(token) {
       if (!this.boothDetails) {
-        this.error = 'No booth details available'
+        this.showNotification('error', 'No booth details available', 'Please try again.')
         return
       }
 
@@ -214,63 +225,23 @@ export default {
         }
         
         const docRef = await addDoc(collection(db, 'transactions'), newTransaction)
-        newTransaction.id = docRef.id
-        
         this.transactions.unshift(newTransaction)
 
-        this.$nextTick(() => {
-          this.$notify({
-            type: 'success',
-            title: 'Payment Processing',
-            message: 'Your payment is being processed'
-          })
-        })
-        
+        this.showNotification('success', 'Payment Processing', 'Your payment is being processed')
+
         setTimeout(async () => {
-          try {
-            await this.updateTransactionStatus(docRef.id, 'completed')
-            const transactionIndex = this.transactions.findIndex(t => t.id === docRef.id)
-            if (transactionIndex !== -1) {
-              this.transactions[transactionIndex].status = 'completed'
-              this.$notify({
-                type: 'success',
-                title: 'Payment Successful',
-                message: 'Your booth has been reserved'
-              })
-            }
-          } catch (error) {
-            console.error('Error updating transaction:', error)
-            this.$notify({
-              type: 'error',
-              title: 'Payment Update Failed',
-              message: 'There was an error updating your payment status'
-            })
+          await this.updateTransactionStatus(docRef.id, 'completed')
+          const transactionIndex = this.transactions.findIndex(t => t.id === docRef.id)
+          if (transactionIndex !== -1) {
+            this.transactions[transactionIndex].status = 'completed'
+            this.showNotification('success', 'Payment Successful', 'Your booth has been reserved')
           }
         }, 2000)
 
       } catch (error) {
         console.error('Payment processing error:', error)
         
-        const failedTransaction = {
-          userId: this.userId,
-          boothId: this.boothDetails.booth_id,
-          eventId: this.boothDetails.event_id,
-          date: new Date(),
-          amount: this.boothDetails.price,
-          boothTitle: this.boothDetails.booth_title,
-          status: 'failed',
-          error: error.message,
-          createdAt: serverTimestamp()
-        }
-        
-        await addDoc(collection(db, 'transactions'), failedTransaction)
-        this.transactions.unshift(failedTransaction)
-        
-        this.$notify({
-          type: 'error',
-          title: 'Payment Failed',
-          message: error.message || 'Payment processing failed'
-        })
+        this.showNotification('error', 'Payment Failed', error.message || 'Payment processing failed')
       }
     },
     async updateTransactionStatus(transactionId, status) {
@@ -301,19 +272,70 @@ export default {
     formatDate(date) {
       return dayjs(date).format('DD MMM YYYY')
     },
-    formatDateTime(date) {
-      return dayjs(date).format('DD MMM YYYY HH:mm')
+    showNotification(type, title, message) {
+      this.notification = { type, title, message }
+      setTimeout(() => {
+        this.notification = null
+      }, 3000) // Auto-hide after 3 seconds
     }
   },
-  watch: {
-    filterStatus() {
-      this.currentPage = 1
-    }
-  }
 }
 </script>
 
 <style scoped>
+.payment-page {
+  padding: 20px;
+}
+
+.payment-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.payment-summary, .payment-section, .history-section {
+  flex: 1 1 calc(33% - 10px);
+  margin: 10px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.total {
+  font-weight: bold;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-table th, .transaction-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+}
+
+.status-completed {
+  background-color: white;
+}
+
+.status-pending {
+  background-color: white;
+}
+
+.status-failed {
+  background-color: white;
+}
+
 .img-container {
   background-image: url('@/images/img12.jpg');
   background-size: cover;
