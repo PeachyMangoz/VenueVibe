@@ -207,7 +207,7 @@ const approveApplication = async (application) => {
 
 <template>
   <div class="image-container">
-    <div class="container section-title"  data-aos="fade-up">
+    <div class="container section-title mb-0"  data-aos="fade-up">
       <h2  style="color: #333; ">Event Applications</h2>
     </div>
 
@@ -610,5 +610,17 @@ const approveApplication = async (application) => {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+}
+
+@media screen and (max-width: 768px) {
+  /* Hide the columns by targeting the th and td for Date, Status, and Last Updated */
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table th:nth-child(4),
+  .table td:nth-child(2),
+  .table td:nth-child(3),
+  .table td:nth-child(4) {
+    display: none;
+  }
 }
 </style>

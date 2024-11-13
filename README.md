@@ -2,7 +2,7 @@
 
 ## Public deployment:
 
-The public deployment of our code is available at: `http://{placeholder}:{port}`
+The public deployment of our code is available at: `http://35.193.112.115:52233`
 
 ## Environment setup for local deployment
 

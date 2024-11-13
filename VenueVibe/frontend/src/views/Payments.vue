@@ -226,15 +226,13 @@ export default {
 /* Section Title Styles */
 .section-title {
   text-align: center;
-  margin-bottom: 50px;
   padding: 30px 0;
   position: relative;
 }
 
 .section-title h2 {
-  font-size: 32px;
+  font-size: 50px;
   font-weight: 700;
-  margin-bottom: 20px;
   color: #333;
 }
 
@@ -386,7 +384,7 @@ export default {
   }
   
   .section-title h2 {
-    font-size: 24px;
+    font-size: 36px;
   }
   
   .transaction-table {
