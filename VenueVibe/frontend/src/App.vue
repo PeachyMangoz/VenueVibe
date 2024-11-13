@@ -105,9 +105,9 @@
               method="post"
               class="php-email-form"
             >
-              <div class="newsletter-form">
-                <input type="email" name="email" 
-                style="height:40px;"/>
+              <div class="input-group">
+                <input class='form-control'type="email" name="email" 
+                style="height:50px;"/>
               
                 <input
                   type="submit"
