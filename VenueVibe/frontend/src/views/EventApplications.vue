@@ -172,7 +172,7 @@ export default {
 
 <template>
   <div class="image-container">
-    <div class="container section-title"  data-aos="fade-up">
+    <div class="container section-title mb-0"  data-aos="fade-up">
       <h2  style="color: #333; ">Event Applications</h2>
     </div>
 
