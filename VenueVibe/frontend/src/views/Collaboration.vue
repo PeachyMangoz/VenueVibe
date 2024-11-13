@@ -371,7 +371,7 @@ export default {
           console.log("Collab field updated successfully!");
           alert("You have successfully started collaborating!");
           this.fetchUserCollabStatus();
-          this.fetchUsers();
+          // this.fetchUsers();
         } else {
           console.error("No user is currently signed in.");
           alert("Please sign in to start collaborating.");
