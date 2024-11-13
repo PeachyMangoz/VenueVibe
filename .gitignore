@@ -327,3 +327,6 @@ Temporary Items
 *.pyo
 *.pyd
 __pycache__/
+
+# Deployment file
+frontend/dist/
