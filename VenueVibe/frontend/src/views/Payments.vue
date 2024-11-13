@@ -4,7 +4,7 @@
       <div class="container section-title" data-aos="fade-up">
         <h2>
           <div class="title-with-lines heading-montserrat">
-            Payment for {{ boothDetails ? boothDetails.booth_title : 'Booth' }}
+            Payments
           </div>
         </h2>
       </div>
