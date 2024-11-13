@@ -207,8 +207,10 @@ const approveApplication = async (application) => {
 
 <template>
   <div class="image-container">
-    <div class="container section-title"  data-aos="fade-up">
-      <h2  style="color: #333; ">Event Applications</h2>
+    <div class="container section-title mb-0"  data-aos="fade-up">
+      <div>
+      <h2 class="title-with-lines heading-montserrat">Event Applications</h2>
+    </div>
     </div>
 
     <div class="container py-4">
@@ -577,6 +579,12 @@ const approveApplication = async (application) => {
     transform: translateY(0);
   }
 }
+@media (max-width: 768px) {
+  
+  .section-title h2 {
+   font-size: 36px;
+ }
+}
 
 @media screen and (max-width: 768px) {
   .btn-group {
@@ -610,5 +618,17 @@ const approveApplication = async (application) => {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+}
+
+@media screen and (max-width: 768px) {
+  /* Hide the columns by targeting the th and td for Date, Status, and Last Updated */
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table th:nth-child(4),
+  .table td:nth-child(2),
+  .table td:nth-child(3),
+  .table td:nth-child(4) {
+    display: none;
+  }
 }
 </style>

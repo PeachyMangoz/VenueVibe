@@ -345,7 +345,7 @@ export default {
 
 .card {
   height: 100%;
-  background-color: rgba(254, 254, 254, 0.784);
+  background-color: rgba(254, 254, 254, 0.85);
 }
 
 .profile-info {

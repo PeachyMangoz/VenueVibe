@@ -135,6 +135,14 @@ export default {
       router.push("/booths");
     };
 
+    const payForBooth = (application) => {
+      if (application.status.toLowerCase() === 'approved') {
+        router.push(`/payments/${application.boothId}`);  // assuming boothId exists in the application data
+      } else {
+        showNotification("Event is not approved yet", "error");
+      }
+    };
+
     const closeModal = () => {
       selectedApplication.value = null;
     };
@@ -165,6 +173,7 @@ export default {
       getBadgeClass,
       withdrawApplication,
       viewBoothDetails,
+      payForBooth,  // method to handle payment redirection
     };
   },
 };
@@ -172,8 +181,12 @@ export default {
 
 <template>
   <div class="image-container">
-    <div class="container section-title"  data-aos="fade-up">
-      <h2  style="color: #333; ">Event Applications</h2>
+    <div class="container section-title" data-aos="fade-up" style="margin-bottom:0px; padding-bottom:0px">
+      <h2>
+        <div class="title-with-lines heading-montserrat">
+          Event Applications 
+        </div>
+      </h2>
     </div>
 
     <div class="container py-4">
@@ -249,6 +262,15 @@ export default {
                         :disabled="loading"
                       >
                         Withdraw
+                      </button>
+
+                      <button
+                        v-if="application.status.toLowerCase() === 'approved'"
+                        @click="payForBooth(application)"
+                        class="btn btn-success"
+                        :disabled="loading"
+                      >
+                        Pay
                       </button>
                     </div>
                   </td>
@@ -374,40 +396,21 @@ export default {
   </div>
 </template>
 
-
+<style src="@/styles/review.css" scoped />
 <style scoped>
+@media (max-width: 768px) {
+  
+   .section-title h2 {
+    font-size: 36px;
+  }
+}
+
+
 .image-container {
   background-image: url("@/images/img7.jpg");
   background-size: cover;
 }
 
-.section-title {
-    text-align: center;
-    margin-bottom: 50px;
-    padding: 30px 0;
-    font-size: 50px;
-    color:white
-  }
-  
-  .section-title h2 {
-    font-size: 50px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    color: white;
-  }
-  
-  .section-title h2::before,
-  .section-title h2::after {
-    content: '';
-    flex: 0 0 70px;
-    height: 3px;
-    background: #36b598;
-    display: inline-block;
-  }
 
 .green-btn {
   background-color: #36b598;
@@ -576,4 +579,18 @@ export default {
   align-items: center;
   z-index: 9999;
 }
+
+/* Hide Date, Status, and Last Updated columns on smaller screens */
+@media screen and (max-width: 768px) {
+  /* Hide the columns by targeting the th and td for Date, Status, and Last Updated */
+  .table th:nth-child(2),
+  .table th:nth-child(3),
+  .table th:nth-child(4),
+  .table td:nth-child(2),
+  .table td:nth-child(3),
+  .table td:nth-child(4) {
+    display: none;
+  }
+}
+
 </style>

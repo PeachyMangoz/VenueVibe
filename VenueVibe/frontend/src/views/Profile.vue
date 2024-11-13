@@ -1,4 +1,5 @@
 <template>
+    
     <div
     v-if="loading"
     class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"
@@ -9,7 +10,16 @@
     </div>
   </div>
   <body>
+    
+
     <div class="container.fluid py-4 mx-3">
+      <div class="container section-title" data-aos="fade-up" style="margin-bottom:0px; padding-bottom:0px">
+          <h2>
+            <div class="title-with-lines heading-montserrat">
+              User Profile Settings
+            </div>
+          </h2>
+        </div>
       
       <div class="row">
         <!-- Profile Photo Column -->
@@ -36,12 +46,13 @@
           </div>
           <h3 style="color:white" class="mb-0">{{ username }}</h3>
         </div>
+        
 
         <!-- Main Form Column -->
         <div class="col-lg-8 mt-4">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title mb-4">Profile Settings</h5>
+              
               <form @submit.prevent="updateProfile">
                 <!-- Business Name -->
                 <div class="mb-3">
@@ -392,15 +403,20 @@ export default {
   
   <style scoped>
 
-  body {
-    background-color:#36b598;
-    
-  }
+body {
+  background-image:url('@/images/img12.jpg');
+  background-size: cover;
   
+}
 
-  .profile-photo-container {
-  position: relative; /* Position relative to contain the icon */
-  display: inline-block; /* Allow the container to size around the image */
+
+.profile-photo-container {
+position: relative; /* Position relative to contain the icon */
+display: inline-block; /* Allow the container to size around the image */
+}
+
+.card{
+  background-color: rgba(255,255,255,0.9);
 }
 
 img {
