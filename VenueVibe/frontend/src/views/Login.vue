@@ -119,7 +119,8 @@ const register = async () => {
     store.commit('SET_LOGGED_IN', true);
     store.commit('SET_USER', {
       displayName: username.value,
-      email: user.email
+      email: user.email,
+      uid: user.uid
     });
 
     // Redirect to Home after successful registration

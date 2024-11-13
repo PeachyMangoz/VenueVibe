@@ -287,6 +287,7 @@ export default {
     },
     async fetchUsers() {
       try {
+        this.users = [];
         // Create a query that only fetches users with collab set to true
         const userQuery = query(
           collection(db, "user"),
@@ -360,26 +361,27 @@ export default {
       this.slideDirection = "";
     },
     async updatecollab() {
-      try {
-        if (this.isLoggedIn) {
-          const userRef = doc(db, "user", this.userId);
+  try {
+    if (this.isLoggedIn && this.userId) {
+      console.log("Updating collaboration status for user:", this.userId);
+      const userRef = doc(db, "user", this.userId);
 
-          // Update the 'collab' field in Firestore
-          await updateDoc(userRef, {
-            collab: true, // Set collab to true or any value you'd like
-          });
-          console.log("Collab field updated successfully!");
-          alert("You have successfully started collaborating!");
-          this.fetchUserCollabStatus();
-          this.fetchUsers();
-        } else {
-          console.error("No user is currently signed in.");
-          alert("Please sign in to start collaborating.");
-        }
-      } catch (error) {
-        console.error("Error updating collab field:", error);
-      }
-    },
+      // Update the 'collab' field in Firestore
+      await updateDoc(userRef, {
+        collab: true, // Set collab to true or any value you'd like
+      });
+      console.log("Collab field updated successfully!");
+      alert("You have successfully started collaborating!");
+      this.fetchUserCollabStatus();
+      this.fetchUsers();
+    } else {
+      console.error("No user is currently signed in or userId is missing.");
+      alert("Please sign in to start collaborating.");
+    }
+  } catch (error) {
+    console.error("Error updating collab field:", error);
+  }
+},
     async bookmarkUser() {
       if (this.isBookmarked) return;
       if (!this.userId || !this.users[this.currentIndex].id) {
