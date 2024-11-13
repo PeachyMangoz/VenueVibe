@@ -335,24 +335,27 @@ export default {
           throw new Error("User profile data missing for one of the users.");
         }
 
+        const defaultProfileImage = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"; // Replace with your default image URL
+
         const {
           username: currentDisplayName,
           profile_image: currentProfilePic,
         } = currentUserSnapshot.data();
+
         const {
           username: selectedDisplayName,
           profile_image: selectedProfilePic,
         } = selectedUserSnapshot.data();
 
-        // Create userInfo object with only the required fields
+        // Use default image if profile image is missing
         const userInfo = {
           [this.currentUserId]: {
             username: currentDisplayName,
-            profile_image: currentProfilePic,
+            profile_image: currentProfilePic || defaultProfileImage,
           },
           [this.selectedUserId]: {
             username: selectedDisplayName,
-            profile_image: selectedProfilePic,
+            profile_image: selectedProfilePic || defaultProfileImage,
           },
         };
 
@@ -573,7 +576,7 @@ export default {
 
     selectChat(chatId) {
       this.chatId = chatId;
-      this.selectedChat = this.userChats.find((chat) => chat.id === chatId); 
+      this.selectedChat = this.userChats.find((chat) => chat.id === chatId);
       //   this.loadMessages(); // Load messages for the selected chat
       this.listenForMessages();
     },
@@ -587,7 +590,7 @@ export default {
         !chat.userInfo
       ) {
         console.warn("Chat data is missing or improperly formatted:", chat);
-        return "../images/defaultprofileimg.jpg"; // Return a default image if data is missing
+        return "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"; // Return a default image if data is missing
       }
 
       // Find the partner ID
@@ -598,7 +601,7 @@ export default {
       // Return the partner's profile picture, or default if missing
       return (
         chat.userInfo[partnerId]?.profile_image ||
-        "../images/defaultprofileimg.jpg"
+        "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
       );
     },
 
@@ -948,7 +951,9 @@ ol {
   color: #333;
   border-bottom: 1px solid #ddd;
   border-radius: 10px 10px 0 0; /* Rounded top edges to match the design */
-  backdrop-filter: blur(10px); /* Optional: Adds a blur effect for extra depth */
+  backdrop-filter: blur(
+    10px
+  ); /* Optional: Adds a blur effect for extra depth */
   position: sticky; /* Makes the header stick to the top */
   top: 0; /* Sticks to the top of the chat area */
   z-index: 10; /* Ensures the header stays above the messages */
@@ -960,7 +965,7 @@ ol {
 }
 
 .delete-chat-button {
-  background-color: #f28b82;; /* Red for emphasis */
+  background-color: #f28b82; /* Red for emphasis */
   color: white;
   border: none;
   padding: 5px 10px;
