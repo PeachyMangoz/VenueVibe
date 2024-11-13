@@ -1,97 +1,141 @@
 <template>
   <div class="img-container">
-  <div class="payment-page">
-    <div class="container section-title" data-aos="fade-up">
-      <h2>
-        <div class="title-with-lines heading-montserrat">
-          Payment
-        </div>
-      </h2>
-    </div>
-
-    <div class="payment-container">
-      <div class="payment-section">
-        <StripePayment @token-created="handleToken" />
+    <div class="payment-page">
+      <div class="container section-title" data-aos="fade-up">
+        <h2>
+          <div class="title-with-lines heading-montserrat">
+            Payment for {{ boothDetails ? boothDetails.booth_title : 'Booth' }}
+          </div>
+        </h2>
       </div>
 
-      <div class="history-section">
-        <div class="container section-title" data-aos="fade-up">
-          <h2>
-            <div class="title-with-lines heading-montserrat">
-              Transaction History
+      <div class="payment-container">
+        <div class="payment-summary glass-effect">
+          <h3 class="summary-title">Payment Summary</h3>
+          <div class="summary-details" v-if="boothDetails">
+            <div class="summary-item">
+              <span>Booth Name:</span>
+              <span>{{ boothDetails.booth_title }}</span>
             </div>
-          </h2>
+            <div class="summary-item">
+              <span>Event:</span>
+              <span>{{ boothDetails.event_id }}</span>
+            </div>
+            <div class="summary-item">
+              <span>Duration:</span>
+              <span>{{ boothDetails.duration }} Hours/Day</span>
+            </div>
+            <div class="summary-item">
+              <span>Size:</span>
+              <span>{{ boothDetails.size }} slots</span>
+            </div>
+            <div class="summary-item">
+              <span>Date Range:</span>
+              <span>{{ formatDate(boothDetails.date_from) }} - {{ formatDate(boothDetails.date_to) }}</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total Amount:</span>
+              <span>${{ boothDetails?.price.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div v-else class="summary-loading">
+            <p>Loading booth details...</p>
+          </div>
         </div>
 
-        <div class="transaction-list">
-          <div class="filter-section">
-            <select v-model="filterStatus" class="filter-select">
-              <option value="all">All Transactions</option>
-              <option value="completed">Completed</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
-            </select>
+        <div class="payment-section glass-effect">
+          <StripePayment 
+            @token-created="handleToken" 
+            :amount="boothDetails?.price || 0"
+            :disabled="!boothDetails"
+          />
+        </div>
+
+        <div class="history-section glass-effect">
+          <div class="container section-title" data-aos="fade-up">
+            <h2>
+              <div class="title-with-lines heading-montserrat">
+                Transaction History
+              </div>
+            </h2>
           </div>
 
-          <div class="table-container">
-            <table class="transaction-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="transaction in filteredTransactions" 
-                    :key="transaction.id"
-                    :class="{'status-completed': transaction.status === 'completed',
-                            'status-pending': transaction.status === 'pending',
-                            'status-failed': transaction.status === 'failed'}">
-                  <td>{{ formatDate(transaction.date) }}</td>
-                  <td>${{ transaction.amount.toFixed(2) }}</td>
-                  <td>
-                    <span class="status-badge" :class="transaction.status">
-                      {{ transaction.status }}
-                    </span>
-                  </td>
-                  <td>{{ transaction.description }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="transaction-list">
+            <div class="filter-section">
+              <select v-model="filterStatus" class="filter-select">
+                <option value="all">All Transactions</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
 
-          <div v-if="filteredTransactions.length === 0" class="empty-state">
-            <p>No transactions found</p>
-          </div>
+            <div class="table-container">
+              <table class="transaction-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Booth</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Event</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="transaction in filteredTransactions" 
+                      :key="transaction.id"
+                      :class="{'status-completed': transaction.status === 'completed',
+                              'status-pending': transaction.status === 'pending',
+                              'status-failed': transaction.status === 'failed'}">
+                    <td>{{ formatDate(transaction.date) }}</td>
+                    <td>{{ transaction.boothTitle }}</td>
+                    <td>${{ transaction.amount.toFixed(2) }}</td>
+                    <td>
+                      <span class="status-badge" :class="transaction.status">
+                        {{ transaction.status }}
+                      </span>
+                    </td>
+                    <td>{{ transaction.eventId }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <div class="pagination">
-            <button 
-              :disabled="currentPage === 1"
-              @click="currentPage--"
-              class="pagination-button"
-            >
-              Previous
-            </button>
-            <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-            <button 
-              :disabled="currentPage === totalPages"
-              @click="currentPage++"
-              class="pagination-button"
-            >
-              Next
-            </button>
+            <div v-if="filteredTransactions.length === 0" class="empty-state">
+              <p>No transactions found</p>
+            </div>
+
+            <div class="pagination">
+              <button 
+                :disabled="currentPage === 1"
+                @click="currentPage--"
+                class="pagination-button"
+              >
+                Previous
+              </button>
+              <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+              <button 
+                :disabled="currentPage === totalPages"
+                @click="currentPage++"
+                class="pagination-button"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
 import StripePayment from '@/components/StripePayment.vue'
+import { boothAPI } from '../services/api'
+import { getAuth } from 'firebase/auth'
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore'
+import { db } from '../firebase'
+import dayjs from 'dayjs'
 
 export default {
   name: 'PaymentPage',
@@ -100,32 +144,32 @@ export default {
   },
   data() {
     return {
-      transactions: [
-        {
-          id: 1,
-          date: new Date('2024-03-09'),
-          amount: 150.00,
-          status: 'completed',
-          description: 'Booth Rental - Tech and Innovations'
-        },
-        {
-          id: 2,
-          date: new Date('2024-03-08'),
-          amount: 75.00,
-          status: 'pending',
-          description: 'Booth Rental - Arts & Craft'
-        },
-        {
-          id: 3,
-          date: new Date('2024-03-07'),
-          amount: 200.00,
-          status: 'failed',
-          description: 'Event Registration'
-        },
-      ],
+      boothDetails: null,
+      transactions: [],
       filterStatus: 'all',
       currentPage: 1,
-      itemsPerPage: 5
+      itemsPerPage: 5,
+      loading: true,
+      error: null,
+      userId: null
+    }
+  },
+  async created() {
+    const boothId = this.$route.params.boothId
+    if (boothId) {
+      try {
+        const response = await boothAPI.get(`/booths/${boothId}`)
+        this.boothDetails = response.data
+      } catch (error) {
+        console.error('Error fetching booth details:', error)
+        this.error = 'Failed to load booth details'
+      }
+    }
+    
+    const auth = getAuth()
+    if (auth.currentUser) {
+      this.userId = auth.currentUser.uid
+      await this.fetchUserTransactions()
     }
   },
   computed: {
@@ -134,6 +178,9 @@ export default {
       if (this.filterStatus !== 'all') {
         filtered = this.transactions.filter(t => t.status === this.filterStatus)
       }
+      
+      filtered = [...filtered].sort((a, b) => b.date - a.date)
+      
       const start = (this.currentPage - 1) * this.itemsPerPage
       const end = start + this.itemsPerPage
       return filtered.slice(start, end)
@@ -147,59 +194,119 @@ export default {
   },
   methods: {
     async handleToken(token) {
+      if (!this.boothDetails) {
+        this.error = 'No booth details available'
+        return
+      }
+
       try {
         console.log('Payment token received:', token)
-        
-        // Add the transaction to the list
         const newTransaction = {
-          id: this.transactions.length + 1,
+          userId: this.userId,
+          boothId: this.boothDetails.booth_id,
+          eventId: this.boothDetails.event_id,
           date: new Date(),
-          amount: 100.00, // Replace with actual amount from your payment process
+          amount: this.boothDetails.price,
+          boothTitle: this.boothDetails.booth_title,
           status: 'pending',
-          description: 'Payment Processing'
+          stripeToken: token.id,
+          createdAt: serverTimestamp()
         }
         
+        const docRef = await addDoc(collection(db, 'transactions'), newTransaction)
+        newTransaction.id = docRef.id
+        
         this.transactions.unshift(newTransaction)
-        
-        // Here you would typically make an API call to your backend
-        // to process the payment with the token
-        
-        // Show success message
+
         this.$nextTick(() => {
-          alert('Payment is being processed')
+          this.$notify({
+            type: 'success',
+            title: 'Payment Processing',
+            message: 'Your payment is being processed'
+          })
         })
         
-        // Optional: Update the transaction status after backend confirms
-        setTimeout(() => {
-          newTransaction.status = 'completed'
+        setTimeout(async () => {
+          try {
+            await this.updateTransactionStatus(docRef.id, 'completed')
+            const transactionIndex = this.transactions.findIndex(t => t.id === docRef.id)
+            if (transactionIndex !== -1) {
+              this.transactions[transactionIndex].status = 'completed'
+              this.$notify({
+                type: 'success',
+                title: 'Payment Successful',
+                message: 'Your booth has been reserved'
+              })
+            }
+          } catch (error) {
+            console.error('Error updating transaction:', error)
+            this.$notify({
+              type: 'error',
+              title: 'Payment Update Failed',
+              message: 'There was an error updating your payment status'
+            })
+          }
         }, 2000)
 
       } catch (error) {
         console.error('Payment processing error:', error)
         
-        // Add failed transaction to the list
-        this.transactions.unshift({
-          id: this.transactions.length + 1,
+        const failedTransaction = {
+          userId: this.userId,
+          boothId: this.boothDetails.booth_id,
+          eventId: this.boothDetails.event_id,
           date: new Date(),
-          amount: 100.00,
+          amount: this.boothDetails.price,
+          boothTitle: this.boothDetails.booth_title,
           status: 'failed',
-          description: 'Payment Failed'
-        })
+          error: error.message,
+          createdAt: serverTimestamp()
+        }
         
-        alert('Payment processing failed: ' + error.message)
+        await addDoc(collection(db, 'transactions'), failedTransaction)
+        this.transactions.unshift(failedTransaction)
+        
+        this.$notify({
+          type: 'error',
+          title: 'Payment Failed',
+          message: error.message || 'Payment processing failed'
+        })
+      }
+    },
+    async updateTransactionStatus(transactionId, status) {
+      await updateDoc(doc(db, 'transactions', transactionId), {
+        status,
+        updatedAt: serverTimestamp()
+      })
+    },
+    async fetchUserTransactions() {
+      try {
+        const q = query(
+          collection(db, 'transactions'),
+          where('userId', '==', this.userId)
+        )
+        const querySnapshot = await getDocs(q)
+        this.transactions = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().date.toDate() // Convert Firestore Timestamp to Date
+        }))
+      } catch (error) {
+        console.error('Error fetching transactions:', error)
+        this.error = 'Failed to load transaction history'
+      } finally {
+        this.loading = false
       }
     },
     formatDate(date) {
-      return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      }).format(date)
+      return dayjs(date).format('DD MMM YYYY')
+    },
+    formatDateTime(date) {
+      return dayjs(date).format('DD MMM YYYY HH:mm')
     }
   },
   watch: {
     filterStatus() {
-      // Reset to first page when filter changes
       this.currentPage = 1
     }
   }
@@ -207,10 +314,12 @@ export default {
 </script>
 
 <style scoped>
-.img-container{
+.img-container {
   background-image: url('@/images/img12.jpg');
-  background-size: cover
+  background-size: cover;
+  min-height: 100vh;
 }
+
 .payment-page {
   padding: 2rem;
   max-width: 1200px;
@@ -223,7 +332,6 @@ export default {
   gap: 3rem;
 }
 
-/* Section Title Styles */
 .section-title {
   text-align: center;
   padding: 30px 0;
@@ -236,7 +344,6 @@ export default {
   color: #333;
 }
 
-/* Title with lines style */
 .title-with-lines {
   position: relative;
   display: inline-block;
@@ -261,9 +368,57 @@ export default {
   left: 100%;
 }
 
-/* Transaction History Styles */
+.payment-summary {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-title {
+  color: #32325d;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #36b598;
+}
+
+.summary-details {
+  margin-top: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-item span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.summary-item span:last-child {
+  color: #32325d;
+  font-weight: 600;
+}
+
+.summary-item.total {
+  font-weight: bold;
+  font-size: 1.2em;
+  border-top: 2px solid #eee;
+  border-bottom: none;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  color: #36b598;
+}
+
 .history-section {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -274,11 +429,20 @@ export default {
 }
 
 .filter-select {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   width: 200px;
   background-color: white;
+  color: #32325d;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #36b598;
+  box-shadow: 0 0 0 2px rgba(54, 181, 152, 0.2);
 }
 
 .table-container {
@@ -296,7 +460,7 @@ export default {
 
 .transaction-table th,
 .transaction-table td {
-  padding: 0.75rem;
+  padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #e6e6e6;
 }
@@ -305,6 +469,7 @@ export default {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #495057;
+  white-space: nowrap;
 }
 
 .transaction-table tr:hover {
@@ -312,11 +477,12 @@ export default {
 }
 
 .status-badge {
-  padding: 0.25rem 0.5rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 500;
   display: inline-block;
+  text-transform: capitalize;
 }
 
 .status-badge.completed {
@@ -336,10 +502,11 @@ export default {
 
 .empty-state {
   text-align: center;
-  padding: 2rem;
+  padding: 3rem;
   color: #6c757d;
   background-color: #f8f9fa;
   border-radius: 4px;
+  font-size: 1.1rem;
 }
 
 .pagination {
@@ -347,23 +514,25 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   padding: 1rem 0;
 }
 
 .pagination-button {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   background: white;
   cursor: pointer;
   transition: all 0.2s ease;
   color: #495057;
+  font-weight: 500;
 }
 
 .pagination-button:hover:not(:disabled) {
-  background-color: #f8f9fa;
-  border-color: #ddd;
+  background-color: #36b598;
+  border-color: #36b598;
+  color: white;
 }
 
 .pagination-button:disabled {
@@ -374,10 +543,15 @@ export default {
 
 .page-info {
   color: #6c757d;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
-/* Responsive Styles */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 @media (max-width: 768px) {
   .payment-page {
     padding: 1rem;
@@ -393,6 +567,7 @@ export default {
   
   .status-badge {
     font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
   }
   
   .title-with-lines::before,
@@ -402,6 +577,28 @@ export default {
   
   .filter-select {
     width: 100%;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .transaction-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 }
 </style>
