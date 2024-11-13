@@ -291,11 +291,12 @@ export default {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-bottom:0px;
 }
 
 .payment-summary, .payment-section, .history-section {
   flex: 1 1 calc(33% - 10px);
-  margin: 10px;
+  margin: 0px;
 }
 
 .summary-item {
@@ -400,7 +401,7 @@ export default {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

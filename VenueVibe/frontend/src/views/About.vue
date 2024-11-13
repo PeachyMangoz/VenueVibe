@@ -34,7 +34,7 @@
               <img 
                 src="@/images/img6.jpg" 
                 alt="About Us" 
-                class="hero-image"
+                class="hero-image img-fluid"
                 height=" 400px"
                 data-aos="fade-left"
                 style="border-radius: 20px;"
