@@ -167,6 +167,12 @@ onBeforeUnmount(() => {
 <style src="@/styles/review.css" scoped />
 
 <style scoped>
+@media (max-width: 768px) {
+  
+  .section-title h2 {
+    font-size: 36px;
+  }
+}
 
 
 .event-review-container {

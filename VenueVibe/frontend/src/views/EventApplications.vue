@@ -376,6 +376,14 @@ export default {
 
 
 <style scoped>
+
+@media (max-width: 768px) {
+  
+  .section-title h2 {
+    font-size: 36px;
+  }
+}
+
 .image-container {
   background-image: url("@/images/img7.jpg");
   background-size: cover;
@@ -383,16 +391,13 @@ export default {
 
 .section-title {
     text-align: center;
-    margin-bottom: 50px;
     padding: 30px 0;
-    font-size: 50px;
     color:white
   }
   
   .section-title h2 {
     font-size: 50px;
     font-weight: 700;
-    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
