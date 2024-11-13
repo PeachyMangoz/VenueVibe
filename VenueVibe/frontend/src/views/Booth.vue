@@ -1,8 +1,8 @@
 <template>
   <div class="image-container">
-    <div class="container section-title" style='margin-bottom:0px' data-aos="fade-up">
+    <div class="container section-title" data-aos="fade-up">
       <h2>
-        <div class="heading-montserrat">
+        <div class="title-with-lines heading-montserrat">
           Booth Listings
         </div>
       </h2>
@@ -205,4 +205,10 @@
     border-color: #16697a;
     box-shadow: 0 0 8px rgba(54, 181, 152, 0.4);
   }
+
+  @media (max-width: 768px) {
+  
+  .section-title h2 {
+    font-size: 36px;
+  }}
   </style>
