@@ -71,6 +71,10 @@
 
     <!-- Main Chat Area -->
     <section class="chat-area">
+      <div v-if="selectedChat" class="chatmsg-header">
+        <h2>Chat with {{ getChatPartnerName(selectedChat) }}</h2>
+        <button @click="deleteChat" class="delete-chat-button">End Chat</button>
+      </div>
       <!-- Messages -->
       <div class="messages" ref="messagesContainer">
         <div
@@ -121,6 +125,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  deleteDoc,
   orderBy,
   onSnapshot,
   serverTimestamp,
@@ -146,6 +151,7 @@ export default {
       selectedCategory: "All Chats",
       categories: ["All Chats", "Bookmark"],
       activeIndex: 0,
+      selectedChat: null,
     };
   },
   created() {
@@ -567,6 +573,7 @@ export default {
 
     selectChat(chatId) {
       this.chatId = chatId;
+      this.selectedChat = this.userChats.find((chat) => chat.id === chatId); 
       //   this.loadMessages(); // Load messages for the selected chat
       this.listenForMessages();
     },
@@ -618,6 +625,34 @@ export default {
 
     formatDate(timestamp) {
       return timestamp?.toDate().toLocaleTimeString() || "";
+    },
+    deleteChat() {
+      if (this.selectedChat) {
+        // Confirm deletion before proceeding
+        if (
+          confirm(
+            `Are you sure you want to delete the chat with ${this.getChatPartnerName(
+              this.selectedChat
+            )}?`
+          )
+        ) {
+          const chatRef = doc(db, "chat", this.selectedChat.id);
+
+          deleteDoc(chatRef)
+            .then(() => {
+              // Remove the chat from the local `userChats` array
+              this.userChats = this.userChats.filter(
+                (chat) => chat.id !== this.selectedChat.id
+              );
+              // Clear selected chat data
+              this.chatId = null;
+              this.selectedChat = null;
+            })
+            .catch((error) => {
+              console.error("Error deleting chat:", error);
+            });
+        }
+      }
     },
   },
   mounted: async function () {
@@ -746,7 +781,7 @@ ol {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f2f5f9;
+  background-color: rgb(242, 245, 249);
   overflow: hidden;
 }
 
@@ -902,6 +937,36 @@ ol {
   transition: transform 0.3s ease, width 0.3s ease;
 }
 
+.chatmsg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.8); /* Translucent white */
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  min-height: 87px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  border-radius: 10px 10px 0 0; /* Rounded top edges to match the design */
+  backdrop-filter: blur(10px); /* Optional: Adds a blur effect for extra depth */
+  position: sticky; /* Makes the header stick to the top */
+  top: 0; /* Sticks to the top of the chat area */
+  z-index: 10; /* Ensures the header stays above the messages */
+}
+
+.chatmsg-header h2 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.delete-chat-button {
+  background-color: #f28b82;; /* Red for emphasis */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .sidebar {
